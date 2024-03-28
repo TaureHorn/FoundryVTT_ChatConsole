@@ -1,0 +1,28 @@
+{
+    "id": "console",
+    "title": "Console - A Stylish chat window",
+    "description": "Spawn a floating chat window with configurable styling to look like a computer terminal",
+    "authors": [
+        {
+            "name": "silence"
+        }
+    ],
+    "scripts": [
+        "scripts/console.js"
+    ],
+    "styles": [
+        "styles/console.css"
+    ],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
+    "version": "1.0.0",
+    "compatibility": {
+        "minimum": "11",
+        "verified": "11"
+    }
+}
