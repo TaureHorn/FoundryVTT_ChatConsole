@@ -5,7 +5,7 @@ class Console {
     static ID = 'console';
 
     static FLAGS = {
-        "CONSOLE": "console" 
+        "CONSOLE": "console"
     }
 
     static TEMPLATES = {
@@ -29,7 +29,6 @@ class ConsoleData {
     static ID = "Rk3WTT9Rvm0smJKg"
 
     static createDataPool() {
-        // @return {Object} <Promise>
         if (game.user.isGM) {
             const newDataPool = new JournalEntry({
                 "name": this.name
@@ -41,6 +40,7 @@ class ConsoleData {
     }
 
     static getDataPool() {
+        // return {Object}
         const dataPool = game.journal.getName(this.name)
         if (dataPool) {
             return dataPool
@@ -50,10 +50,13 @@ class ConsoleData {
         }
     }
 
-    static get allConsoles() {
-
+    static getConsoles() {
+        // return {Array} 
+        const data = this.getDataPool()
+        return Object.entries(data.flags.console.console)
     }
 
+    // TODO: Implement custom object schema for newConsole data
     static createConsole(name) {
         if (game.user.isGM) {
             const newConsole = {
@@ -79,19 +82,32 @@ class ConsoleData {
         }
     }
 
-    static deleteConsole(name) {
+    static deleteConsole(id) {
+        // @param {string} id
         if (game.user.isGM) {
             const data = this.getDataPool()
-            const index = data.flags.Console.instances.indexOf()
-            Console.log(true, "index", index)
-
+            const idDeletion= {
+                [`-=${id}`]: null
+            }
+            data.setFlag(Console.ID, Console.FLAGS.CONSOLE, idDeletion)
         }
     }
 
-    static updateConsole() {
+    static updateConsole(id, updateData) {
+        // @param {string} id
+        // @param {object} updateData
+        const data = this.getDataPool()
+        const update = {
+            [id] : updateData
+        }
+        data.setFlag(Console.ID, Console.FLAGS.CONSOLE, update)
     }
 
 }
+
+// autoruns on load, should premake a data pool for first time users
+ConsoleData.getDataPool()
+
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
     registerPackageDebugFlag(Console.ID)
 });
