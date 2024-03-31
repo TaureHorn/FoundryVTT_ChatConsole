@@ -9,8 +9,8 @@ class Console {
     }
 
     static TEMPLATES = {
+        APP: `modules/${this.ID}/templates/console.hbs`,
         CONFIG: `modules/${this.ID}/templates/config.hbs`,
-        CONSOLELAYOUT: `modules/${this.ID}/templates/console.hbs`,
         MANAGER: `modules/${this.ID}/templates/manager.hbs`
     }
 
@@ -45,7 +45,7 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
 
 // custom helper for ConsoleConfig config.hbs
 Handlebars.registerHelper('inArray', function(data, otherArray, options) {
-    if (otherArray.includes(data)){
+    if (otherArray.includes(data)) {
         return options.fn(this)
     } else {
         return options.inverse(this)
@@ -60,10 +60,7 @@ class ConsoleData {
 
     static createDataPool() {
         if (game.user.isGM) {
-            const newDataPool = new JournalEntry({
-                "name": this.name
-            })
-            JournalEntry.create(newDataPool)
+            JournalEntry.create({ "name": this.name })
         } else {
             ui.notifications.error(`Console | No data storage Document of name '${this.name}' exists and you lack the permissions to create one. Consult your GM.`)
         }
@@ -73,6 +70,9 @@ class ConsoleData {
         // return {Object}
         const dataPool = game.journal.getName(this.name)
         if (dataPool) {
+            if (!dataPool.flags.console?.consoles) {
+                dataPool.setFlag(Console.ID, Console.FLAGS.CONSOLE, {})
+            }
             return dataPool
         } else {
             this.createDataPool()
@@ -84,9 +84,11 @@ class ConsoleData {
         // return {Array} 
         const data = this.getDataPool()
         let arr = []
-        Array.from(Object.entries(data.flags.console.consoles)).forEach((entry) => {
-            arr.push(entry[1])
-        })
+        if (data.flags.console.consoles) {
+            Array.from(Object.entries(data.flags.console.consoles)).forEach((entry) => {
+                arr.push(entry[1])
+            })
+        }
         return arr
     }
 
@@ -95,8 +97,7 @@ class ConsoleData {
         if (game.user.isGM) {
             const newConsole = {
                 content: {
-                    body: "",
-                    inputPlaceholder: "...",
+                    body: [],
                     title: `${name} console`,
                 },
                 description: "",
@@ -104,8 +105,8 @@ class ConsoleData {
                 name: name,
                 scenes: [],
                 styling: {
-                    fg: "#bbb",
-                    bg: "#111"
+                    fg: "#ff0055",
+                    bg: "#120b10"
                 }
             }
             const data = this.getDataPool()
@@ -125,6 +126,17 @@ class ConsoleData {
             }
             data.setFlag(Console.ID, Console.FLAGS.CONSOLE, idDeletion)
         }
+    }
+
+    static duplicateConsole(id) {
+        const consoleToCopy = this.getConsoles().find((obj) => obj.id === id)
+        const clonedConsole = structuredClone(consoleToCopy)
+        clonedConsole.id = foundry.utils.randomID(16)
+        clonedConsole.name = `${consoleToCopy.name} (copy)`
+        const newConsoles = {
+            [clonedConsole.id]: clonedConsole
+        }
+        this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, newConsoles)
     }
 
     static updateConsole(id, updateData) {
@@ -161,10 +173,87 @@ class ConsoleManager extends FormApplication {
     }
 
     getData() {
+        const consoles = ConsoleData.getConsoles()
+        consoles.forEach((console) => {
+            console.sceneNames = []
+            console.scenes.forEach((id) => {
+                console.sceneNames.push(this.getSceneName(id))
+            })
+        })
         return {
-            consoles: ConsoleData.getConsoles()
+            consoles: consoles
         }
     }
+
+    activateListeners(html) {
+        super.activateListeners(html)
+
+        html.on('click', "[data-action]", this._handleButtonClick)
+    }
+
+    getSceneName(id) {
+        return game.scenes._source.find((obj) => obj._id === id).name
+    }
+
+    async _handleButtonClick(event) {
+        const clickedElement = $(event.currentTarget)
+        const action = clickedElement.data().action
+        const id = clickedElement.data().consoleId
+
+        switch (action) {
+            case 'create':
+                ConsoleData.createConsole("new console")
+                break;
+            case 'open-console':
+                new ConsoleApp().render(true, { id })
+                break;
+            case 'edit-console':
+                new ConsoleConfig().render(true, { id })
+                break;
+            case 'delete-console':
+                ConsoleData.deleteConsole(id)
+                break;
+            case 'duplicate-console':
+                ConsoleData.duplicateConsole(id)
+                break;
+        }
+    }
+
+}
+
+class ConsoleApp extends FormApplication {
+    static get defaultOptions() {
+        const defaults = super.defaultOptions;
+        const overrides = {
+            closeOnSubmit: false,
+            height: 700,
+            id: `${Console.ID}`,
+            popOut: true,
+            minimizable: true,
+            resizable: false,
+            submitOnChange: true,
+            template: Console.TEMPLATES.APP,
+            title: `${Console.ID}`,
+            width: 700
+        }
+        return foundry.utils.mergeObject(defaults, overrides)
+    }
+
+    getData(options) {
+        return ConsoleData.getConsoles().find((obj) => obj.id === options.id)
+    }
+
+    _updateObject(event, formData) {
+        const console = this.getData()
+        const messageLog = [...console.content.body]
+        const name = game.user.character ? `${game.user.character.name}: ` : ""
+        const message = `${name}${formData.consoleInputText}`
+        messageLog.push(message)
+        console.content.body = messageLog
+        ConsoleData.updateConsole(console.id, console)
+        this.render()
+    }
+
 
 }
 
@@ -188,7 +277,7 @@ class ConsoleConfig extends FormApplication {
         return mergedOptions
     }
 
-    getData() {
+    getData(options) {
         const scenesData = []
         game.scenes._source.forEach((scene) => {
             scenesData.push({
@@ -198,9 +287,36 @@ class ConsoleConfig extends FormApplication {
             })
         })
         return {
-            console: ConsoleData.getConsoles()[1],
+            console: ConsoleData.getConsoles().find((obj) => obj.id === options.id),
             scenes: scenesData
         }
+    }
+
+    _updateObject(event, formData) {
+        const oldData = this.getData(this.options).console
+        const newData = {
+            content: {
+                body: oldData.content.body,
+                title: formData.title
+            },
+            description: formData.description === "" ? oldData.description : formData.description,
+            id: oldData.id,
+            name: formData.name,
+            scenes: [],
+            styling: {
+                fg: formData.fgCol,
+                bg: formData.bgCol
+            }
+        }
+        for (const property in formData) {
+            if (formData[property]) {
+                if (property.length === 16 && formData[property] === property) {
+                    newData.scenes.push(property)
+                }
+            }
+        }
+
+        ConsoleData.updateConsole(oldData.id, newData)
     }
 }
 

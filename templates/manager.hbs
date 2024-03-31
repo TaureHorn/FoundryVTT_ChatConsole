@@ -1,16 +1,25 @@
 <div> 
     {{#each consoles}}
         <div style="background:{{this.styling.bg}};border:1px solid {{this.styling.fg}}" class="console-manager-entry">
-            <div style="margin-right:10px">
-                <p style="color:{{this.styling.fg}}"><strong>{{this.name}}</strong></p>
-                <p style="color:{{this.styling.fg}}"><em>{{this.description}}</em></p>
+            <div style="display:flex;flex-direction:column;justify-content:space-evenly;margin-right:10px;box-sizing:border-box;width:100%">
+                <p style="background:{{this.styling.fg}};color:{{this.styling.bg}}"><strong>{{this.name}}</strong></p>
+                <p style="color:{{this.styling.fg}}">{{this.description}}</p>
+                <div style="color:{{this.styling.fg}}"><em>
+                    <p>Scenes: [
+                    {{#each sceneNames}}
+                        <span>{{this}}{{#unless isLast}},{{/unless}}
+                    {{/each}}
+                    ]</p>
+                </em></div>
             </div>
             <div style="display:flex;flex-direction:column;justify-content:space-evenly">
-                <button style="background:none;border:1px solid {{this.styling.fg}}"><i style="color:{{this.styling.fg}}" class="fa-solid fa-arrow-up-right-from-square"></i></button>
-                <button style="background:none;border:1px solid {{this.styling.fg}}"><i style="color:{{this.styling.fg}}" class="fa-solid fa-pen-to-square"></i></button>
+                <button style="background:none;border:1px solid {{this.styling.fg}}" title="{{localize "CONSOLE.open-console"}}" data-console-id="{{this.id}}" data-action="open-console"><i style="color:{{this.styling.fg}}" class="fa-solid fa-arrow-up-right-from-square" ></i></button>
+                <button style="background:none;border:1px solid {{this.styling.fg}}" title="{{localize "CONSOLE.edit-console"}}" data-console-id="{{this.id}}" data-action="edit-console"><i style="color:{{this.styling.fg}}" class="fa-solid fa-pen-to-square"></i></button>
+                <button style="background:none;border:1px solid {{this.styling.fg}}" title="{{localize "CONSOLE.duplicate-console"}}" data-console-id="{{this.id}}" data-action="duplicate-console"><i style="color:{{this.styling.fg}}" class="fa-solid fa-clone" ></i></button>
+                <button style="background:none;border:1px solid {{this.styling.fg}}" title="{{localize "CONSOLE.delete-console"}}" data-console-id="{{this.id}}" data-action="delete-console"><i style="color:{{this.styling.fg}}" class="fa-solid fa-trash" ></i></button>
             </div>
         </div>
     {{/each}}
-    <button><i class="fa-solid fa-plus"></i>add new</button>
+    <button title="{{localize "CONSOLE.add-new-console"}}" data-action="create"><i class="fa-solid fa-plus"></i>add new</button>
 </div>
 

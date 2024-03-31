@@ -1,13 +1,13 @@
-<div style="background-attachment:scroll;background-image:{{style.background}};background-size:contain;border:2px solid {{style.col}};height:100%;padding:10px;overflow-y:scroll;width:100%">
-    <p style="color:{{style.col}}">{{header}}</p>
-        <form id="consoleInput">
+<div style="background-attachment:scroll;background:{{styling.bg}};background-size:contain;border:2px solid {{styling.fg}};height:100%;padding:10px;overflow-y:scroll;width:100%">
+    <p style="color:{{styling.fg}}">{{content.title}}</p>
+        <form id="nput">
             <div style="display:flex">
-                <input style="border:1px solid {{style.col}};flex:6;outline:none;padding:15px" id="consoleInputText" maxlength="128" minlength="1" name="consoleInputText" type="text" placeholder="..."/ autofocus>
-                <button style="background:none;border:1px solid {{style.col}};color:{{style.col}};flex:1;outline:none" id="submitButton" type="submit">send</button>
+                <input style="border:1px solid {{styling.fg}};flex:6;outline:none;padding:15px" id="nputText" maxlength="128" minlength="1" name="consoleInputText" type="text" placeholder="..."/>
+                <button style="background:none;border:1px solid {{styling.fg}};color:{{styling.fg}};flex:1;outline:none" id="submitButton" type="submit">send</button>
             </div>
         </form>
-    {{#each src.system.chatLog}}
-        <p style="color:{{../style.col}};">{{this}}</p>
+    {{#each content.body}}
+        <p style="color:{{../styling.fg}};">{{this}}</p>
     {{/each}}
 </div>
 
