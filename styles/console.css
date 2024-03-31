@@ -1,0 +1,18 @@
+.console-manage-button {
+    background: none;
+    border: 1px solid #bbb;
+    color: #bbb;
+    padding: 0;
+}
+
+.console-manager-entry {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 5px;
+}
+
+.console-seperate {
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,0 +1,16 @@
+<div> 
+    {{#each consoles}}
+        <div style="background:{{this.styling.bg}};border:1px solid {{this.styling.fg}}" class="console-manager-entry">
+            <div style="margin-right:10px">
+                <p style="color:{{this.styling.fg}}"><strong>{{this.name}}</strong></p>
+                <p style="color:{{this.styling.fg}}"><em>{{this.description}}</em></p>
+            </div>
+            <div style="display:flex;flex-direction:column;justify-content:space-evenly">
+                <button style="background:none;border:1px solid {{this.styling.fg}}"><i style="color:{{this.styling.fg}}" class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                <button style="background:none;border:1px solid {{this.styling.fg}}"><i style="color:{{this.styling.fg}}" class="fa-solid fa-pen-to-square"></i></button>
+            </div>
+        </div>
+    {{/each}}
+    <button><i class="fa-solid fa-plus"></i>add new</button>
+</div>
+

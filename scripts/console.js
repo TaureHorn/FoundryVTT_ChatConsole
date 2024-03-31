@@ -5,11 +5,12 @@ class Console {
     static ID = 'console';
 
     static FLAGS = {
-        "CONSOLE": "console"
+        "CONSOLE": "consoles"
     }
 
     static TEMPLATES = {
-        CONSOLELAYOUT: `modules/${this.ID}/templates/console.hbs`
+        CONSOLELAYOUT: `modules/${this.ID}/templates/console.hbs`,
+        MANAGER: `modules/${this.ID}/templates/manager.hbs`
     }
 
     static log(force, ...args) {
@@ -21,6 +22,24 @@ class Console {
     }
 
 }
+
+// add button to chats
+Hooks.on('renderSidebarTab', (chatLog, html) => {
+    const controlButtons = html.find(`[id="chat-log"]`)
+
+    const tooltip = game.i18n.localize('CONSOLE.button-title')
+    controlButtons.prepend(
+        `<button class="console-manage-button " type='button'><i class='fa-solid fa-terminal' title='${tooltip}'></i> Manage Consoles</button>`
+    )
+
+    html.on('click', '.console-manage-button', (event) => {
+        new ConsoleManager().render(true)
+    })
+})
+
+Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
+    registerPackageDebugFlag(Console.ID)
+});
 
 class ConsoleData {
 
@@ -53,7 +72,11 @@ class ConsoleData {
     static getConsoles() {
         // return {Array} 
         const data = this.getDataPool()
-        return Object.entries(data.flags.console.console)
+        let arr = []
+        Array.from(Object.entries(data.flags.console.consoles)).forEach((entry) => {
+            arr.push(entry[1])
+        })
+        return arr
     }
 
     // TODO: Implement custom object schema for newConsole data
@@ -86,7 +109,7 @@ class ConsoleData {
         // @param {string} id
         if (game.user.isGM) {
             const data = this.getDataPool()
-            const idDeletion= {
+            const idDeletion = {
                 [`-=${id}`]: null
             }
             data.setFlag(Console.ID, Console.FLAGS.CONSOLE, idDeletion)
@@ -98,7 +121,7 @@ class ConsoleData {
         // @param {object} updateData
         const data = this.getDataPool()
         const update = {
-            [id] : updateData
+            [id]: updateData
         }
         data.setFlag(Console.ID, Console.FLAGS.CONSOLE, update)
     }
@@ -106,9 +129,31 @@ class ConsoleData {
 }
 
 // autoruns on load, should premake a data pool for first time users
-ConsoleData.getDataPool()
+// ConsoleData.getDataPool()
 
-Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
-    registerPackageDebugFlag(Console.ID)
-});
+class ConsoleManager extends FormApplication {
+    static get defaultOptions() {
+        const defaults = super.defaultOptions
+
+        const overrider = {
+            height: 'auto',
+            id: 'console-manager',
+            left: 1700,
+            template: Console.TEMPLATES.MANAGER,
+            title: "Console Manager",
+            top: 40,
+            width: 500,
+        }
+
+        const mergedOptions = foundry.utils.mergeObject(defaults, overrider)
+        return mergedOptions
+    }
+
+    getData() {
+        return {
+            consoles: ConsoleData.getConsoles()
+        }
+    }
+
+}
 
