@@ -9,6 +9,7 @@ class Console {
     }
 
     static TEMPLATES = {
+        CONFIG: `modules/${this.ID}/templates/config.hbs`,
         CONSOLELAYOUT: `modules/${this.ID}/templates/console.hbs`,
         MANAGER: `modules/${this.ID}/templates/manager.hbs`
     }
@@ -25,21 +26,31 @@ class Console {
 
 // add button to chats
 Hooks.on('renderSidebarTab', (chatLog, html) => {
-    const controlButtons = html.find(`[id="chat-log"]`)
+    if (game.user.isGM) {
+        const controlButtons = html.find(`[id="chat-log"]`)
+        const tooltip = game.i18n.localize('CONSOLE.button-title')
+        controlButtons.prepend(
+            `<button class="console-manage-button " type='button'><i class='fa-solid fa-terminal' title='${tooltip}'></i> Manage Consoles</button>`
+        )
 
-    const tooltip = game.i18n.localize('CONSOLE.button-title')
-    controlButtons.prepend(
-        `<button class="console-manage-button " type='button'><i class='fa-solid fa-terminal' title='${tooltip}'></i> Manage Consoles</button>`
-    )
-
-    html.on('click', '.console-manage-button', (event) => {
-        new ConsoleManager().render(true)
-    })
+        html.on('click', '.console-manage-button', (event) => {
+            new ConsoleManager().render(true)
+        })
+    }
 })
 
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
     registerPackageDebugFlag(Console.ID)
 });
+
+// custom helper for ConsoleConfig config.hbs
+Handlebars.registerHelper('inArray', function(data, otherArray, options) {
+    if (otherArray.includes(data)){
+        return options.fn(this)
+    } else {
+        return options.inverse(this)
+    }
+})
 
 class ConsoleData {
 
@@ -155,5 +166,41 @@ class ConsoleManager extends FormApplication {
         }
     }
 
+}
+
+
+class ConsoleConfig extends FormApplication {
+    static get defaultOptions() {
+        const defaults = super.defaultOptions
+
+        const overrider = {
+            height: 'auto',
+            id: 'console-config',
+            left: 1340,
+            resizable: true,
+            template: Console.TEMPLATES.CONFIG,
+            title: "Console Config",
+            top: 40,
+            width: 350
+        }
+
+        const mergedOptions = foundry.utils.mergeObject(defaults, overrider)
+        return mergedOptions
+    }
+
+    getData() {
+        const scenesData = []
+        game.scenes._source.forEach((scene) => {
+            scenesData.push({
+                "name": scene.name,
+                "id": scene._id,
+                "thumbnail": scene.thumb
+            })
+        })
+        return {
+            console: ConsoleData.getConsoles()[1],
+            scenes: scenesData
+        }
+    }
 }
 

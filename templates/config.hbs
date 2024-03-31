@@ -1,0 +1,25 @@
+<form>
+    <label for="name">Name:</label>
+    <input id="name" name="name" type="text" placeholder="{{console.name}}" value="{{console.name}}" minlength="1" maxlength="128"/>
+    <label for="title">Title:</label>
+    <input id="title" name="title" type="text" placeholder="{{console.content.title}}" value="{{console.content.title}}" minlength="1" maxlength="128"/>
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" placeholder="{{console.description}}" value="{{console.description}}" maxlength="256"></textarea>
+    <div style="display:flex;justify-content:space-between">
+        <label for="fgCol">Foreground Color:</label>
+        <input id="fgCol" name="fgCol" type="color" value="{{console.styling.fg}}"/>
+    </div>
+    <div style="display:flex;justify-content:space-between">
+        <label for="bgCol">Background Color:</label>
+        <input id="bgCol" name="bgCol" type="color" value="{{console.styling.bg}}"/>
+    </div>
+    <p><strong>Scenes:</strong></p>
+    <div style="border:2px solid #bbb;background:#111;padding:10px">
+        {{#each scenes}}
+            <input type="checkbox" id="{{this.id}}" name="{{this.id}}" value="{{this.id}}" {{#inArray this.id ../console.scenes }}checked{{/inArray}}/>
+            <label for="{{this.id}}">{{this.name}}</label>
+            </br>
+        {{/each}}
+    </div>
+    <button type="submit">Submit</button>
+</form>
