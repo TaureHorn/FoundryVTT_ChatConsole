@@ -1,5 +1,5 @@
 // load module
-console.log("console module | Hello World")
+console.log("Cconsole module | module loaded")
 
 class Console {
     static ID = 'console';
@@ -10,8 +10,10 @@ class Console {
 
     static TEMPLATES = {
         APP: `modules/${this.ID}/templates/console.hbs`,
+        APP_PLAYER: `modules/${this.ID}/templates/console_player.hbs`,
         CONFIG: `modules/${this.ID}/templates/config.hbs`,
-        MANAGER: `modules/${this.ID}/templates/manager.hbs`
+        MANAGER: `modules/${this.ID}/templates/manager.hbs`,
+        MANAGER_PLAYER: `modules/${this.ID}/templates/manager_player.hbs`
     }
 
     static log(force, ...args) {
@@ -26,17 +28,15 @@ class Console {
 
 // add button to chats
 Hooks.on('renderSidebarTab', (chatLog, html) => {
-    if (game.user.isGM) {
-        const controlButtons = html.find(`[id="chat-log"]`)
-        const tooltip = game.i18n.localize('CONSOLE.button-title')
-        controlButtons.prepend(
-            `<button class="console-manage-button " type='button'><i class='fa-solid fa-terminal' title='${tooltip}'></i> Manage Consoles</button>`
-        )
+    const controlButtons = html.find(`[id="chat-log"]`)
+    const tooltip = game.i18n.localize('CONSOLE.button-title')
+    controlButtons.prepend(
+        `<button class="console-manage-button " type='button'><i class='fa-solid fa-terminal' title='${tooltip}' ></i> Consoles</button>`
+    )
 
-        html.on('click', '.console-manage-button', (event) => {
-            new ConsoleManager().render(true)
-        })
-    }
+    html.on('click', '.console-manage-button', (event) => {
+        new ConsoleManager().render(true)
+    })
 })
 
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
@@ -54,7 +54,7 @@ Handlebars.registerHelper('inArray', function(data, otherArray, options) {
 
 class ConsoleData {
 
-    static name = "Console Data"
+    static name = "_console-data"
 
     static ID = "Rk3WTT9Rvm0smJKg"
 
@@ -93,7 +93,7 @@ class ConsoleData {
     }
 
     // TODO: Implement custom object schema for newConsole data
-    static createConsole(name) {
+    static async createConsole(name) {
         if (game.user.isGM) {
             const newConsole = {
                 content: {
@@ -103,10 +103,12 @@ class ConsoleData {
                 description: "",
                 id: foundry.utils.randomID(16),
                 name: name,
+                public: false,
                 scenes: [],
                 styling: {
-                    fg: "#ff0055",
-                    bg: "#120b10"
+                    bg: "#120b10",
+                    bgImg: "",
+                    fg: "#ff0055"
                 }
             }
             const data = this.getDataPool()
@@ -117,7 +119,7 @@ class ConsoleData {
         }
     }
 
-    static deleteConsole(id) {
+    static async deleteConsole(id) {
         // @param {string} id
         if (game.user.isGM) {
             const data = this.getDataPool()
@@ -128,7 +130,8 @@ class ConsoleData {
         }
     }
 
-    static duplicateConsole(id) {
+    static async duplicateConsole(id) {
+        // @param {string} id
         const consoleToCopy = this.getConsoles().find((obj) => obj.id === id)
         const clonedConsole = structuredClone(consoleToCopy)
         clonedConsole.id = foundry.utils.randomID(16)
@@ -139,7 +142,17 @@ class ConsoleData {
         this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, newConsoles)
     }
 
-    static updateConsole(id, updateData) {
+    static async toggleVisibility(id) {
+        // @param {string} id
+        const consoleToCopy = this.getConsoles().find((obj) => obj.id === id)
+        consoleToCopy.public = consoleToCopy.public ? false : true
+        const update = {
+            [id]: consoleToCopy
+        }
+        this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, update)
+    }
+
+    static async updateConsole(id, updateData) {
         // @param {string} id
         // @param {object} updateData
         const data = this.getDataPool()
@@ -162,7 +175,7 @@ class ConsoleManager extends FormApplication {
             height: 'auto',
             id: 'console-manager',
             left: 1700,
-            template: Console.TEMPLATES.MANAGER,
+            template: game.user.isGM ? Console.TEMPLATES.MANAGER : Console.TEMPLATES.MANAGER_PLAYER,
             title: "Console Manager",
             top: 40,
             width: 500,
@@ -173,7 +186,7 @@ class ConsoleManager extends FormApplication {
     }
 
     getData() {
-        const consoles = ConsoleData.getConsoles()
+        const consoles = ConsoleData.getConsoles().sort((a, b) => a.name.localeCompare(b.name))
         consoles.forEach((console) => {
             console.sceneNames = []
             console.scenes.forEach((id) => {
@@ -195,14 +208,14 @@ class ConsoleManager extends FormApplication {
         return game.scenes._source.find((obj) => obj._id === id).name
     }
 
-    async _handleButtonClick(event) {
+    _handleButtonClick = async (event) => {
         const clickedElement = $(event.currentTarget)
         const action = clickedElement.data().action
         const id = clickedElement.data().consoleId
 
         switch (action) {
             case 'create':
-                ConsoleData.createConsole("new console")
+                await ConsoleData.createConsole("new console")
                 break;
             case 'open-console':
                 new ConsoleApp().render(true, { id })
@@ -211,12 +224,20 @@ class ConsoleManager extends FormApplication {
                 new ConsoleConfig().render(true, { id })
                 break;
             case 'delete-console':
-                ConsoleData.deleteConsole(id)
+                await ConsoleData.deleteConsole(id)
                 break;
             case 'duplicate-console':
-                ConsoleData.duplicateConsole(id)
+                await ConsoleData.duplicateConsole(id)
                 break;
+            case 'toggle-visibility':
+                await ConsoleData.toggleVisibility(id)
+                break;
+            default:
+                ui.notifications.error("ConsoleManager encountered an invalid button data-action in _handleButtonClick")
         }
+        setTimeout(() => {
+            this.render()
+        }, "250")
     }
 
 }
@@ -226,28 +247,63 @@ class ConsoleApp extends FormApplication {
         const defaults = super.defaultOptions;
         const overrides = {
             closeOnSubmit: false,
-            height: 700,
+            height: 670,
             id: `${Console.ID}`,
             popOut: true,
+            maximizable: true,
             minimizable: true,
-            resizable: false,
+            resizable: true,
             submitOnChange: true,
-            template: Console.TEMPLATES.APP,
-            title: `${Console.ID}`,
-            width: 700
+            template: game.user.isGM ? Console.TEMPLATES.APP : Console.TEMPLATES.APP_PLAYER,
+            width: 640
         }
         return foundry.utils.mergeObject(defaults, overrides)
     }
 
-    getData(options) {
-        return ConsoleData.getConsoles().find((obj) => obj.id === options.id)
+    activateListeners(html) {
+        super.activateListeners(html)
+        html.on('click', "[data-action]", this._handleButtonClick)
+    }
+
+    getData() {
+        Console.log(true, this.options.id)
+        const console = ConsoleData.getConsoles().find((obj) => obj.id === this.options.id)
+        let data = {
+            ...console
+        }
+        data.character = game.user.character?.name || "$user"
+        return data
+    }
+
+    _handleButtonClick = (event) => {
+        const clickedElement = $(event.currentTarget)
+        const action = clickedElement.data().action
+        const id = clickedElement.data().consoleId
+        const index = clickedElement.data().messageIndex
+
+        switch (action) {
+            case 'delete-message':
+                const newData = ConsoleData.getConsoles().find((obj) => obj.id === id)
+                newData.content.body.splice(index, 1)
+                ConsoleData.updateConsole(newData.id, newData)
+                break;
+        }
+        this.render()
     }
 
     _updateObject(event, formData) {
         const console = this.getData()
         const messageLog = [...console.content.body]
-        const name = game.user.character ? `${game.user.character.name}: ` : ""
-        const message = `${name}${formData.consoleInputText}`
+        let name = ""
+        if (game.user.isGM) {
+            name = game.user.character ? `${game.user.character.name}:` : ""
+        } else {
+            name = game.user.character ? `${game.user.character.name}:` : `${game.user.name}`
+        }
+        const message = {
+            "text": formData.consoleInputText,
+            "username": name
+        }
         messageLog.push(message)
         console.content.body = messageLog
         ConsoleData.updateConsole(console.id, console)
@@ -256,7 +312,6 @@ class ConsoleApp extends FormApplication {
 
 
 }
-
 
 class ConsoleConfig extends FormApplication {
     static get defaultOptions() {
@@ -304,8 +359,9 @@ class ConsoleConfig extends FormApplication {
             name: formData.name,
             scenes: [],
             styling: {
-                fg: formData.fgCol,
-                bg: formData.bgCol
+                bg: formData.bgCol,
+                bgImg: formData.bgImg,
+                fg: formData.fgCol
             }
         }
         for (const property in formData) {

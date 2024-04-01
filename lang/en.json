@@ -5,6 +5,7 @@
         "delete-console": "Delete console",
         "duplicate-console": "Duplicate console",
         "edit-console": "Edit console",
-        "open-console": "Open console"
+        "open-console": "Open console",
+        "toggle-visibility": "Toggle console visibility to players"
     }
 }

@@ -1,0 +1,16 @@
+<div style="background-attachment:scroll;background:{{styling.bg}} url({{styling.bgImg}});background-size:contain;border:2px solid {{styling.fg}};height:100%;padding:10px;overflow-y:scroll;width:100%">
+    <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px;width:100%">
+        <span><strong>{{content.title}}</strong></span>
+    </div>
+        <form id="input">
+            <div style="display:flex">
+                <div style="border:1px solid {{styling.fg}};border-radius:0px;color:{{styling.fg}};padding:3px 5px"><span> @{{character}} </span></div>
+                <input style="border:1px solid {{styling.fg}};border-radius:0px;flex:6;outline:none;padding:15px" id="nputText" maxlength="128" minlength="1" name="consoleInputText" type="text" placeholder="..."/>
+                <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:1;outline:none" id="submitButton" type="submit">send</button>
+            </div>
+        </form>
+        {{#each content.body}}
+            <div style="flex:10;margin:12px 0"><span style="background:{{../styling.fg}};color:{{../styling.bg}};margin-right:10px;padding:2 5px"><strong>{{username}}</strong></span><span style="color:{{../styling.fg}}">{{text}}</span></div>
+        {{/each}}
+</div>
+
