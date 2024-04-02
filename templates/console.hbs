@@ -5,16 +5,18 @@
     </div>
     <form id="input">
         <div style="display:flex">
-            <div style="border:1px solid {{styling.fg}};border-radius:0px;color:{{styling.fg}};padding:3px 5px"><span>@{{character}}</span></div>
-            <input style="border:1px solid {{styling.fg}};border-radius:0;flex:6;outline:none;padding:15px" id="consoleInputText" maxlength="128" minlength="1" name="consoleInputText" type="text" placeholder="..."/>
+            <div style="border:1px solid {{styling.fg}};border-radius:0px;color:{{styling.fg}};padding:3px 5px"><span><strong>@{{character}}</strong></span></div>
+            <input style="border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px" id="consoleInputText" maxlength="128" minlength="1" name="consoleInputText" type="text" placeholder="..."/>
             <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:1;outline:none" id="submitButton" type="submit">send</button>
         </div>
     </form>
     {{#each content.body}}
-        <div class="console-seperate">
-            <div style="flex:12"><span style="background:{{../styling.fg}};color:{{../styling.bg}};margin-right:10px;padding:0 5px"><strong>{{username}}</strong></span><span style="color:{{../styling.fg}}">{{text}}</span></div>
-            <button class="console-message-delete" style="background:none;border:2px solid {{../styling.fg}};color:{{../styling.fg}};margin:none;padding:none;width:40px" data-message-index={{@index}} data-console-id="{{../id}}" data-action="delete-message"><i class="fa-solid fa-xmark" style="opacity:unset"></i></button>
-        </div>
+        <button class="console-message-delete" style="background:none" data-message-index={{@index}} data-console-id={{../id}} data-action="delete-message" title="{{localize "CONSOLE.delete-message"}}">
+            <div style="background:{{../styling.fg}};color:{{../styling.bg}};{{#equal username ../character}}margin-left:auto;margin-right:0;text-align:end{{else}}text-align:start{{/equal}}" class="console-message">
+                <span><strong>{{username}}</strong></span></br>
+                <span>{{text}}</span>
+            </div>
+        </button>
     {{/each}}
 </div>
 

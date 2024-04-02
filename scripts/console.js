@@ -45,7 +45,23 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
 
 // custom helper for ConsoleConfig config.hbs
 Handlebars.registerHelper('inArray', function(data, otherArray, options) {
+    // @param {any} data
+    // @param {Array} otherArray
+    // @return {bool} --> boolean informs which blocks are rendered in handlebars file
     if (otherArray.includes(data)) {
+        return options.fn(this)
+    } else {
+        return options.inverse(this)
+    }
+})
+
+// custom helper for ConsoleApp console.hbs
+Handlebars.registerHelper('equal', function(input1, input2, options) {
+    // @param {any} input1 
+    // @param {any} input2
+        // params must be same type, and able to be deepEquals'ed
+    // @return {bool} --> boolean informs which blocks are rendered in handlebars file
+    if (input1 === input2) {
         return options.fn(this)
     } else {
         return options.inverse(this)
@@ -247,7 +263,7 @@ class ConsoleApp extends FormApplication {
         const defaults = super.defaultOptions;
         const overrides = {
             closeOnSubmit: false,
-            height: 670,
+            height: 880,
             id: `${Console.ID}`,
             popOut: true,
             maximizable: true,
@@ -255,7 +271,7 @@ class ConsoleApp extends FormApplication {
             resizable: true,
             submitOnChange: true,
             template: game.user.isGM ? Console.TEMPLATES.APP : Console.TEMPLATES.APP_PLAYER,
-            width: 640
+            width: 850
         }
         return foundry.utils.mergeObject(defaults, overrides)
     }
@@ -266,7 +282,6 @@ class ConsoleApp extends FormApplication {
     }
 
     getData() {
-        Console.log(true, this.options.id)
         const console = ConsoleData.getConsoles().find((obj) => obj.id === this.options.id)
         let data = {
             ...console
@@ -296,9 +311,9 @@ class ConsoleApp extends FormApplication {
         const messageLog = [...console.content.body]
         let name = ""
         if (game.user.isGM) {
-            name = game.user.character ? `${game.user.character.name}:` : ""
+            name = game.user.character ? `${game.user.character.name}` : ""
         } else {
-            name = game.user.character ? `${game.user.character.name}:` : `${game.user.name}`
+            name = game.user.character ? `${game.user.character.name}` : `${game.user.name}`
         }
         const message = {
             "text": formData.consoleInputText,

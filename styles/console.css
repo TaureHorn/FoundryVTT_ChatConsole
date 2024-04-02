@@ -13,12 +13,25 @@
     padding: 5px;
 }
 
+.console-message {
+    line-height: 110%;
+    padding: 2px 5px;
+    margin: 5px 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    width: max-content;
+}
+
 .console-message-delete {
-    opacity: 0.33;
+    border: none;
+    margin: 0;
+    padding: 0;
 }
 
 .console-message-delete:hover {
-    opacity: 1;
+    background: rgba(255, 0, 0, 0.33) !important;
+    box-shadow: none;
+    outline:none;
 }
 
 .console-seperate {
@@ -26,4 +39,3 @@
     display: flex;
     justify-content: space-between;
 }
-
