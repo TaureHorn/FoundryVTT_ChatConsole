@@ -7,8 +7,8 @@
             "name": "silence"
         }
     ],
-    "scripts": [
-        "scripts/console.js"
+    "esmodules": [
+        "console.js"
     ],
     "styles": [
         "styles/console.css"

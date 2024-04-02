@@ -1,32 +1,49 @@
 <form>
-    <label for="name">Name:</label>
-    <input id="name" name="name" type="text" placeholder="{{console.name}}" value="{{console.name}}" minlength="1" maxlength="128"/>
-    <label for="title">Title:</label>
-    <input id="title" name="title" type="text" placeholder="{{console.content.title}}" value="{{console.content.title}}" minlength="1" maxlength="128"/>
-    <label for="description">Description:</label>
-    <textarea id="description" name="description" placeholder="{{console.description}}" maxlength="256"></textarea>
-    <div style="display:flex;justify-content:space-between;margin:5px">
-        <label for="fgCol">Foreground Color:</label>
-        <input id="fgCol" name="fgCol" type="color" value="{{console.styling.fg}}"/>
-    </div>
-    <div style="display:flex;justify-content:space-between;margin:5px">
-        <label for="bgCol">Background Color:</label>
-        <input id="bgCol" name="bgCol" type="color" value="{{console.styling.bg}}"/>
-    </div>
-    <div style="display:flex;justify-content:space-between;margin:5px">
-        <label for="bgImg">Background Image:</label>
-        <div style="display:flex;flex:1;flex-wrap:nowrap;justify-content:flex-end">
-            <input id="bgImg" name="bgImg" type="text" value="{{console.styling.bgImg}}"/>
-            <button class="file-picker" type="button" data-type="image" data-target="bgImg" title="Browse Files" tabindex="-1"><i class="fas fa-file-import fa-fw"></i></button>
+    <fieldset>
+    <legend>Text</legend>
+        <label for="name">Name:</label>
+        <input id="name" name="name" type="text" placeholder="{{console.name}}" value="{{console.name}}" minlength="1" maxlength="128"/>
+        <label for="title">Title:</label>
+        <input id="title" name="title" type="text" placeholder="{{console.content.title}}" value="{{console.content.title}}" minlength="1" maxlength="128"/>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" placeholder="{{console.description}}" maxlength="256"></textarea>
+    </fieldset>
+    <fieldset>
+    <legend>Styles</legend>
+        <div style="display:flex;justify-content:space-between;margin:5px">
+            <label for="fgCol">Foreground Color:</label>
+            <input id="fgCol" name="fgCol" type="color" value="{{console.styling.fg}}"/>
         </div>
-    </div>
-    <p><strong>Scenes:</strong></p>
-    <div style="border:2px solid #bbb;background:#111;padding:10px">
+        <div style="display:flex;justify-content:space-between;margin:5px">
+            <label for="bgCol">Background Color:</label>
+            <input id="bgCol" name="bgCol" type="color" value="{{console.styling.bg}}"/>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin:5px">
+            <label for="bgImg">Background Image:</label>
+            <div style="display:flex;flex:1;flex-wrap:nowrap;justify-content:flex-end">
+                <input id="bgImg" name="bgImg" type="text" value="{{console.styling.bgImg}}"/>
+                <button class="file-picker" type="button" data-type="image" data-target="bgImg" title="Browse Files" tabindex="-1"><i class="fas fa-file-import fa-fw"></i></button>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+    <legend>Console Style</legend>
+        <div>
+            <input id="messenger" name="messengerStyle" type="radio" value="true" {{#if console.styling.messengerStyle}}checked{{/if}}/> 
+            <label for="messenger">instant-messenger</label>
+        </div>
+        <div>
+             <input id="terminal" name="messengerStyle" type="radio" value="false" {{#unless console.styling.messengerStyle}}checked{{/unless}}/> 
+            <label for="terminal">terminal</label>
+        </div>
+    </fieldset>
+    <fieldset>
+    <legend>Scenes</legend>
         {{#each scenes}}
             <input type="checkbox" id="{{this.id}}" name="{{this.id}}" value="{{this.id}}" {{#inArray this.id ../console.scenes }}checked{{/inArray}}/>
             <label for="{{this.id}}">{{this.name}}</label>
             </br>
         {{/each}}
-    </div>
+    </fieldset>
     <button type="submit">Submit</button>
 </form>

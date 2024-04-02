@@ -16,7 +16,6 @@
 .console-message {
     line-height: 110%;
     padding: 2px 5px;
-    margin: 5px 0;
     max-width: 100%;
     overflow-wrap: break-word;
     width: max-content;
@@ -24,7 +23,6 @@
 
 .console-message-delete {
     border: none;
-    margin: 0;
     padding: 0;
 }
 
