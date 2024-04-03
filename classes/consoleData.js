@@ -32,7 +32,7 @@ export default class ConsoleData {
         // return {Array} 
         const data = this.getDataPool()
         let arr = []
-        if (data.flags.console.consoles) {
+        if (data?.flags?.console?.consoles) {
             Array.from(Object.entries(data.flags.console.consoles)).forEach((entry) => {
                 arr.push(entry[1])
             })
@@ -47,8 +47,9 @@ export default class ConsoleData {
                     body: [],
                     title: name,
                 },
-                description: "",
-                id: foundry.utils.randomID(16),
+                description: "description",
+                gmInfo: "GM info",
+                id: foundry.utils.randomID(Console.IDLENGTH),
                 name: name,
                 public: false,
                 scenes: [],

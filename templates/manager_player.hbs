@@ -1,10 +1,12 @@
 <div> 
+<p style="background:#ddd;color:#111;padding:5px"><strong>CURRENT CHARACTER:</strong> {{#if manager._represents.character.name}}{{manager._represents.character.name}}{{else}}{{manager._represents.name}}{{/if}}</p>
     {{#each consoles}}{{#if public}}
         <div style="background:{{styling.bg}} url({{styling.bgImg}});border:1px solid {{styling.fg}}" class="console-manager-entry">
             <div style="display:flex;flex-direction:column;margin-right:4px;box-sizing:border-box;width:100%">
                 <button style="all:unset;cursor:pointer" title="{{localize "CONSOLE.open-console"}}" data-console-id="{{this.id}}" data-action="open-console">
-                    <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px">
+                    <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px" class="console-seperate">
                         <span><strong>{{name}}</strong></span>
+                        <i class="fa solid {{#if styling.messengerStyle}}fa-comments{{else}}fa-terminal{{/if}}"></i>
                     </div>
                     <p>{{description}}</p>
                 </button>

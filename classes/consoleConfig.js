@@ -47,6 +47,7 @@ export default class ConsoleConfig extends FormApplication {
                 title: formData.title
             },
             description: formData.description === "" ? oldData.description : formData.description,
+            gmInfo: formData.description === "" ? oldData.gmInfo : formData.gmInfo,
             id: oldData.id,
             name: formData.name,
             public: oldData.public,
@@ -61,7 +62,7 @@ export default class ConsoleConfig extends FormApplication {
 
         for (const property in formData) {
             if (formData[property]) {
-                if (property.length === 16 && formData[property] === property) {
+                if (property.length === Console.IDLENGTH && formData[property] === property) {
                     newData.scenes.push(property)
                 }
             }

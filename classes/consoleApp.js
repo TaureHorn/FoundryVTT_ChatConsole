@@ -2,6 +2,13 @@ import Console from "../console.js"
 import ConsoleData from "./consoleData.js"
 
 export default class ConsoleApp extends FormApplication {
+
+    constructor(getDocument, getUser) {
+        super()
+        this._document = getDocument
+        this._represents = getUser
+    }
+
     static get defaultOptions() {
         const defaults = super.defaultOptions;
         const overrides = {
@@ -12,7 +19,6 @@ export default class ConsoleApp extends FormApplication {
             maximizable: true,
             minimizable: true,
             resizable: true,
-            submitOnChange: true,
             width: 850
         }
         return foundry.utils.mergeObject(defaults, overrides)
@@ -28,21 +34,29 @@ export default class ConsoleApp extends FormApplication {
         let data = {
             ...console
         }
-        data.character = game.user.character?.name || "$user"
+        data.character = this.getName("$user")
         this.getTemplate(data)
         return data
     }
 
+    getName(str) {
+        let name = ""
+        if (game.user.isGM) {
+            name = game.user.character ? `${game.user.character.name}` : str
+        } else {
+            name = game.user.character ? `${game.user.character.name}` : `${game.user.name}`
+        }
+        return name
+    }
+
     getTemplate(data) {
         const GM = game.user.isGM ? true : false
-        // Console.log(true, "getTemplate", data)
         let template = ""
         if (data.styling.messengerStyle) {
             template = GM ? Console.TEMPLATES.APP_IM : Console.TEMPLATES.APP_IM_PLAYER
         } else {
             template = GM ? Console.TEMPLATES.APP_TERM : Console.TEMPLATES.APP_TERM_PLAYER
         }
-        Console.log(true, this)
         return this.options.template = template
     }
 
@@ -59,18 +73,26 @@ export default class ConsoleApp extends FormApplication {
                 ConsoleData.updateConsole(newData.id, newData)
                 break;
         }
-        this.render()
+    }
+
+    render(...args) {
+        this._document.apps[this.appId] = this
+        if (this._represents) {
+            this._represents.apps[this.appId] = this
+        }
+        return super.render(...args)
+    }
+    
+    async close(...args) {
+        delete this._document.apps[this.appId]
+        delete this._represents.apps[this.appId]
+        return super.close(...args)
     }
 
     _updateObject(event, formData) {
         const console = this.getData()
         const messageLog = [...console.content.body]
-        let name = ""
-        if (game.user.isGM) {
-            name = game.user.character ? `${game.user.character.name}` : ""
-        } else {
-            name = game.user.character ? `${game.user.character.name}` : `${game.user.name}`
-        }
+        const name = this.getName("")
         const message = {
             "text": formData.consoleInputText,
             "username": name
@@ -78,7 +100,6 @@ export default class ConsoleApp extends FormApplication {
         messageLog.push(message)
         console.content.body = messageLog
         ConsoleData.updateConsole(console.id, console)
-        this.render()
     }
 }
 

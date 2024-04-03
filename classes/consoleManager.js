@@ -4,9 +4,15 @@ import ConsoleConfig from "./consoleConfig.js"
 import ConsoleData from "./consoleData.js"
 
 export default class ConsoleManager extends FormApplication {
+
+    constructor(getDocument, getUser) {
+        super()
+        this._document = getDocument
+        this._represents = getUser
+    }
+
     static get defaultOptions() {
         const defaults = super.defaultOptions
-
         const overrider = {
             height: 'auto',
             id: 'console-manager',
@@ -30,6 +36,7 @@ export default class ConsoleManager extends FormApplication {
             })
         })
         return {
+            manager: this ,
             consoles: consoles
         }
     }
@@ -54,7 +61,7 @@ export default class ConsoleManager extends FormApplication {
                 await ConsoleData.createConsole("new console")
                 break;
             case 'open-console':
-                new ConsoleApp().render(true, { id })
+                new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { id })
                 break;
             case 'edit-console':
                 new ConsoleConfig().render(true, { id })
@@ -71,9 +78,20 @@ export default class ConsoleManager extends FormApplication {
             default:
                 ui.notifications.error("ConsoleManager encountered an invalid button data-action in _handleButtonClick")
         }
-        setTimeout(() => {
-            this.render()
-        }, "250")
+    }
+
+    render(...args) {
+        this._document.apps[this.appId] = this
+        if (this._represents) {
+            this._represents.apps[this.appId] = this
+        }
+        return super.render(...args)
+    }
+
+    async close(...args) {
+        delete this._document.apps[this.appId]
+        delete this._represents.apps[this.appId]
+        return super.close(...args)
     }
 
 }

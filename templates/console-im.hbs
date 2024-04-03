@@ -4,14 +4,14 @@
         <i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>
     </div>
     <form id="input">
-        <div style="display:flex">
+        <div style="display:flex;margin-bottom:10px">
             <div style="border:1px solid {{styling.fg}};border-radius:0px;color:{{styling.fg}};padding:3px 5px"><span><strong>@{{character}}</strong></span></div>
             <input style="border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px" id="consoleInputText" maxlength="128" minlength="1" name="consoleInputText" type="text" placeholder="..."/>
             <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:1;outline:none" id="submitButton" type="submit">send</button>
         </div>
     </form>
     {{#each content.body}}
-        <button class="console-message-delete" style="background:none;margin-top:10px" data-message-index={{@index}} data-console-id={{../id}} data-action="delete-message" title="{{localize "CONSOLE.delete-message"}}">
+        <button class="console-message-delete" style="background:none;{{#unameInPrevIndex username @index ../content.body}};margin-top:30px{{else}}margin-top:10px{{/unameInPrevIndex}}" data-message-index={{@index}} data-console-id={{../id}} data-action="delete-message" title="{{localize "CONSOLE.delete-message"}}">
             <div style="background:{{../styling.fg}};color:{{../styling.bg}};{{#equal username ../character}}margin-left:auto;margin-right:0;text-align:end{{else}}text-align:start{{/equal}}" class="console-message">
                 <span><strong>{{username}}</strong></span></br>
                 <span>{{text}}</span>
