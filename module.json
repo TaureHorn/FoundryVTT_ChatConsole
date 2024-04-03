@@ -1,25 +1,32 @@
 {
-    "id": "console",
-    "title": "Console - stylish chat or terminal windows",
-    "description": "Create floating windows with configurable styles for either an instant-messenger style chat app or a terminal console",
-    "author": "TaureHorn",
-    "url": "https://github.com/TaureHorn/FoundryVTT_ChatConsole",
-    "esmodules": [
-        "console.js"
-    ],
-    "styles": [
-        "styles/console.css"
-    ],
-    "languages": [
-        {
-            "lang": "en",
-            "name": "English",
-            "path": "lang/en.json"
-        }
-    ],
-    "version": "1.0.0",
-    "compatibility": {
-        "minimum": "11",
-        "verified": "11"
+  "id": "console",
+  "title": "Console - stylish chat or terminal windows",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11"
+  },
+  "authors": [
+    {
+      "name": "TaureHorn",
+      "url": "https://github.com/TaureHorn",
+      "flags": {}
     }
+  ],
+  "url": "https://github.com/TaureHorn/FoundryVTT_ChatConsole",
+  "description": "Create floating windows with configurable styles for either an instant-messenger style chat app or a terminal console",
+  "esmodules": [
+    "console.js"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    }
+  ],
+  "styles": [
+    "styles/console.css"
+  ]
 }
