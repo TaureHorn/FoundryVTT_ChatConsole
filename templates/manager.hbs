@@ -1,19 +1,24 @@
 <div> 
+<p style="background:#ddd;color:#111;padding:5px"><strong>CURRENT CHARACTER:</strong> {{#if manager._represents.character.name}}{{manager._represents.character.name}}{{else}}none{{/if}}</p>
     {{#each consoles}}
         <div style="background:{{styling.bg}} url({{styling.bgImg}});border:1px solid {{styling.fg}}" class="console-manager-entry">
             <div style="display:flex;flex-direction:column;margin-right:4px;box-sizing:border-box;width:100%">
                 <button style="all:unset;cursor:pointer" title="{{localize "CONSOLE.open-console"}}" data-console-id="{{this.id}}" data-action="open-console">
                     <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px" class="console-seperate">
                         <span><strong>{{name}}</strong></span>
-                        <i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>
+                        <div>
+                            <i class="fa solid {{#if styling.messengerStyle}}fa-comments{{else}}fa-terminal{{/if}}"></i>
+                            <i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>
+                        </div>
                     </div>
                     <div style="center;color:{{styling.fg}};display:flex;flex-direction:column;justify-content:space-between">
-                        <p>{{description}}</p>
-                        <em><p>Scenes:[{{#each sceneNames}}<span> {{this}}, </span>{{/each}}]</p></em>
+                        <p><strong>GM info: </strong>{{gmInfo}}</p>
+                        <p><strong>Description: </strong>{{description}}</p>
+                        <p><strong>Scenes: </strong>[ {{#each sceneNames}}<span>{{this}}{{#isNotLastIndex ../sceneNames @index}}, {{/isNotLastIndex}}</span>{{/each}} ]</p>
                     </div>
                 </button>
             </div>
-            <div style="display:flex;flex-direction:column;justify-content:space-evenly">
+            <div style="display:flex;flex-direction:column;justify-content:space-between">
                 <button style="background:none;border:1px solid {{styling.fg}}" title="{{localize "CONSOLE.edit-console"}}" data-console-id="{{id}}" data-action="edit-console"><i style="color:{{this.styling.fg}}" class="fa-solid fa-pen-to-square"></i></button>
                 <button style="background:none;border:1px solid {{styling.fg}}" title="{{localize "CONSOLE.toggle-visibility"}}" data-console-id="{{id}}" data-action="toggle-visibility"><i style="color:{{this.styling.fg}}" class="fa-solid {{#if public}}fa-eye-slash{{else}}fa-eye{{/if}}"></i></button>
                 <button style="background:none;border:1px solid {{styling.fg}}" title="{{localize "CONSOLE.duplicate-console"}}" data-console-id="{{id}}" data-action="duplicate-console"><i style="color:{{this.styling.fg}}" class="fa-solid fa-clone" ></i></button>
