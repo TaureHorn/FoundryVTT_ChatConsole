@@ -36,6 +36,7 @@ export default class ConsoleApp extends FormApplication {
         }
         data.character = this.getName("$user")
         this.getTemplate(data)
+        this.options.title = data.content.title
         return data
     }
 

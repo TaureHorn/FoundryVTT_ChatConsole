@@ -1,12 +1,9 @@
 {
     "id": "console",
-    "title": "Console - A Stylish chat window",
-    "description": "Spawn a floating chat window with configurable styling to look like a computer terminal",
-    "authors": [
-        {
-            "name": "silence"
-        }
-    ],
+    "title": "Console - stylish chat or terminal windows",
+    "description": "Create floating windows with configurable styles for either an instant-messenger style chat app or a terminal console",
+    "author": "TaureHorn",
+    "url": "https://github.com/TaureHorn/FoundryVTT_ChatConsole",
     "esmodules": [
         "console.js"
     ],
