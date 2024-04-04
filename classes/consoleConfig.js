@@ -56,7 +56,9 @@ export default class ConsoleConfig extends FormApplication {
                 bg: formData.bgCol,
                 bgImg: formData.bgImg,
                 fg: formData.fgCol,
-                messengerStyle: messengerStyle
+                height: formData.height,
+                messengerStyle: messengerStyle,
+                width: formData.width
             }
         }
 

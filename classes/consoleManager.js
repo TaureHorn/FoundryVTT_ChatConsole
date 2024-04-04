@@ -36,7 +36,7 @@ export default class ConsoleManager extends FormApplication {
             })
         })
         return {
-            manager: this ,
+            manager: this,
             consoles: consoles
         }
     }
@@ -56,12 +56,14 @@ export default class ConsoleManager extends FormApplication {
         const action = clickedElement.data().action
         const id = clickedElement.data().consoleId
 
+        const console = ConsoleData.getConsoles().find((obj) => obj.id === id)
+
         switch (action) {
             case 'create':
                 await ConsoleData.createConsole("new console")
                 break;
             case 'open-console':
-                new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { id })
+                new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width })
                 break;
             case 'edit-console':
                 new ConsoleConfig().render(true, { id })
