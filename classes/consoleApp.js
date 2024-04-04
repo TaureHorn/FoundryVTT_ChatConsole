@@ -13,20 +13,13 @@ export default class ConsoleApp extends FormApplication {
         const defaults = super.defaultOptions;
         const overrides = {
             closeOnSubmit: false,
-            height: 880,
             id: `${Console.ID}`,
             popOut: true,
             maximizable: true,
             minimizable: true,
             resizable: true,
-            width: 850
         }
         return foundry.utils.mergeObject(defaults, overrides)
-    }
-
-    activateListeners(html) {
-        super.activateListeners(html)
-        html.on('click', "[data-action]", this._handleButtonClick)
     }
 
     getData() {
@@ -34,10 +27,25 @@ export default class ConsoleApp extends FormApplication {
         let data = {
             ...console
         }
+
         data.character = this.getName("$user")
         this.getTemplate(data)
         this.options.title = data.content.title
+
         return data
+    }
+
+    _getHeaderButtons() {
+        let buttons = super._getHeaderButtons()
+        if (game.user.isGM) {
+            buttons.unshift({
+                label: "Show Players",
+                class: "share-image",
+                icon: "fas fa-eye",
+                onclick: () => this.shareApp()
+            })
+        }
+        return buttons
     }
 
     getName(str) {
@@ -51,7 +59,7 @@ export default class ConsoleApp extends FormApplication {
     }
 
     getTemplate(data) {
-        const GM = game.user.isGM ? true : false
+        const GM = game.user.isGM
         let template = ""
         if (data.styling.messengerStyle) {
             template = GM ? Console.TEMPLATES.APP_IM : Console.TEMPLATES.APP_IM_PLAYER
@@ -59,6 +67,27 @@ export default class ConsoleApp extends FormApplication {
             template = GM ? Console.TEMPLATES.APP_TERM : Console.TEMPLATES.APP_TERM_PLAYER
         }
         return this.options.template = template
+    }
+
+    getWindowDetails(data) {
+        const options = {
+            height: data.styling.height,
+            template: this.getTemplate(data),
+            title: data.content.title,
+            width: data.styling.width
+        }
+        return this.options = foundry.utils.mergeObject(this.options, options)
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html)
+        html.on('click', "[data-action]", this._handleButtonClick)
+    }
+
+    async close(...args) {
+        delete this._document.apps[this.appId]
+        delete this._represents.apps[this.appId]
+        return super.close(...args)
     }
 
     _handleButtonClick = (event) => {
@@ -73,6 +102,8 @@ export default class ConsoleApp extends FormApplication {
                 newData.content.body.splice(index, 1)
                 ConsoleData.updateConsole(newData.id, newData)
                 break;
+            default:
+                ui.notifications.error('Console | ConsoleApp has encountered and invalid button data action in _handleButtonClick')
         }
     }
 
@@ -83,11 +114,17 @@ export default class ConsoleApp extends FormApplication {
         }
         return super.render(...args)
     }
-    
-    async close(...args) {
-        delete this._document.apps[this.appId]
-        delete this._represents.apps[this.appId]
-        return super.close(...args)
+
+    shareApp() {
+        game.socket.emit('module.console', {
+            id: this.options.id
+        })
+    }
+
+    static _handleShareApp(id) {
+        const data = ConsoleData.getConsoles().find((obj) => obj.id === id.id)
+        const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
+        return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width })
     }
 
     _updateObject(event, formData) {

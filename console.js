@@ -1,3 +1,4 @@
+import ConsoleApp from "./classes/consoleApp.js";
 import ConsoleData from "./classes/consoleData.js";
 import ConsoleManager from "./classes/consoleManager.js"
 
@@ -43,6 +44,12 @@ Hooks.on('renderSidebarTab', (chatLog, html) => {
 
     html.on('click', '.console-manage-button', (event) => {
         new ConsoleManager(ConsoleData.getDataPool(), game.user).render(true)
+    })
+})
+
+Hooks.once('ready', async function() {
+    game.socket.on("module.console", (id) => {
+        ConsoleApp._handleShareApp(id)
     })
 })
 

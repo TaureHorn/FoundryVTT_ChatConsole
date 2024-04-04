@@ -57,7 +57,9 @@ export default class ConsoleData {
                     bg: "#120b10",
                     bgImg: "",
                     fg: "#ff0055",
-                    messengerStyle: true
+                    height: 880,
+                    messengerStyle: true,
+                    width: 850
                 }
             }
             const data = this.getDataPool()

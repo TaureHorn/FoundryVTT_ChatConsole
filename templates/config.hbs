@@ -11,7 +11,7 @@
         <textarea id="gmInfo" name="gmInfo" placeholder="{{console.gmInfo}}" maxlength="256"></textarea>
     </fieldset>
     <fieldset>
-    <legend>Styles</legend>
+    <legend>Appearance</legend>
         <div style="display:flex;justify-content:space-between;margin:5px">
             <label for="fgCol">Foreground Color:</label>
             <input id="fgCol" name="fgCol" type="color" value="{{console.styling.fg}}"/>
@@ -26,6 +26,12 @@
                 <input id="bgImg" name="bgImg" type="text" value="{{console.styling.bgImg}}"/>
                 <button class="file-picker" type="button" data-type="image" data-target="bgImg" title="Browse Files" tabindex="-1"><i class="fas fa-file-import fa-fw"></i></button>
             </div>
+        </div>
+        <div style="margin:5px">
+            <label for="height">Height:</label>
+            <input id="height" name="height" type="number" value="{{console.styling.height}}"/>
+            <label for="width">Width:</label>
+            <input id="width" name="width" type="number" value="{{console.styling.width}}"/>
         </div>
     </fieldset>
     <fieldset>
