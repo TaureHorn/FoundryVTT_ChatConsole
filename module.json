@@ -29,6 +29,6 @@
   "styles": [
     "styles/console.css"
   ],
-  "download": "https://github.com/TaureHorn/FoundryVTT_ChatConsole/archive/refs/tags/v1.1.zip",
+  "download": "https://github.com/TaureHorn/FoundryVTT_ChatConsole/archive/refs/tags/v1.2.zip",
   "socket": true
 }
