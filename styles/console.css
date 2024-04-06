@@ -37,3 +37,11 @@
     display: flex;
     justify-content: space-between;
 }
+
+.console-app > .window-content {
+    padding: 0px !important
+}
+
+.console-app > header {
+    border: none !important;
+}

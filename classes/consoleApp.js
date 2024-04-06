@@ -12,8 +12,8 @@ export default class ConsoleApp extends FormApplication {
     static get defaultOptions() {
         const defaults = super.defaultOptions;
         const overrides = {
+            class: 'console_app',
             closeOnSubmit: false,
-            id: `${Console.ID}`,
             popOut: true,
             maximizable: true,
             minimizable: true,
@@ -30,7 +30,8 @@ export default class ConsoleApp extends FormApplication {
 
         data.character = this.getName("$user")
         this.getTemplate(data)
-        this.options.title = data.content.title
+        this.options.title = data.name 
+        this.data = data
 
         return data
     }
@@ -125,6 +126,17 @@ export default class ConsoleApp extends FormApplication {
         const data = ConsoleData.getConsoles().find((obj) => obj.id === id.id)
         const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
         return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width })
+    }
+
+    updateAppClasses() {
+        setTimeout(() => {
+            const element = this._element[0]
+            element.className = `app window-app form console-app`
+            element.style.color = this.data.styling.fg
+            element.style.background = this.data.styling.bg
+            element.style.border = `2px solid ${this.data.styling.fg}`
+            element.style.borderRadius = "0px";
+        }, 50)
     }
 
     _updateObject(event, formData) {

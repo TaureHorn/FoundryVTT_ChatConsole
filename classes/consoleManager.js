@@ -63,7 +63,7 @@ export default class ConsoleManager extends FormApplication {
                 await ConsoleData.createConsole("new console")
                 break;
             case 'open-console':
-                new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width })
+                new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width }).updateAppClasses()
                 break;
             case 'edit-console':
                 new ConsoleConfig().render(true, { id })
