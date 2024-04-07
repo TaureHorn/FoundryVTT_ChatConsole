@@ -36,22 +36,27 @@ export default class Console {
 
 // add button to chat
 Hooks.on('renderSidebarTab', (chatLog, html) => {
-    const controlButtons = html.find(`[id="chat-log"]`)
     const tooltip = game.i18n.localize('CONSOLE.button-title')
-    controlButtons.prepend(
-        `<button class="console-manage-button " type='button'><i class='fa-solid fa-terminal' title='${tooltip}'></i> Consoles</button>`
-    )
+    const button = `<button id="console-manager-launcher" class="console-manage-button" data-tooltip="${tooltip}"><i class="fas fa-terminal"></i> Consoles</button>`
+    html.find('#chat-controls').after(button)
 
-    html.on('click', '.console-manage-button', (event) => {
+    html.on('click', '#console-manager-launcher', (event) => {
         new ConsoleManager(ConsoleData.getDataPool(), game.user).render(true)
     })
 })
 
-Hooks.once('ready', async function() {
+// runs automatically on load
+//      register socket to share apps with players
+//      to pre-create a document to store module data 
+Hooks.once('ready', function() {
     game.socket.on("module.console", (id) => {
         ConsoleApp._handleShareApp(id)
     })
+    if (game.user.isGM) {
+        ConsoleData.getDataPool()
+    }
 })
+
 
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
     registerPackageDebugFlag(Console.ID)
@@ -109,6 +114,7 @@ Handlebars.registerHelper('unameInPrevIndex', function(arrItem, itemIndex, arr, 
         }
     }
 })
+
 
 console.log("Console module | module fully loaded")
 

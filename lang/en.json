@@ -1,7 +1,7 @@
 {
     "CONSOLE" :{
         "add-new-console": "Add new console",
-        "button-title": "Open consoles management window",
+        "button-title": "Open Console Manager",
         "delete-console": "Delete console",
         "delete-message": "Delete this message",
         "duplicate-console": "Duplicate console",

@@ -16,11 +16,11 @@ export default class ConsoleManager extends FormApplication {
         const overrider = {
             height: 'auto',
             id: 'console-manager',
-            left: 1700,
+            left: canvas.app.screen.width - 712,
             template: game.user.isGM ? Console.TEMPLATES.MANAGER : Console.TEMPLATES.MANAGER_PLAYER,
             title: "Console Manager",
-            top: 40,
-            width: 500,
+            top: 10,
+            width: 400,
         }
 
         const mergedOptions = foundry.utils.mergeObject(defaults, overrider)

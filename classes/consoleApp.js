@@ -37,13 +37,20 @@ export default class ConsoleApp extends FormApplication {
     }
 
     _getHeaderButtons() {
-        let buttons = super._getHeaderButtons()
+        let buttons = [{
+            class: "close",
+            icon: "fas fa-times",
+            label:  "",
+            onclick: () => this.close(),
+            tooltip: "Close"
+        }]
         if (game.user.isGM) {
             buttons.unshift({
-                label: "Show Players",
                 class: "share-image",
                 icon: "fas fa-eye",
-                onclick: () => this.shareApp()
+                label: "",
+                onclick: () => this.shareApp(),
+                tooltip: "Show to Players"
             })
         }
         return buttons
@@ -125,7 +132,7 @@ export default class ConsoleApp extends FormApplication {
     static _handleShareApp(id) {
         const data = ConsoleData.getConsoles().find((obj) => obj.id === id.id)
         const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
-        return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width })
+        return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width }).updateAppClasses()
     }
 
     updateAppClasses() {
@@ -136,7 +143,7 @@ export default class ConsoleApp extends FormApplication {
             element.style.background = this.data.styling.bg
             element.style.border = `2px solid ${this.data.styling.fg}`
             element.style.borderRadius = "0px";
-        }, 50)
+        }, 100)
     }
 
     _updateObject(event, formData) {
