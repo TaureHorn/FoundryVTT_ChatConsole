@@ -6,7 +6,7 @@
     <form id="input">
         <div style="display:flex;margin-bottom:10px">
             <div style="border:1px solid {{styling.fg}};border-radius:0px;color:{{styling.fg}};padding:3px 5px"><span><strong>@{{character}}</strong></span></div>
-            <input style="border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px" id="consoleInputText" maxlength="128" minlength="1" name="consoleInputText" type="text" placeholder="..."/>
+            <input style="border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px" id="consoleInputText{{id}}" maxlength="128" minlength="1" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..." autocomplete="off"/>
             <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:1;outline:none" id="submitButton" type="submit">send</button>
         </div>
     </form>

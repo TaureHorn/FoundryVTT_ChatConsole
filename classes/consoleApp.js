@@ -9,10 +9,12 @@ export default class ConsoleApp extends FormApplication {
         this._represents = getUser
     }
 
+    _inputVal = ""
+
     static get defaultOptions() {
         const defaults = super.defaultOptions;
         const overrides = {
-            class: 'console_app',
+            classes: ['console-app'],
             closeOnSubmit: false,
             popOut: true,
             maximizable: true,
@@ -29,8 +31,9 @@ export default class ConsoleApp extends FormApplication {
         }
 
         data.character = this.getName("$user")
+        data.inputVal = this._inputVal
         this.getTemplate(data)
-        this.options.title = data.name 
+        this.options.title = data.name
         this.data = data
 
         return data
@@ -40,7 +43,7 @@ export default class ConsoleApp extends FormApplication {
         let buttons = [{
             class: "close",
             icon: "fas fa-times",
-            label:  "",
+            label: "",
             onclick: () => this.close(),
             tooltip: "Close"
         }]
@@ -77,15 +80,6 @@ export default class ConsoleApp extends FormApplication {
         return this.options.template = template
     }
 
-    getWindowDetails(data) {
-        const options = {
-            height: data.styling.height,
-            template: this.getTemplate(data),
-            title: data.content.title,
-            width: data.styling.width
-        }
-        return this.options = foundry.utils.mergeObject(this.options, options)
-    }
 
     activateListeners(html) {
         super.activateListeners(html)
@@ -116,6 +110,9 @@ export default class ConsoleApp extends FormApplication {
     }
 
     render(...args) {
+        if (typeof this._priorState === "object") {
+            this._inputVal = this._priorState.inputVal
+        }
         this._document.apps[this.appId] = this
         if (this._represents) {
             this._represents.apps[this.appId] = this
@@ -135,7 +132,7 @@ export default class ConsoleApp extends FormApplication {
         return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width }).updateAppClasses()
     }
 
-    updateAppClasses() {
+    async updateAppClasses() {
         setTimeout(() => {
             const element = this._element[0]
             element.className = `app window-app form console-app`
@@ -154,6 +151,7 @@ export default class ConsoleApp extends FormApplication {
             "text": formData.consoleInputText,
             "username": name
         }
+        this._inputVal = ""
         messageLog.push(message)
         console.content.body = messageLog
         ConsoleData.updateConsole(console.id, console)

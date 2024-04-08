@@ -45,6 +45,14 @@ Hooks.on('renderSidebarTab', (chatLog, html) => {
     })
 })
 
+// tracks the input of an app and records its value in the object as part of preventing an input being cleared in the document update cycle
+Hooks.on('renderConsoleApp', (...args) => {
+    document.querySelector(`#consoleInputText${args[0].id}`).addEventListener('keyup', (event) => {
+        Console.log(true, "evenlistener", event.target.value)
+        args[0]._inputVal = event.target.value 
+    })
+})
+
 // runs automatically on load
 //      register socket to share apps with players
 //      to pre-create a document to store module data 
@@ -114,7 +122,6 @@ Handlebars.registerHelper('unameInPrevIndex', function(arrItem, itemIndex, arr, 
         }
     }
 })
-
 
 console.log("Console module | module fully loaded")
 
