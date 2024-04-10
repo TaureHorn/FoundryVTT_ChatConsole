@@ -1,13 +1,14 @@
 {
     "CONSOLE" :{
         "add-new-console": "Add new console",
+        "app-info": "Left click to copy message to clipboard. Right-click to delete a message.",
         "button-title": "Open Console Manager",
+        "close": "Close",
         "delete-console": "Delete console",
-        "delete-message": "Delete this message",
         "duplicate-console": "Duplicate console",
         "edit-console": "Edit console",
-        "message-interact": "open message context menu",
         "open-console": "Open console",
+        "show-players": "Show to players",
         "toggle-visibility": "Toggle console visibility to players"
     }
 }

@@ -1,25 +1,24 @@
-<div style="background-attachment:scroll;background:{{styling.bg}} url({{styling.bgImg}});background-size:contain;border-top:2px solid {{styling.fg}};height:100%;padding:10px;overflow-y:scroll;width:100%">
+<div style="background-attachment:scroll;background:{{styling.bg}} url({{styling.bgImg}});background-size:contain;border-top:2px solid {{styling.fg}};height:100%;padding:10px;overflow-x:hidden;overflow-y:scroll;width:100%">
     <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px" class="console-seperate">
         <span><strong>{{content.title}}</strong></span>
         <div>
             {{#equal limits.type "words"}}[limit:{{limits.value}} words]{{/equal}}
             {{#equal limits.type "characters"}}[limit:{{limits.value}} characters]{{/equal}}
-            <i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>
+            {{#isGM}}<i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>{{/isGM}}
         </div>
     </div>
     <form id="input">
         <div style="display:flex">
-            <div style="border:1px solid {{styling.fg}};border-radius:0px;color:{{styling.fg}};padding:3px 5px"><span>@{{character}}</span></div>
-            <input style="border:1px solid {{styling.fg}};border-radius:0;flex:6;outline:none;padding:15px" id="consoleInputText{{id}}" maxlength="{{limits.hardLimit}}" minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..."/>
+            <div style="border:1px solid {{styling.fg}};border-radius:0px;border-right:none;color:{{styling.fg}};padding:3px 5px"><span>{{character}}: </span></div>
+            <input style="border:1px solid {{styling.fg}};border-left:none;border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px 0px" id="consoleInputText{{id}}" maxlength="{{limits.hardLimit}}" minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..."/>
             <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:1;outline:none" id="submitButton" type="submit">send</button>
         </div>
     </form>
     {{#each content.body}}
-        <div class="console-seperate">
-            <div style="flex:12"><span style="color:{{../styling.fg}};margin-right:10px;padding:0 5px"><strong>{{username}}</strong> {{text}}</span></div>
-            <button class="console-message-interact" style="background:none;border:1px solid {{../styling.fg}};border-style:none;color:{{../styling.fg}};height:30px;margin:none;padding:none;width:40px" data-message-index={{@index}} data-console-id="{{../id}}" data-action="message-interact" title="{{localize "CONSOLE.message-interact"}}">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+        <div> 
+        <button class="console-message-interact" style="background:none;color:{{../styling.fg}};margin:2px 0;text-align:start" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-message-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.app-info"}}">
+            {{#equal user.name ""}}<span>{{text}}</span>{{else}}<span style="background:{{../styling.fg}};color:{{../styling.bg}};padding:2px"><strong>{{user.name}}:</strong></span><span> {{text}}</span>{{/equal}}
+        </button>
         </div>
     {{/each}}
 </div>
