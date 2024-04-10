@@ -114,3 +114,5 @@ export default class ConsoleData {
     }
 }
 
+globalThis.ConsoleData = ConsoleData
+

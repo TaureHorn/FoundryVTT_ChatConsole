@@ -158,3 +158,5 @@ export default class ConsoleApp extends FormApplication {
     }
 }
 
+globalThis.ConsoleApp = ConsoleApp
+
