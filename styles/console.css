@@ -19,28 +19,28 @@
 
 #console-manager-launcher {
     flex: auto;
-    margin:5px;
+    margin: 5px;
 }
 
 .console-message {
     border-radius: 3px;
     line-height: 110%;
-    padding: 2px 5px;
+    padding: 5px 5px;
     max-width: 100%;
     overflow-wrap: break-word;
-    width: max-content;
+    /* width: max-content; */
 }
 
-.console-message-interact{
-    border: 1px solid rgba(0,0,0,0);
+.console-message-interact {
+    border: none;
     padding: 0;
     width: unset;
 }
 
-.console-message-interact:hover {
-    border-style: solid !important;
+.console-message-interact:hover,
+.console-message-interact:focus {
     box-shadow: none;
-    outline:none;
+    filter: brightness(1.5);
 }
 
 .console-seperate {
@@ -49,11 +49,11 @@
     justify-content: space-between;
 }
 
-.console-app > .window-content {
+.console-app>.window-content {
     padding: 0px !important
 }
 
-.console-app > header {
+.console-app>header {
     border: none !important;
 }
 

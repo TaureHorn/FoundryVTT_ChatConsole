@@ -1,10 +1,10 @@
-<div style="background-attachment:scroll;background:{{styling.bg}} url({{styling.bgImg}});background-size:contain;border-top:2px solid {{styling.fg}};height:100%;padding:10px;overflow-y:scroll;width:100%">
+<div style="background-attachment:scroll;background:{{styling.bg}} url({{styling.bgImg}});background-size:contain;border-top:2px solid {{styling.fg}};height:100%;padding:10px;overflow-x:hidden;overflow-y:scroll;width:100%">
     <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px" class="console-seperate">
         <span><strong>{{content.title}}</strong></span>
         <div>
             {{#equal limits.type "words"}}[limit:{{limits.value}} words]{{/equal}}
             {{#equal limits.type "characters"}}[limit:{{limits.value}} characters]{{/equal}}
-            <i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>
+            {{#isGM}}<i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>{{/isGM}}
         </div>
     </div>
     <form id="input">
@@ -15,13 +15,14 @@
         </div>
     </form>
     {{#each content.body}}
-        <button class="console-message-interact" style="background:none;{{#unameInPrevIndex username @index ../content.body}};margin-top:30px{{else}}margin-top:10px{{/unameInPrevIndex}}" data-message-index={{@index}} data-console-id={{../id}} data-action="message-interact" title="{{localize "CONSOLE.message-interact"}}">
-            <div style="background:{{../styling.fg}};color:{{../styling.bg}};{{#equal username ../character}}margin-left:auto;margin-right:0;text-align:end{{else}}text-align:start{{/equal}};width:100%" class="console-message">
-                <span><strong>{{username}}</strong></span></br>
-                <span>{{text}}</span>
-            </div>
-        </button>
-        </br>
+        <div style="{{#unameInPrevIndex user.name @index ../content.body}}margin-top:30px{{else}}margin-top:10px{{/unameInPrevIndex}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}">
+            <button class="console-message-interact" style="background:none" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-message-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.app-info"}}">
+                <div style="background:{{../styling.fg}};color:{{../styling.bg}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}" class="console-message">
+                    <span><strong>{{user.name}}</strong></span></br>
+                    <span id="text{{@index}}">{{text}}</span>
+                </div>
+            </button>
+        </div>
     {{/each}}
 </div>
 

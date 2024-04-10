@@ -30,7 +30,7 @@ export default class ConsoleApp extends FormApplication {
             ...console
         }
 
-        data.character = this.getName("$user")
+        data.character = this.getName("$user").name
         data.inputVal = this._inputVal
         this.getTemplate(data)
         this.options.title = data.name
@@ -40,20 +40,28 @@ export default class ConsoleApp extends FormApplication {
     }
 
     _getHeaderButtons() {
-        let buttons = [{
-            class: "close",
-            icon: "fas fa-times",
-            label: "",
-            onclick: () => this.close(),
-            tooltip: "Close"
-        }]
+        let buttons = [
+            {
+                class: "info",
+                icon: "fas fa-circle-info",
+                label: "",
+                tooltip: game.i18n.localize("CONSOLE.app-info")
+            },
+            {
+                class: "close",
+                icon: "fas fa-times",
+                label: "",
+                onclick: () => this.close(),
+                tooltip: game.i18n.localize("CONSOLE.close")
+            }
+        ]
         if (game.user.isGM) {
             buttons.unshift({
                 class: "share-image",
                 icon: "fas fa-eye",
                 label: "",
                 onclick: () => this.shareApp(),
-                tooltip: "Show to Players"
+                tooltip: game.i18n.localize("CONSOLE.show-players")
             })
         }
         return buttons
@@ -61,28 +69,26 @@ export default class ConsoleApp extends FormApplication {
 
     getName(str) {
         let name = ""
+        const id = game.user.character?._id || game.userId
         if (game.user.isGM) {
             name = game.user.character ? `${game.user.character.name}` : str
         } else {
             name = game.user.character ? `${game.user.character.name}` : `${game.user.name}`
         }
-        return name
+        return {
+            "id": id,
+            "name": name
+        }
     }
 
     getTemplate(data) {
-        const GM = game.user.isGM
-        let template = ""
-        if (data.styling.messengerStyle) {
-            template = GM ? Console.TEMPLATES.APP_IM : Console.TEMPLATES.APP_IM_PLAYER
-        } else {
-            template = GM ? Console.TEMPLATES.APP_TERM : Console.TEMPLATES.APP_TERM_PLAYER
-        }
-        return this.options.template = template
+        return this.options.template = data.styling.messengerStyle ? Console.TEMPLATES.APP_IM : Console.TEMPLATES.APP_TERM
     }
 
     activateListeners(html) {
         super.activateListeners(html)
-        html.on('click', "[data-action]", this._handleButtonClick)
+        html.on('click', "[data-action]", this._handleLeftClick)
+        html.on('contextmenu', "[data-action]", this._handleRightClick)
     }
 
     async close(...args) {
@@ -91,21 +97,30 @@ export default class ConsoleApp extends FormApplication {
         return super.close(...args)
     }
 
-    _handleButtonClick = (event) => {
-        const clickedElement = $(event.currentTarget)
-        const action = clickedElement.data().action
-        const id = clickedElement.data().consoleId
-        const index = clickedElement.data().messageIndex
+    // left clicking a message copies it to clipboard
+    _handleLeftClick = (event) => {
+        if ($(event.currentTarget).data().action === "message-interact") {
+            navigator.clipboard.writeText($(event.currentTarget).data().messageText)
+                .then(() => {
+                    (ui.notifications.notify("Console | copied message to clipboard"))
+                }, (err) => {
+                    ui.notifications.warn("Console | unable to copy message to clipboard. Check browsers console for more details")
+                    console.error('Unable to copy to clipboard: ', err)
+                })
+        }
+    }
 
-        switch (action) {
-            case 'message-interact':
-                const newData = ConsoleData.getConsoles().find((obj) => obj.id === id)
-                // newData.content.body.splice(index, 1)
-                // ConsoleData.updateConsole(newData.id, newData)
-                new MessageMenu(newData).render(true)
-                break;
-            default:
-                ui.notifications.error('Console | ConsoleApp has encountered and invalid button data action in _handleButtonClick')
+    // right-clicking a message deletes it
+    _handleRightClick = (event) => {
+        const data = $(event.currentTarget).data()
+        const id = game.user.character ? game.user.character._id : game.userId
+        const permission = id === data.userid || game.user.isGM ? true : false
+        if (data.action === "message-interact" && permission) {
+            const newData = ConsoleData.getConsoles().find((obj) => obj.id === data.consoleId)
+            newData.content.body.splice(data.messageIndex, 1)
+            ConsoleData.updateConsole(newData.id, newData)
+        } else if (data.action === "message-interact" && !permission) {
+            ui.notifications.warn("Console | You lack the permissions to delete a message that is not yours")
         }
     }
 
@@ -173,10 +188,9 @@ export default class ConsoleApp extends FormApplication {
     _updateObject(event, formData) {
         const console = this.getData()
         const messageLog = [...console.content.body]
-        const name = this.getName("")
         const message = {
             "text": this.truncateMessage(formData.consoleInputText, console.limits),
-            "username": name
+            "user": this.getName("")
         }
         this._inputVal = ""
         messageLog.push(message)
@@ -186,15 +200,4 @@ export default class ConsoleApp extends FormApplication {
 }
 
 globalThis.ConsoleApp = ConsoleApp
-
-class MessageMenu extends ContextMenu {
-
-    constructor(message) {
-        super()
-        this._data = message
-    }
-
-
-
-}
 

@@ -16,7 +16,6 @@ export default class Console {
 
     static TEMPLATES = {
         APP_IM: `modules/${this.ID}/templates/console-im.hbs`,
-        APP_IM_PLAYER: `modules/${this.ID}/templates/console-im_player.hbs`,
         APP_TERM: `modules/${this.ID}/templates/console-term.hbs`,
         APP_TERM_PLAYER: `modules/${this.ID}/templates/console-term_player.hbs`,
         CONFIG: `modules/${this.ID}/templates/config.hbs`,
@@ -94,6 +93,10 @@ Handlebars.registerHelper('inArray', function(data, otherArray, options) {
     }
 })
 
+Handlebars.registerHelper('isGM', function(options) {
+    return game.user.isGM ? options.fn(this) : options.inverse(this)
+})
+
 Handlebars.registerHelper('isNotLastIndex', function(arr, index, options) {
     // @param {Array} arr
     // @param {number} index
@@ -114,7 +117,7 @@ Handlebars.registerHelper('unameInPrevIndex', function(arrItem, itemIndex, arr, 
     // @return {bool} --> boolean informs which blocks are rendered in handlebars file
     const index = itemIndex - 1
     if (index > -1) {
-        if (arr[index].username === arrItem) {
+        if (arr[index].user.name === arrItem) {
             return options.inverse(this)
         } else {
             return options.fn(this)
