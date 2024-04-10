@@ -6,6 +6,7 @@
         "delete-message": "Delete this message",
         "duplicate-console": "Duplicate console",
         "edit-console": "Edit console",
+        "message-interact": "open message context menu",
         "open-console": "Open console",
         "toggle-visibility": "Toggle console visibility to players"
     }

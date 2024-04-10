@@ -41,6 +41,7 @@ export default class ConsoleConfig extends FormApplication {
         if (formData.messengerStyle === "true") {
             messengerStyle = true
         }
+        
         const newData = {
             content: {
                 body: oldData.content.body,
@@ -50,6 +51,11 @@ export default class ConsoleConfig extends FormApplication {
             gmInfo: formData.description === "" ? oldData.gmInfo : formData.gmInfo,
             id: oldData.id,
             name: formData.name,
+            limits: {
+                marker: formData.limitMarker,
+                type: formData.limitType,
+                value: formData.limitVal
+            },
             public: oldData.public,
             scenes: [],
             styling: {
@@ -71,6 +77,7 @@ export default class ConsoleConfig extends FormApplication {
         }
 
         ConsoleData.updateConsole(oldData.id, newData)
+
     }
 }
 

@@ -23,6 +23,7 @@
 }
 
 .console-message {
+    border-radius: 3px;
     line-height: 110%;
     padding: 2px 5px;
     max-width: 100%;
@@ -30,13 +31,14 @@
     width: max-content;
 }
 
-.console-message-delete {
-    border: none;
+.console-message-interact{
+    border: 1px solid rgba(0,0,0,0);
     padding: 0;
+    width: unset;
 }
 
-.console-message-delete:hover {
-    background: rgba(255, 0, 0, 0.33) !important;
+.console-message-interact:hover {
+    border-style: solid !important;
     box-shadow: none;
     outline:none;
 }
