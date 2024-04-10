@@ -51,6 +51,12 @@ export default class ConsoleData {
                 gmInfo: "GM info",
                 id: foundry.utils.randomID(Console.IDLENGTH),
                 name: name,
+                limits: {
+                    hardLimit: 2048, // inbuilt character limit so you can't just send the entire bee movie script
+                    marker: '...',
+                    type: 'none', // options are 'words', 'characters' and 'none'.
+                    value: 0
+                },
                 public: false,
                 scenes: [],
                 styling: {

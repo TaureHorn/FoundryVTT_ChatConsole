@@ -80,7 +80,6 @@ export default class ConsoleApp extends FormApplication {
         return this.options.template = template
     }
 
-
     activateListeners(html) {
         super.activateListeners(html)
         html.on('click', "[data-action]", this._handleButtonClick)
@@ -99,10 +98,11 @@ export default class ConsoleApp extends FormApplication {
         const index = clickedElement.data().messageIndex
 
         switch (action) {
-            case 'delete-message':
+            case 'message-interact':
                 const newData = ConsoleData.getConsoles().find((obj) => obj.id === id)
-                newData.content.body.splice(index, 1)
-                ConsoleData.updateConsole(newData.id, newData)
+                // newData.content.body.splice(index, 1)
+                // ConsoleData.updateConsole(newData.id, newData)
+                new MessageMenu(newData).render(true)
                 break;
             default:
                 ui.notifications.error('Console | ConsoleApp has encountered and invalid button data action in _handleButtonClick')
@@ -132,6 +132,33 @@ export default class ConsoleApp extends FormApplication {
         return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width }).updateAppClasses()
     }
 
+    truncateMessage(msg, limits) {
+        switch (limits.type) {
+            case "characters":
+                if (msg.length > limits.value) {
+                    let trunc = msg.slice(0, limits.value)
+                    trunc += limits.marker
+                    return trunc
+                } else {
+                    return msg
+                }
+            case "none":
+                return msg
+            case "words":
+                let trunc = msg.split(' ')
+                if (trunc.length > limits.value) {
+                    trunc.splice(limits.value)
+                    trunc.push(limits.marker)
+                    trunc = trunc.join(' ')
+                    return trunc
+                } else {
+                    return msg
+                }
+            default:
+                ui.notifications.error("Console | ConsoleApp has encountered an invalid limitType in truncateMessage")
+        }
+    }
+
     async updateAppClasses() {
         setTimeout(() => {
             const element = this._element[0]
@@ -148,7 +175,7 @@ export default class ConsoleApp extends FormApplication {
         const messageLog = [...console.content.body]
         const name = this.getName("")
         const message = {
-            "text": formData.consoleInputText,
+            "text": this.truncateMessage(formData.consoleInputText, console.limits),
             "username": name
         }
         this._inputVal = ""
@@ -159,4 +186,15 @@ export default class ConsoleApp extends FormApplication {
 }
 
 globalThis.ConsoleApp = ConsoleApp
+
+class MessageMenu extends ContextMenu {
+
+    constructor(message) {
+        super()
+        this._data = message
+    }
+
+
+
+}
 

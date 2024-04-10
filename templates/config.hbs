@@ -38,11 +38,34 @@
     <legend>Console Style</legend>
         <div>
             <input id="messenger" name="messengerStyle" type="radio" value="true" {{#if console.styling.messengerStyle}}checked{{/if}}/> 
-            <label for="messenger">instant-messenger</label>
+            <label for="messenger">Messenger</label>
         </div>
         <div>
-             <input id="terminal" name="messengerStyle" type="radio" value="false" {{#unless console.styling.messengerStyle}}checked{{/unless}}/> 
-            <label for="terminal">terminal</label>
+            <input id="terminal" name="messengerStyle" type="radio" value="false" {{#unless console.styling.messengerStyle}}checked{{/unless}}/> 
+            <label for="terminal">Terminal</label>
+        </div>
+    </fieldset>
+    <fieldset>
+    <legend>Message Limits</legend>
+        <div>
+            <input id="nolimit" name="limitType" type="radio" value="none" {{#equal console.limits.type "none"}}checked{{/equal}}/>
+            <label for="nolimit">None</label>
+        </div>
+        <div>
+            <input id="characters" name="limitType" type="radio" value="characters" {{#equal console.limits.type "characters"}}checked{{/equal}}/>
+            <label for="characters">Characters</label>
+        </div>
+        <div>
+            <input id="words" name="limitType" type="radio" value="words" {{#equal console.limits.type "words"}}checked{{/equal}}/>
+            <label for="words">Words</label>
+        </div>
+        <div>
+            <label for="limit-marker">Limit marker:</label>
+            <input id="limit-marker" name="limitMarker" type="text" min="1" max="16" value="{{console.limits.marker}}" placeholder="..."/>
+        </div>
+        <div>
+            <label for="limit-value">Limit number:</label>
+            <input id="limit-value" name="limitVal" type="number" min="0" max="4096" value="{{console.limits.value}}" placeholder="25"/>
         </div>
     </fieldset>
     <fieldset>

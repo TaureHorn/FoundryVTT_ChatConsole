@@ -48,7 +48,6 @@ Hooks.on('renderSidebarTab', (chatLog, html) => {
 // tracks the input of an app and records its value in the object as part of preventing an input being cleared in the document update cycle
 Hooks.on('renderConsoleApp', (...args) => {
     document.querySelector(`#consoleInputText${args[0].id}`).addEventListener('keyup', (event) => {
-        Console.log(true, "evenlistener", event.target.value)
         args[0]._inputVal = event.target.value 
     })
 })
