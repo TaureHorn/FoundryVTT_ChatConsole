@@ -45,14 +45,14 @@ export default class ConsoleApp extends FormApplication {
                 class: "info",
                 icon: "fas fa-circle-info",
                 label: "",
-                tooltip: game.i18n.localize("CONSOLE.app-info")
+                tooltip: game.i18n.localize("CONSOLE.console.app-info")
             },
             {
                 class: "close",
                 icon: "fas fa-times",
                 label: "",
                 onclick: () => this.close(),
-                tooltip: game.i18n.localize("CONSOLE.close")
+                tooltip: game.i18n.localize("CONSOLE.console.close")
             }
         ]
         if (game.user.isGM) {
@@ -61,7 +61,7 @@ export default class ConsoleApp extends FormApplication {
                 icon: "fas fa-eye",
                 label: "",
                 onclick: () => this.shareApp(),
-                tooltip: game.i18n.localize("CONSOLE.show-players")
+                tooltip: game.i18n.localize("CONSOLE.console.show-players")
             })
         }
         return buttons

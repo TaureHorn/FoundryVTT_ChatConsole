@@ -2,6 +2,18 @@
     flex: auto;
 }
 
+.console-config-flex {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+}
+
+.console-config-scene-box {
+    max-height: 20vh;
+    overflow: hidden scroll;
+}
+
+
 .console-manage-button {
     background: none;
     border: 1px solid #bbb;
@@ -28,7 +40,6 @@
     padding: 5px 5px;
     max-width: 100%;
     overflow-wrap: break-word;
-    /* width: max-content; */
 }
 
 .console-message-interact {

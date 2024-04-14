@@ -1,80 +1,80 @@
 <form>
     <fieldset>
-    <legend>Text</legend>
-        <label for="name">Name:</label>
-        <input id="name" name="name" type="text" placeholder="{{console.name}}" value="{{console.name}}" minlength="1" maxlength="128"/>
-        <label for="title">Title:</label>
-        <input id="title" name="title" type="text" placeholder="{{console.content.title}}" value="{{console.content.title}}" minlength="1" maxlength="128"/>
-        <label for="description">Description:</label>
+    <legend>{{localize "CONSOLE.config.text.header"}}</legend>
+        <div class="console-config-flex">
+            <label for="name">{{localize "CONSOLE.config.text.name"}}:</label>
+            <input id="name" name="name" type="text" placeholder="{{console.name}}" value="{{console.name}}" minlength="1" maxlength="128"/>
+        </div>
+        <div class="console-config-flex">
+            <label for="title">{{localize "CONSOLE.config.text.title"}}:</label>
+            <input id="title" name="title" type="text" placeholder="{{console.content.title}}" value="{{console.content.title}}" minlength="1" maxlength="128"/>
+        </div>
+        <label for="description">{{localize "CONSOLE.config.text.description"}}:</label>
         <textarea id="description" name="description" placeholder="{{console.description}}" maxlength="256"></textarea>
-        <label for "gmInfo">GM Info:</label>
+        <label for="gmInfo">{{localize "CONSOLE.config.text.gm-info"}}:</label>
         <textarea id="gmInfo" name="gmInfo" placeholder="{{console.gmInfo}}" maxlength="256"></textarea>
     </fieldset>
     <fieldset>
-    <legend>Appearance</legend>
-        <div style="display:flex;justify-content:space-between;margin:5px">
-            <label for="fgCol">Foreground Color:</label>
+    <legend>{{localize "CONSOLE.config.appearance.header"}}</legend>
+        <div class="console-config-flex">
+            <label for="fgCol">{{localize "CONSOLE.config.appearance.fg-col"}}:</label>
             <input id="fgCol" name="fgCol" type="color" value="{{console.styling.fg}}"/>
         </div>
-        <div style="display:flex;justify-content:space-between;margin:5px">
-            <label for="bgCol">Background Color:</label>
+        <div class="console-config-flex">
+            <label for="bgCol">{{localize "CONSOLE.config.appearance.bg-col"}}:</label>
             <input id="bgCol" name="bgCol" type="color" value="{{console.styling.bg}}"/>
         </div>
-        <div style="display:flex;justify-content:space-between;margin:5px">
-            <label for="bgImg">Background Image:</label>
+        <div class="console-config-flex">
+            <label for="bgImg">{{localize "CONSOLE.config.appearance.bg-img"}}:</label>
             <div style="display:flex;flex:1;flex-wrap:nowrap;justify-content:flex-end">
                 <input id="bgImg" name="bgImg" type="text" value="{{console.styling.bgImg}}"/>
                 <button class="file-picker" type="button" data-type="image" data-target="bgImg" title="Browse Files" tabindex="-1"><i class="fas fa-file-import fa-fw"></i></button>
             </div>
         </div>
-        <div style="margin:5px">
-            <label for="height">Height:</label>
+        <div class="console-config-flex">
+            <label for="height">{{localize "CONSOLE.config.appearance.height"}}:</label>
             <input id="height" name="height" type="number" value="{{console.styling.height}}"/>
-            <label for="width">Width:</label>
+        </div>
+        <div class="console-config-flex">
+            <label for="width">{{localize "CONSOLE.config.appearance.width"}}:</label>
             <input id="width" name="width" type="number" value="{{console.styling.width}}"/>
         </div>
     </fieldset>
     <fieldset>
-    <legend>Console Style</legend>
+    <legend>{{localize "CONSOLE.config.style.header"}}</legend>
         <div>
             <input id="messenger" name="messengerStyle" type="radio" value="true" {{#if console.styling.messengerStyle}}checked{{/if}}/> 
-            <label for="messenger">Messenger</label>
-        </div>
-        <div>
+            <label for="messenger">{{localize "CONSOLE.config.style.messenger"}}</label>
             <input id="terminal" name="messengerStyle" type="radio" value="false" {{#unless console.styling.messengerStyle}}checked{{/unless}}/> 
-            <label for="terminal">Terminal</label>
+            <label for="terminal">{{localize "CONSOLE.config.style.terminal"}}</label>
         </div>
     </fieldset>
     <fieldset>
-    <legend>Message Limits</legend>
+    <legend>{{localize "CONSOLE.config.limits.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.limits.hover-info"}}"></i></legend>
         <div>
             <input id="nolimit" name="limitType" type="radio" value="none" {{#equal console.limits.type "none"}}checked{{/equal}}/>
-            <label for="nolimit">None</label>
-        </div>
-        <div>
+            <label for="nolimit">{{localize "CONSOLE.config.limits.none"}}</label>
             <input id="characters" name="limitType" type="radio" value="characters" {{#equal console.limits.type "characters"}}checked{{/equal}}/>
-            <label for="characters">Characters</label>
-        </div>
-        <div>
+            <label for="characters">{{localize "CONSOLE.config.limits.characters"}}</label>
             <input id="words" name="limitType" type="radio" value="words" {{#equal console.limits.type "words"}}checked{{/equal}}/>
-            <label for="words">Words</label>
+            <label for="words">{{localize "CONSOLE.config.limits.words"}}</label>
         </div>
-        <div>
-            <label for="limit-marker">Limit marker:</label>
-            <input id="limit-marker" name="limitMarker" type="text" min="1" max="16" value="{{console.limits.marker}}" placeholder="..."/>
+        <div class="console-config-flex">
+            <label for="limit-marker">{{localize "CONSOLE.config.limits.marker"}}:</label>
+            <input id="limit-marker" name="limitMarker" type="text" min="1" max="64" value="{{console.limits.marker}}" placeholder="..."/>
         </div>
-        <div>
-            <label for="limit-value">Limit number:</label>
+        <div class="console-config-flex">
+            <label for="limit-value">{{localize "CONSOLE.config.limits.number"}}:</label>
             <input id="limit-value" name="limitVal" type="number" min="0" max="4096" value="{{console.limits.value}}" placeholder="25"/>
         </div>
     </fieldset>
-    <fieldset>
-    <legend>Scenes</legend>
+    <fieldset class="console-config-scene-box">
+    <legend>{{localize "CONSOLE.config.scenes.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.scenes.hover-info"}}"></i></legend>
         {{#each scenes}}
             <input type="checkbox" id="{{this.id}}" name="{{this.id}}" value="{{this.id}}" {{#inArray this.id ../console.scenes }}checked{{/inArray}}/>
             <label for="{{this.id}}">{{this.name}}</label>
             </br>
         {{/each}}
     </fieldset>
-    <button type="submit">Submit</button>
+    <button type="submit">{{localize "CONSOLE.config.submit"}}</button>
 </form>
