@@ -1,14 +1,64 @@
 {
-    "CONSOLE" :{
-        "add-new-console": "Add new console",
-        "app-info": "Left click to copy message to clipboard. Right-click to delete a message.",
+    "CONSOLE": {
         "button-title": "Open Console Manager",
-        "close": "Close",
-        "delete-console": "Delete console",
-        "duplicate-console": "Duplicate console",
-        "edit-console": "Edit console",
-        "open-console": "Open console",
-        "show-players": "Show to players",
-        "toggle-visibility": "Toggle console visibility to players"
+        "config": {
+            "text": {
+                "header": "Text",
+                "name": "Name",
+                "title": "Title",
+                "description": "Description",
+                "gm-info": "GM Info"
+            },
+            "appearance": {
+                "header": "Appearance",
+                "fg-col": "Foreground Color",
+                "bg-col": "Background Color",
+                "bg-img": "Background Image",
+                "height": "Height",
+                "width": "Width"
+            },
+            "style": {
+                "header": "Style",
+                "messenger": "Messenger",
+                "terminal": "Terminal"
+            },
+            "limits": {
+                "header": "Message Limits",
+                "hover-info": "Cuts off messages after a specified length of words or characters, optionally appending with a custom string",
+                "none": "None",
+                "characters": "Characters",
+                "words": "Words",
+                "marker": "Marker",
+                "number": "Number"
+            },
+            "scenes": {
+                "header": "Scenes",
+                "hover-info": "Keep track of which scenes this console may be relevant to"
+            },
+            "submit": "Submit"
+        },
+        "console": {
+            "app-info": "Left click to copy message to clipboard. Right-click to delete a message.",
+            "characters": "characters",
+            "close": "Close",
+            "limit": "limit",
+            "send": "send",
+            "show-players": "Show to players",
+            "words": "words"
+        },
+        "consoles": "Consoles",
+        "manager": {
+            "add-new-console": "Add new console",
+            "current-character": "CURRENT CHARACTER",
+            "delete-console": "Delete console",
+            "description": "Description",
+            "duplicate-console": "Duplicate console",
+            "edit-console": "Edit console",
+            "gm-info": "GM Info",
+            "n/a": "N/A",
+            "open-console": "Open console",
+            "scenes": "Scenes",
+            "toggle-visibility": "Toggle console visibility to players"
+        }
     }
 }

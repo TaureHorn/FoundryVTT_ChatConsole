@@ -2,8 +2,8 @@
     <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px" class="console-seperate">
         <span><strong>{{content.title}}</strong></span>
         <div>
-            {{#equal limits.type "words"}}[limit:{{limits.value}} words]{{/equal}}
-            {{#equal limits.type "characters"}}[limit:{{limits.value}} characters]{{/equal}}
+            {{#equal limits.type "words"}}[{{localize "CONSOLE.console.limit"}}:{{limits.value}} {{localize "CONSOLE.console.words"}}]{{/equal}}
+            {{#equal limits.type "characters"}}[{{localize "CONSOLE.console.limit"}}:{{limits.value}} {{localize "CONSOLE.console.characters"}}]{{/equal}}
             {{#isGM}}<i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>{{/isGM}}
         </div>
     </div>
@@ -11,12 +11,12 @@
         <div style="display:flex;margin-bottom:10px">
             <div style="border:1px solid {{styling.fg}};border-radius:0px;color:{{styling.fg}};padding:3px 5px"><span><strong>@{{character}}</strong></span></div>
             <input style="border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px" id="consoleInputText{{id}}" maxlength="{{limits.hardLimit}}" minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..." autocomplete="off"/>
-            <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:1;outline:none" id="submitButton" type="submit">send</button>
+            <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:1;outline:none" id="submitButton" type="submit">{{localize "CONSOLE.console.send"}}</button>
         </div>
     </form>
     {{#each content.body}}
         <div style="{{#unameInPrevIndex user.name @index ../content.body}}margin-top:30px{{else}}margin-top:10px{{/unameInPrevIndex}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}">
-            <button class="console-message-interact" style="background:none" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-message-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.app-info"}}">
+            <button class="console-message-interact" style="background:none" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-message-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.console.app-info"}}">
                 <div style="background:{{../styling.fg}};color:{{../styling.bg}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}" class="console-message">
                     <span><strong>{{user.name}}</strong></span></br>
                     <span id="text{{@index}}">{{text}}</span>
