@@ -1,1 +1,64 @@
-
+{
+    "CONSOLE": {
+        "button-title": "Console Managerを開く",
+        "config": {
+            "text": {
+                "header": "テキスト",
+                "name": "名称",
+                "title": "タイトル",
+                "description": "説明",
+                "gm-info": "GM 情報"
+            },
+            "appearance": {
+                "header": "外見",
+                "fg-col": "前景色",
+                "bg-col": "背景色",
+                "bg-img": "背景画像",
+                "height": "高さ",
+                "width": "幅"
+            },
+            "style": {
+                "header": "スタイル",
+                "messenger": "メッセンジャー",
+                "terminal": "ターミナル"
+            },
+            "limits": {
+                "header": "文字数制限",
+                "hover-info": "決められた単語数か文字数を超えたメッセージを省略します。カスタム文字列としても付与できます。",
+                "none": "なし",
+                "characters": "文字",
+                "words": "単語",
+                "marker": "マーカー",
+                "number": "数"
+            },
+            "scenes": {
+                "header": "シーン",
+                "hover-info": "このコンソールがどのシーンに関連するか記録します"
+            },
+            "submit": "決定"
+        },
+        "console": {
+            "app-info": "左クリックでクリップボードにメッセージをコピー。右クリックでメッセージを削除。",
+            "characters": "文字",
+            "close": "閉じる",
+            "limit": "限度",
+            "send": "送信",
+            "show-players": "プレイヤーに表示",
+            "words": "単語"
+        },
+        "consoles": "コンソール",
+        "manager": {
+            "add-new-console": "新規コンソール追加",
+            "current-character": "CURRENT CHARACTER",
+            "delete-console": "コンソール削除",
+            "description": "説明",
+            "duplicate-console": "コンソール複製",
+            "edit-console": "コンソール編集",
+            "gm-info": "GM 情報",
+            "n/a": "N/A",
+            "open-console": "コンソールを開く",
+            "scenes": "シーン",
+            "toggle-visibility": "プレイヤーにコンソールを可視化"
+        }
+    }
+}
