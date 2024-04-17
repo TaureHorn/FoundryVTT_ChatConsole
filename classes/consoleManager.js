@@ -36,8 +36,9 @@ export default class ConsoleManager extends FormApplication {
             })
         })
         return {
+            consoles: consoles,
             manager: this,
-            consoles: consoles
+            user: game.user._id
         }
     }
 
@@ -78,7 +79,7 @@ export default class ConsoleManager extends FormApplication {
                 await ConsoleData.toggleVisibility(id)
                 break;
             default:
-                ui.notifications.error("ConsoleManager encountered an invalid button data-action in _handleButtonClick")
+                ui.notifications.error(`ConsoleManager encountered an invalid button data-action '${action}' in _handleButtonClick`)
         }
     }
 

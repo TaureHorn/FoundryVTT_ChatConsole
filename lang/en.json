@@ -31,6 +31,10 @@
                 "marker": "Marker",
                 "number": "Number"
             },
+            "players": {
+                "header": "Player Ownership",
+                "hover-info": "Select who can see this console in their console manager. This is seperate from whether or not a console is public/private"
+            },
             "scenes": {
                 "header": "Scenes",
                 "hover-info": "Keep track of which scenes this console may be relevant to"

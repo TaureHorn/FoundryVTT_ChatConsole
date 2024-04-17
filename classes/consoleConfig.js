@@ -21,6 +21,15 @@ export default class ConsoleConfig extends FormApplication {
     }
 
     getData(options) {
+        const console = ConsoleData.getConsoles().find((obj) => obj.id === options.id)
+        this.versionMigration(console)
+
+        let players = game.users._source
+        const GM = players.find((obj) => obj.role === 4)
+        if (GM){
+            players.splice(players.indexOf(GM), 1)
+        }
+
         const scenesData = []
         game.scenes._source.forEach((scene) => {
             scenesData.push({
@@ -30,7 +39,8 @@ export default class ConsoleConfig extends FormApplication {
             })
         })
         return {
-            console: ConsoleData.getConsoles().find((obj) => obj.id === options.id),
+            console: console,
+            players: players,
             scenes: scenesData
         }
     }
@@ -41,7 +51,7 @@ export default class ConsoleConfig extends FormApplication {
         if (formData.messengerStyle === "true") {
             messengerStyle = true
         }
-        
+
         const newData = {
             content: {
                 body: oldData.content.body,
@@ -56,6 +66,7 @@ export default class ConsoleConfig extends FormApplication {
                 type: formData.limitType,
                 value: formData.limitVal
             },
+            playerOwnership: [],
             public: oldData.public,
             scenes: [],
             styling: {
@@ -68,16 +79,44 @@ export default class ConsoleConfig extends FormApplication {
             }
         }
 
-        for (const property in formData) {
-            if (formData[property]) {
-                if (property.length === Console.IDLENGTH && formData[property] === property) {
-                    newData.scenes.push(property)
-                }
+        formData.players.forEach((player) => {
+            if (player) {
+                newData.playerOwnership.push(player)
             }
-        }
+        })
+
+        formData.scenes.forEach((scene) => {
+            if (scene) {
+                newData.scenes.push(scene)
+            }
+        })
 
         ConsoleData.updateConsole(oldData.id, newData)
 
+    }
+
+    versionMigration(console) {
+        if (!console.playerOwnership) {
+            console.playerOwnership = []
+            ConsoleData.updateConsole(console.id, console)
+        }
+        if (!console.limits) {
+            console.limits = {
+                hardLimit: 2048,
+                marker: '...',
+                type: 'none',
+                value: 0
+            }
+            ConsoleData.updateConsole(console.id, console)
+        }
+        if (!console.scenes) {
+            console.scenes = []
+            ConsoleData.updateConsole(console.id, console)
+        }
+        if (!console.sceneNames){
+            console.sceneNames = []
+            ConsoleData.updateConsole(console.id, console)
+        }
     }
 }
 

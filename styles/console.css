@@ -8,11 +8,10 @@
     margin: 5px;
 }
 
-.console-config-scene-box {
+.console-config-limited {
     max-height: 20vh;
     overflow: hidden scroll;
 }
-
 
 .console-manage-button {
     background: none;

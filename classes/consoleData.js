@@ -57,8 +57,10 @@ export default class ConsoleData {
                     type: 'none', // options are 'words', 'characters' and 'none'.
                     value: 0
                 },
+                playerOwnership: [],
                 public: false,
                 scenes: [],
+                sceneNames: [],
                 styling: {
                     bg: "#120b10",
                     bgImg: "",
