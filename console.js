@@ -56,8 +56,8 @@ Hooks.on('renderConsoleApp', (...args) => {
 //      register socket to share apps with players
 //      to pre-create a document to store module data 
 Hooks.once('ready', function() {
-    game.socket.on("module.console", (id) => {
-        ConsoleApp._handleShareApp(id)
+    game.socket.on("module.console", (data) => {
+        ConsoleApp._handleShareApp(data.users, data.id)
     })
     if (game.user.isGM) {
         ConsoleData.getDataPool()

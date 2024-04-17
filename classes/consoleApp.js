@@ -136,15 +136,54 @@ export default class ConsoleApp extends FormApplication {
     }
 
     shareApp() {
-        game.socket.emit('module.console', {
-            id: this.options.id
+        let html =
+            `<p>Who do you want to show this app to?</p>
+            <p><strong>Owners:</strong></p>
+            <div style="padding-left:10px">`
+
+        this.data.playerOwnership.forEach((id) => {
+            const user = game.users.get(id)
+            html += `<p style="color:${user.color}"><em>${user.name}</em></p>`
         })
+        html += `</div>`
+
+        const showPlayersDialog = new Dialog({
+            buttons: {
+                all: {
+                    label: "All Players", callback: () => {
+                        const users = []
+                        game.users._source.forEach((obj) => {
+                            users.push(obj._id)
+                        })
+                        game.socket.emit('module.console', {
+                            users: users,
+                            id: this.options.id
+                        })
+                    }
+                },
+                owners: {
+                    label: "Owners only", callback: () => {
+                        game.socket.emit('module.console', {
+                            users: this.data.playerOwnership,
+                            id: this.options.id
+                        })
+                    }
+                }
+            },
+            content: html,
+            default: "owners",
+            title: `Show ${this.data.name}`,
+        })
+        showPlayersDialog.render(true)
+
     }
 
-    static _handleShareApp(id) {
-        const data = ConsoleData.getConsoles().find((obj) => obj.id === id.id)
-        const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
-        return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width }).updateAppClasses()
+    static _handleShareApp(users, id) {
+        if (users.includes(game.userId)) {
+            const data = ConsoleData.getConsoles().find((obj) => obj.id === id)
+            const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
+            return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width }).updateAppClasses()
+        }
     }
 
     truncateMessage(msg, limits) {
@@ -198,6 +237,7 @@ export default class ConsoleApp extends FormApplication {
         ConsoleData.updateConsole(console.id, console)
     }
 }
+
 
 globalThis.ConsoleApp = ConsoleApp
 

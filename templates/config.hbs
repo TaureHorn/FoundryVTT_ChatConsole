@@ -68,11 +68,21 @@
             <input id="limit-value" name="limitVal" type="number" min="0" max="4096" value="{{console.limits.value}}" placeholder="25"/>
         </div>
     </fieldset>
-    <fieldset class="console-config-scene-box">
+    <fieldset class="console-config-limited">
+    <legend>{{localize "CONSOLE.config.players.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.players.hover-info"}}"></i></legend>
+        <div>
+            {{#each players}}
+                <input id="{{_id}}" name="players"[{{@index}}] type="checkbox" value="{{_id}}" {{#inArray _id ../console.playerOwnership}}checked{{/inArray}}/>
+                <label for="{{_id}}">{{name}}</legend>
+                </br>
+            {{/each}}
+        </div>
+    </fieldset>
+    <fieldset class="console-config-limited">
     <legend>{{localize "CONSOLE.config.scenes.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.scenes.hover-info"}}"></i></legend>
         {{#each scenes}}
-            <input type="checkbox" id="{{this.id}}" name="{{this.id}}" value="{{this.id}}" {{#inArray this.id ../console.scenes }}checked{{/inArray}}/>
-            <label for="{{this.id}}">{{this.name}}</label>
+            <input type="checkbox" id="{{id}}" name="scenes"[{{@index}}] value="{{id}}" {{#inArray this.id ../console.scenes }}checked{{/inArray}}/>
+            <label for="{{id}}">{{name}}</label>
             </br>
         {{/each}}
     </fieldset>
