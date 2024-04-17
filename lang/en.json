@@ -62,6 +62,7 @@
             "n/a": "N/A",
             "open-console": "Open console",
             "scenes": "Scenes",
+            "toggle-lock": "Lock/unlock console to disable/enable editing",
             "toggle-visibility": "Toggle console visibility to players"
         }
     }

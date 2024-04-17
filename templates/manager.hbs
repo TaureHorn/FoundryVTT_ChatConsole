@@ -9,6 +9,7 @@
                         <span><strong>{{name}}</strong></span>
                         <div>
                             <i class="fa solid {{#if styling.messengerStyle}}fa-comments{{else}}fa-terminal{{/if}}"></i>
+                            {{#if locked}}<i class="fa-solid fa-lock"></i>{{/if}}
                             <i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>
                         </div>
                     </div>
@@ -22,6 +23,7 @@
             <div style="display:flex;flex-direction:column;justify-content:space-between">
                 <button style="background:none;border:1px solid {{styling.fg}}" title="{{localize "CONSOLE.manager.edit-console"}}" data-console-id="{{id}}" data-action="edit-console"><i style="color:{{this.styling.fg}}" class="fa-solid fa-pen-to-square"></i></button>
                 <button style="background:none;border:1px solid {{styling.fg}}" title="{{localize "CONSOLE.manager.toggle-visibility"}}" data-console-id="{{id}}" data-action="toggle-visibility"><i style="color:{{this.styling.fg}}" class="fa-solid {{#if public}}fa-eye-slash{{else}}fa-eye{{/if}}"></i></button>
+                <button style="background:none;border:1px solid {{styling.fg}}" title="{{localize "CONSOLE.manager.toggle-lock"}}" data-console-id="{{id}}" data-action="toggle-lock"><i style="color:{{this.styling.fg}}" class="fa-solid {{#if locked}}fa-lock{{else}}fa-lock-open{{/if}}"></i></button>
                 <button style="background:none;border:1px solid {{styling.fg}}" title="{{localize "CONSOLE.manager.duplicate-console"}}" data-console-id="{{id}}" data-action="duplicate-console"><i style="color:{{this.styling.fg}}" class="fa-solid fa-clone" ></i></button>
                 <button style="background:none;border:1px solid {{styling.fg}}" title="{{localize "CONSOLE.manager.delete-console"}}" data-console-id="{{id}}" data-action="delete-console"><i style="color:{{this.styling.fg}}" class="fa-solid fa-trash" ></i></button>
             </div>

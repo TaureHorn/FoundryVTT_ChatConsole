@@ -66,6 +66,7 @@ export default class ConsoleConfig extends FormApplication {
                 type: formData.limitType,
                 value: formData.limitVal
             },
+            locked: oldData.locked,
             playerOwnership: [],
             public: oldData.public,
             scenes: [],
