@@ -26,7 +26,7 @@ export default class ConsoleConfig extends FormApplication {
 
         let players = game.users._source
         const GM = players.find((obj) => obj.role === 4)
-        if (GM){
+        if (GM) {
             players.splice(players.indexOf(GM), 1)
         }
 
@@ -45,13 +45,8 @@ export default class ConsoleConfig extends FormApplication {
         }
     }
 
-    _updateObject(event, formData) {
+    async _updateObject(event, formData) {
         const oldData = this.getData(this.options).console
-        let messengerStyle = false
-        if (formData.messengerStyle === "true") {
-            messengerStyle = true
-        }
-
         const newData = {
             content: {
                 body: oldData.content.body,
@@ -75,24 +70,45 @@ export default class ConsoleConfig extends FormApplication {
                 bgImg: formData.bgImg,
                 fg: formData.fgCol,
                 height: formData.height,
-                messengerStyle: messengerStyle,
+                messengerStyle: formData.messengerStyle === "true" ? true : false,
                 width: formData.width
             }
         }
 
-        formData.players.forEach((player) => {
-            if (player) {
-                newData.playerOwnership.push(player)
+        if (formData.players) {
+            if (typeof formData.players === 'object') {
+                formData.players.forEach((player) => {
+                    if (player) {
+                        newData.playerOwnership.push(player)
+                    }
+                })
+            } else if (typeof formData.players === 'string') {
+                newData.playerOwnership.push(formData.players)
+            } else {
+                ui.notifications.error(`Console | Unable to save player data. Invalid formData type`)
             }
-        })
+        }
 
-        formData.scenes.forEach((scene) => {
-            if (scene) {
-                newData.scenes.push(scene)
+        if (formData.scenes) {
+            if (typeof formData.scenes === 'object') {
+                formData.scenes.forEach((scene) => {
+                    if (scene) {
+                        newData.scenes.push(scene)
+                    }
+                })
+            } else if (typeof formData.scenes === 'string') {
+                newData.scenes.push(formData.scenes)
+            } else {
+                ui.notifications.error(`Console | Unable to save scene data. Invalid formData type`)
             }
-        })
+        }
 
-        ConsoleData.updateConsole(oldData.id, newData)
+        try {
+            await ConsoleData.updateConsole(oldData.id, newData)
+        } catch (err) {
+            console.error(err)
+            ui.notifications.error(`Console | Unable to update this console. See browser console for error`)
+        }
 
     }
 
@@ -114,7 +130,7 @@ export default class ConsoleConfig extends FormApplication {
             console.scenes = []
             ConsoleData.updateConsole(console.id, console)
         }
-        if (!console.sceneNames){
+        if (!console.sceneNames) {
             console.sceneNames = []
             ConsoleData.updateConsole(console.id, console)
         }
