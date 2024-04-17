@@ -57,6 +57,7 @@ export default class ConsoleData {
                     type: 'none', // options are 'words', 'characters' and 'none'.
                     value: 0
                 },
+                locked: false,
                 playerOwnership: [],
                 public: false,
                 scenes: [],
@@ -99,6 +100,15 @@ export default class ConsoleData {
             [clonedConsole.id]: clonedConsole
         }
         this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, newConsoles)
+    }
+
+    static async toggleLock(id){
+        const console = this.getConsoles().find((obj) => obj.id === id)
+        console.locked = console.locked ? false : true
+        const update = {
+            [id]: console
+        }
+        this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, update)
     }
 
     static async toggleVisibility(id) {

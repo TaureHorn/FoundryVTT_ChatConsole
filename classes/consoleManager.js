@@ -34,6 +34,7 @@ export default class ConsoleManager extends FormApplication {
             console.scenes.forEach((id) => {
                 console.sceneNames.push(this.getSceneName(id))
             })
+            this.versionMigration(console)
         })
         return {
             consoles: consoles,
@@ -75,6 +76,9 @@ export default class ConsoleManager extends FormApplication {
             case 'duplicate-console':
                 await ConsoleData.duplicateConsole(id)
                 break;
+            case 'toggle-lock':
+                await ConsoleData.toggleLock(id)
+                break;
             case 'toggle-visibility':
                 await ConsoleData.toggleVisibility(id)
                 break;
@@ -95,6 +99,17 @@ export default class ConsoleManager extends FormApplication {
         delete this._document.apps[this.appId]
         delete this._represents.apps[this.appId]
         return super.close(...args)
+    }
+
+    versionMigration(console) {
+        if (!console.public) {
+            console.public = false
+            ConsoleData.updateConsole(console.id, console)
+        }
+        if (!console.locked) {
+            console.locked = false
+            ConsoleData.updateConsole(console.id, console)
+        }
     }
 
 }

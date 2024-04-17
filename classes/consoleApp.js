@@ -108,19 +108,24 @@ export default class ConsoleApp extends FormApplication {
                     console.error('Unable to copy to clipboard: ', err)
                 })
         }
+
     }
 
     // right-clicking a message deletes it
     _handleRightClick = (event) => {
-        const data = $(event.currentTarget).data()
-        const id = game.user.character ? game.user.character._id : game.userId
-        const permission = id === data.userid || game.user.isGM ? true : false
-        if (data.action === "message-interact" && permission) {
-            const newData = ConsoleData.getConsoles().find((obj) => obj.id === data.consoleId)
-            newData.content.body.splice(data.messageIndex, 1)
-            ConsoleData.updateConsole(newData.id, newData)
-        } else if (data.action === "message-interact" && !permission) {
-            ui.notifications.warn("Console | You lack the permissions to delete a message that is not yours")
+        if (!this.data.locked) {
+            const data = $(event.currentTarget).data()
+            const id = game.user.character ? game.user.character._id : game.userId
+            const permission = id === data.userid || game.user.isGM ? true : false
+            if (data.action === "message-interact" && permission) {
+                const newData = ConsoleData.getConsoles().find((obj) => obj.id === data.consoleId)
+                newData.content.body.splice(data.messageIndex, 1)
+                ConsoleData.updateConsole(newData.id, newData)
+            } else if (data.action === "message-interact" && !permission) {
+                ui.notifications.warn("Console | You lack the permissions to delete a message that is not yours")
+            }
+        } else {
+            ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
         }
     }
 
@@ -225,16 +230,20 @@ export default class ConsoleApp extends FormApplication {
     }
 
     _updateObject(event, formData) {
-        const console = this.getData()
-        const messageLog = [...console.content.body]
-        const message = {
-            "text": this.truncateMessage(formData.consoleInputText, console.limits),
-            "user": this.getName("")
+        if (!this.data.locked) {
+            const console = this.getData()
+            const messageLog = [...console.content.body]
+            const message = {
+                "text": this.truncateMessage(formData.consoleInputText, console.limits),
+                "user": this.getName("")
+            }
+            this._inputVal = ""
+            messageLog.push(message)
+            console.content.body = messageLog
+            ConsoleData.updateConsole(console.id, console)
+        } else {
+            ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
         }
-        this._inputVal = ""
-        messageLog.push(message)
-        console.content.body = messageLog
-        ConsoleData.updateConsole(console.id, console)
     }
 }
 
