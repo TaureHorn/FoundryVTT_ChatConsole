@@ -1,7 +1,7 @@
 {
     "id": "console",
     "title": "Console - stylish chat or terminal windows",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "compatibility": {
         "minimum": "11",
         "verified": "11"
@@ -35,7 +35,7 @@
     "styles": [
         "styles/console.css"
     ],
-    "download": "https://github.com/TaureHorn/FoundryVTT_ChatConsole/releases/download/v1.4.1/console_v1.4.1.zip",
-    "manifest": "https://github.com/TaureHorn/FoundryVTT_ChatConsole/releases/download/v1.4.1/module.json",
+    "download": "https://github.com/TaureHorn/FoundryVTT_ChatConsole/releases/download/v1.4.2/console_v1.4.2.zip",
+    "manifest": "https://github.com/TaureHorn/FoundryVTT_ChatConsole/releases/download/v1.4.2/module.json",
     "socket": true
 }
