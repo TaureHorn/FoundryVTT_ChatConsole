@@ -1,7 +1,7 @@
 {
     "id": "console",
     "title": "Console - stylish chat or terminal windows",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "compatibility": {
         "minimum": "11",
         "verified": "11"
@@ -29,6 +29,12 @@
             "lang": "ja",
             "name": "日本語",
             "path": "lang/ja.json",
+            "flags": {}
+        },
+        {
+            "lang": "es",
+            "name": "Español",
+            "path": "lang/es.json",
             "flags": {}
         }
     ],
