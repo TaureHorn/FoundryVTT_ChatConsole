@@ -1,0 +1,69 @@
+{
+    "CONSOLE": {
+        "button-title": "Gestor de Consolas",
+        "config": {
+            "text": {
+                "header": "Texto",
+                "name": "Nombre",
+                "title": "Titulo",
+                "description": "Descripcion",
+                "gm-info": "GM Info"
+            },
+            "appearance": {
+                "header": "Apariencia",
+                "fg-col": "Color de primer plano",
+                "bg-col": "Color de Fondo",
+                "bg-img": "Imagen de Fondo",
+                "height": "Altura",
+                "width": "Anchura"
+            },
+            "style": {
+                "header": "Estilo",
+                "messenger": "Messenger",
+                "terminal": "Terminal"
+            },
+            "limits": {
+                "header": "Límites de mensajes",
+                "hover-info": "Corta los mensajes después de una longitud especificada de palabras o caracteres, opcionalmente añadiendo una cadena personalizada.",
+                "none": "Ninguno",
+                "characters": "Caracteres",
+                "words": "Palabras",
+                "marker": "Marcador",
+                "number": "Numeros"
+            },
+            "players": {
+                "header": "Propiedad Jugadores",
+                "hover-info": "Selecciona quién puede ver esta consola en su gestor de consola. Esto es independiente de si una consola es pública o privada."
+            },
+            "scenes": {
+                "header": "Escenas",
+                "hover-info": "Sigue la pista de las escenas en las que esta consola puede ser relevante"
+            },
+            "submit": "Enviar"
+        },
+        "console": {
+            "app-info": "Haga clic con el botón izquierdo para copiar un mensaje en el portapapeles. Haz clic con el botón derecho para borrar un mensaje.",
+            "characters": "Personajes",
+            "close": "Cerrar",
+            "limit": "limitar",
+            "send": "Enviar",
+            "show-players": "Mostrar a los jugadores",
+            "words": "Palabras"
+        },
+        "consoles": "Consolas",
+        "manager": {
+            "add-new-console": "Añadir nueva consola",
+            "current-character": "PERSONAJE ACTUAL",
+            "delete-console": "Borrar Consola",
+            "description": "Descripcion",
+            "duplicate-console": "Duplicar Consola",
+            "edit-console": "Editar Consola",
+            "gm-info": "GM Info",
+            "n/a": "N/A",
+            "open-console": "Abrir consola",
+            "scenes": "Escenas",
+            "toggle-lock": "Bloquear/desbloquear la consola para desactivar/activar la edición",
+            "toggle-visibility": "Conmutar la visibilidad de la consola a los jugadores"
+        }
+    }
+}
