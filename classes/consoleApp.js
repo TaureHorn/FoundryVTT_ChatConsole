@@ -45,6 +45,7 @@ export default class ConsoleApp extends FormApplication {
                 class: "info",
                 icon: "fas fa-circle-info",
                 label: "",
+                onclick: () => ui.notifications.notify(`Console | ${game.i18n.localize("CONSOLE.console.app-info")}`),
                 tooltip: game.i18n.localize("CONSOLE.console.app-info")
             },
             {
@@ -56,13 +57,23 @@ export default class ConsoleApp extends FormApplication {
             }
         ]
         if (game.user.isGM) {
-            buttons.unshift({
-                class: "share-image",
-                icon: "fas fa-eye",
-                label: "",
-                onclick: () => this.shareApp(),
-                tooltip: game.i18n.localize("CONSOLE.console.show-players")
-            })
+            buttons.unshift(
+
+                {
+                    class: "share-image",
+                    icon: "fas fa-eye",
+                    label: "",
+                    onclick: () => this.shareApp(),
+                    tooltip: game.i18n.localize("CONSOLE.console.show-players")
+                },
+                {
+                    class: 'copy-id',
+                    icon: "fas fa-id-badge",
+                    label: "",
+                    onclick: () => { this.copyToClipboard(this.options.id) },
+                    tooltip: `ID: ${this.options.id}`
+                }
+            )
         }
         return buttons
     }
@@ -97,16 +108,45 @@ export default class ConsoleApp extends FormApplication {
         return super.close(...args)
     }
 
+    copyToClipboard(text) {
+        // @param {string} text
+        if (typeof text === 'string') {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text)
+                } else {
+                    // fallback in case not in HTTPS - the jankiest method to copy text know to man, like wtf
+                    const copyText = document.createElement('textarea')
+                    copyText.value = text
+                    copyText.style.position = 'absolute';
+                    copyText.style.left = '-99999px'
+
+                    document.body.prepend(copyText)
+                    copyText.select()
+
+                    try {
+                        document.execCommand('copy')
+                    } catch (err) {
+                        console.error(err)
+                    } finally {
+                        copyText.remove()
+                    }
+                }
+            } catch (err) {
+                console.error(err)
+                ui.notifications.error("Console | Copying to clipboard was unsuccessful. Idk. Maybe this site doesn't have clipboard access?")
+            }
+        } else {
+            ui.notifications.error('Console | The element being attempted to copy is not a string!')
+            console.error('TypeError: element to copy is not a string', text, this)
+        }
+    }
+
     // left clicking a message copies it to clipboard
     _handleLeftClick = (event) => {
         if ($(event.currentTarget).data().action === "message-interact") {
-            navigator.clipboard.writeText($(event.currentTarget).data().messageText)
-                .then(() => {
-                    (ui.notifications.notify("Console | copied message to clipboard"))
-                }, (err) => {
-                    ui.notifications.warn("Console | unable to copy message to clipboard. Check browsers console for more details")
-                    console.error('Unable to copy to clipboard: ', err)
-                })
+            const text = $(event.currentTarget).data().messageText
+            this.copyToClipboard(text)
         }
 
     }
