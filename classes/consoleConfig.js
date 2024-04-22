@@ -52,6 +52,7 @@ export default class ConsoleConfig extends FormApplication {
                 body: oldData.content.body,
                 title: formData.title
             },
+            defaultAnchor: formData.defaultAnchor === "true" ? true : false,
             description: formData.description === "" ? oldData.description : formData.description,
             gmInfo: formData.description === "" ? oldData.gmInfo : formData.gmInfo,
             id: oldData.id,

@@ -16,6 +16,7 @@ export default class ConsoleApp extends FormApplication {
         const overrides = {
             classes: ['console-app'],
             closeOnSubmit: false,
+            anchored: true,
             popOut: true,
             maximizable: true,
             minimizable: true,
@@ -33,6 +34,7 @@ export default class ConsoleApp extends FormApplication {
         data.character = this.getName("$user").name
         data.inputVal = this._inputVal
         this.getTemplate(data)
+        this.options.anchored = data.defaultAnchor
         this.options.title = data.name
         this.data = data
 
@@ -47,6 +49,17 @@ export default class ConsoleApp extends FormApplication {
                 label: "",
                 onclick: () => ui.notifications.notify(`Console | ${game.i18n.localize("CONSOLE.console.app-info")}`),
                 tooltip: game.i18n.localize("CONSOLE.console.app-info")
+            },
+            {
+                class: "anchor",
+                icon: "fas fa-anchor",
+                label: "",
+                onclick: () => {
+                    this.options.anchored = this.options.anchored ? false : true
+                    const header = this._element.find('.window-title')[0]
+                    header.innerHTML = this.options.anchored ? `<i class="fas fa-anchor"></i>${header.innerText}` : `${header.innerText}`
+                },
+                tooltip: game.i18n.localize("CONSOLE.console.anchor-app")
             },
             {
                 class: "close",
@@ -103,9 +116,13 @@ export default class ConsoleApp extends FormApplication {
     }
 
     async close(...args) {
-        delete this._document.apps[this.appId]
-        delete this._represents.apps[this.appId]
-        return super.close(...args)
+        if (!this.options.anchored) {
+            delete this._document.apps[this.appId]
+            delete this._represents.apps[this.appId]
+            return super.close(...args)
+        } else {
+            ui.notifications.warn("Console | Cannot close this window while it is anchored")
+        }
     }
 
     copyToClipboard(text) {
@@ -266,6 +283,10 @@ export default class ConsoleApp extends FormApplication {
             element.style.background = this.data.styling.bg
             element.style.border = `2px solid ${this.data.styling.fg}`
             element.style.borderRadius = "0px";
+
+            const header = this._element.find('.window-title')[0]
+            header.innerHTML = this.options.anchored ? `<i class="fas fa-anchor"></i>${header.innerText}` : `${header.innerText}`
+
         }, 100)
     }
 

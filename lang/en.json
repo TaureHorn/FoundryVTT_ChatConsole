@@ -17,6 +17,12 @@
                 "height": "Height",
                 "width": "Width"
             },
+            "default-anchor": {
+                "header": "Default anchor state",
+                "hover-info": "An anchored window cannot be closed while anchored. The active state can be toggled within the app window.",
+                "not-anchored": "Not anchored",
+                "anchored": "Anchored"
+            },
             "style": {
                 "header": "Style",
                 "messenger": "Messenger",
@@ -43,6 +49,7 @@
         },
         "console": {
             "app-info": "Left click to copy message to clipboard. Right-click to delete a message.",
+            "anchor-app": "Toggle whether this window is anchored. An anchored window cannot be closed",
             "characters": "characters",
             "close": "Close",
             "limit": "limit",
