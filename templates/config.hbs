@@ -41,6 +41,15 @@
         </div>
     </fieldset>
     <fieldset>
+    <legend>{{localize "CONSOLE.config.default-anchor.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.default-anchor.hover-info"}}"></i></legend>
+        <div>
+            <input id="no-anchor" name="defaultAnchor" type="radio" value="false" {{#unless console.defaultAnchor}}checked{{/unless}}/>
+            <label for="no-anchor">{{localize "CONSOLE.config.default-anchor.not-anchored"}}</label>
+            <input id="anchor" name="defaultAnchor" type="radio" value="true" {{#if console.defaultAnchor}}checked{{/if}}/>
+            <label for="anchor">{{localize "CONSOLE.config.default-anchor.anchored"}}</label>
+        </div>
+    </fieldset>
+    <fieldset>
     <legend>{{localize "CONSOLE.config.style.header"}}</legend>
         <div>
             <input id="messenger" name="messengerStyle" type="radio" value="true" {{#if console.styling.messengerStyle}}checked{{/if}}/> 

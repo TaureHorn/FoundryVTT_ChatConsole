@@ -110,6 +110,10 @@ export default class ConsoleManager extends FormApplication {
             console.locked = false
             ConsoleData.updateConsole(console.id, console)
         }
+        if (!console.defaultAnchor) {
+            console.defaultAnchor = false
+            ConsoleData.updateConsole(console.id, console)
+        }
     }
 
 }
