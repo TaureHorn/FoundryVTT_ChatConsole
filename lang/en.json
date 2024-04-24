@@ -60,6 +60,7 @@
         "consoles": "Consoles",
         "manager": {
             "add-new-console": "Add new console",
+            "archive-console": "Archive console",
             "current-character": "CURRENT CHARACTER",
             "delete-console": "Delete console",
             "description": "Description",

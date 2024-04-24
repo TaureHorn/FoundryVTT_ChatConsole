@@ -40,6 +40,12 @@ export default class ConsoleData {
         return arr
     }
 
+    static async createJournalPage(console) {
+        const data = this.getDataPool()
+        const newEntry = new JournalEntryPage({ "name": console.name })
+        await data.createEmbeddedDocuments(newEntry.constructor.name, [newEntry])
+    }
+
     static async createConsole(name) {
         if (game.user.isGM) {
             const newConsole = {
@@ -102,7 +108,7 @@ export default class ConsoleData {
         this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, newConsoles)
     }
 
-    static async toggleLock(id){
+    static async toggleLock(id) {
         const console = this.getConsoles().find((obj) => obj.id === id)
         console.locked = console.locked ? false : true
         const update = {
@@ -129,6 +135,46 @@ export default class ConsoleData {
             [id]: updateData
         }
         data.setFlag(Console.ID, Console.FLAGS.CONSOLE, update)
+    }
+
+    static async updateJournalPage(console) {
+        // @param {object} console
+        let html = `
+            <div style="background-color:${console.styling.bg};
+            border:2px solid ${console.styling.fg};
+            color:${console.styling.fg};
+            padding: 5px">
+            <p style="background-color:${console.styling.fg};color:${console.styling.bg}"><strong>${console.content.title}</strong></p>`
+
+        if (console.content.body.length > 0) {
+            console.content.body.forEach((message) => {
+                if (message.user.name.length === 0) {
+                    html += `<p>${message.text}`
+                } else {
+                    html += `<p><strong>${message.user.name}</strong>: ${message.text}</p>`
+                }
+            })
+        }
+        html += `</div>`
+
+        const doc = ConsoleData.getDataPool().pages._source.find((obj) => obj.name === console.name)
+        const data = ConsoleData.getDataPool()
+        await data.updateEmbeddedDocuments('JournalEntryPage', [{
+            _id: doc._id,
+            flags: {
+                [Console.ID]: {
+                    [Console.FLAGS.CONSOLE]: console
+                }
+            },
+            sort: data._source.pages.length > 0 ? data._source.pages[data._source.pages.length - 1].sort + 100000 : 0,
+            text: {
+                content: html,
+                format: 1,
+                markdown: ""
+            },
+        }])
+
+
     }
 }
 
