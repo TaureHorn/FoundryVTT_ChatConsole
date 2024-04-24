@@ -61,6 +61,16 @@ export default class ConsoleManager extends FormApplication {
         const console = ConsoleData.getConsoles().find((obj) => obj.id === id)
 
         switch (action) {
+            case 'archive-console':
+                try {
+                    await ConsoleData.createJournalPage(console)
+                    await ConsoleData.updateJournalPage(console)
+                    await ConsoleData.deleteConsole(id)
+                } catch (err) {
+                    console.error(err)
+                    ui.notifications.error("Console | Unable to archive console. Check browser console for error message")
+                }
+                break;
             case 'create':
                 await ConsoleData.createConsole("new console")
                 break;
