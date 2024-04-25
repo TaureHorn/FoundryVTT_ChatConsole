@@ -3,7 +3,7 @@
     {{#each consoles}}{{#if public}}
     {{#inArray ../user playerOwnership}}
         <div style="background:{{styling.bg}} url({{styling.bgImg}});border:1px solid {{styling.fg}}" class="console-manager-entry">
-            <div style="display:flex;flex-direction:column;margin-right:4px;box-sizing:border-box;width:100%">
+            <div style="display:flex;flex-direction:column;box-sizing:border-box;width:100%">
                 <button style="all:unset;cursor:pointer" title="{{localize "CONSOLE.manager.open-console"}}" data-console-id="{{this.id}}" data-action="open-console">
                     <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px" class="console-seperate">
                         <span><strong>{{name}}</strong></span>

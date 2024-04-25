@@ -43,57 +43,126 @@ export default class ConsoleManager extends FormApplication {
         }
     }
 
-    activateListeners(html) {
-        super.activateListeners(html)
-
-        html.on('click', "[data-action]", this._handleButtonClick)
-    }
-
     getSceneName(id) {
         return game.scenes._source.find((obj) => obj._id === id).name
     }
+
+    activateListeners(html) {
+        super.activateListeners(html)
+
+        if (game.user.isGM) {
+            const entries = Array.from(document.getElementsByClassName('console-manager-entry'))
+            entries.forEach((node => {
+                ContextMenu.create(this, node, '.console-manager-entry', this.#contextMenuOptions)
+            }))
+        }
+        html.on('click', '[data-action]', this._handleButtonClick)
+    }
+
+    #contextMenuOptions = [
+        {
+            name: game.i18n.localize('CONSOLE.manager.edit-console'),
+            icon: '<i class="fas fa-pen-to-square"></i>',
+            callback: async (item) => {
+                const id = item[0].dataset.consoleId
+                new ConsoleConfig().render(true, { id })
+            }
+        },
+        {
+            name: game.i18n.localize('CONSOLE.manager.toggle-visibility'),
+            icon: '<i class="fas fa-eye"></i>',
+            callback: async (item) => {
+                const id = item[0].dataset.consoleId
+                await ConsoleData.toggleVisibility(id)
+            }
+        },
+        {
+            name: game.i18n.localize('CONSOLE.manager.toggle-lock'),
+            icon: '<i class="fas fa-lock"></i>',
+            callback: async (item) => {
+                const id = item[0].dataset.consoleId
+                await ConsoleData.toggleLock(id)
+            }
+        },
+        {
+            name: game.i18n.localize('CONSOLE.manager.duplicate-console'),
+            icon: '<i class="fas fa-clone"></i>',
+            callback: async (item) => {
+                const id = item[0].dataset.consoleId
+                await ConsoleData.duplicateConsole(id)
+            }
+        },
+        {
+            name: game.i18n.localize('CONSOLE.manager.archive-console'),
+            icon: '<i class="fas fa-box-archive"></i>',
+            callback: async (item) => {
+                const id = item[0].dataset.consoleId
+                const console = ConsoleData.getConsoles().find((obj) => obj.id === id)
+
+                const confirm = new Dialog({
+                    buttons: {
+                        archive: {
+                            label: game.i18n.localize('CONSOLE.manager.archive-console'),
+                            icon: '<i class="fas fa-box-archive"></i>',
+                            callback: async () => {
+                                try {
+                                    await ConsoleData.createJournalPage(console)
+                                    await ConsoleData.updateJournalPage(console)
+                                    await ConsoleData.deleteConsole(id)
+                                } catch (err) {
+                                    console.error(err)
+                                    ui.notifications.error("Console | Unable to archive console. Check browser console for error message")
+                                }
+                            }
+                        },
+                        close: {
+                            label: game.i18n.localize('CONSOLE.manager.cancel'),
+                        }
+                    },
+                    content: `<p>${game.i18n.localize('CONSOLE.manager.confirm-archive')}</p>`
+                })
+                confirm.render(true)
+            }
+        },
+        {
+            name: game.i18n.localize('CONSOLE.manager.delete-console'),
+            icon: '<i class="fas fa-trash"></i>',
+            callback: (item) => {
+                const id = item[0].dataset.consoleId
+                const confirm = new Dialog({
+                    buttons: {
+                        delete: {
+                            label: game.i18n.localize('CONSOLE.manager.delete-console'),
+                            icon: '<i class="fas fa-trash"></i>',
+                            callback: async () => await ConsoleData.deleteConsole(id)
+                        },
+                        close: {
+                            label: game.i18n.localize('CONSOLE.manager.cancel'),
+                        }
+                    },
+                    content: `<p>${game.i18n.localize('CONSOLE.manager.confirm-delete')}</p>`
+                })
+                confirm.render(true)
+            }
+        },
+
+    ]
 
     _handleButtonClick = async (event) => {
         const clickedElement = $(event.currentTarget)
         const action = clickedElement.data().action
         const id = clickedElement.data().consoleId
-
         const console = ConsoleData.getConsoles().find((obj) => obj.id === id)
 
         switch (action) {
-            case 'archive-console':
-                try {
-                    await ConsoleData.createJournalPage(console)
-                    await ConsoleData.updateJournalPage(console)
-                    await ConsoleData.deleteConsole(id)
-                } catch (err) {
-                    console.error(err)
-                    ui.notifications.error("Console | Unable to archive console. Check browser console for error message")
-                }
-                break;
             case 'create':
                 await ConsoleData.createConsole("new console")
                 break;
             case 'open-console':
                 new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width }).updateAppClasses()
                 break;
-            case 'edit-console':
-                new ConsoleConfig().render(true, { id })
-                break;
-            case 'delete-console':
-                await ConsoleData.deleteConsole(id)
-                break;
-            case 'duplicate-console':
-                await ConsoleData.duplicateConsole(id)
-                break;
-            case 'toggle-lock':
-                await ConsoleData.toggleLock(id)
-                break;
-            case 'toggle-visibility':
-                await ConsoleData.toggleVisibility(id)
-                break;
             default:
-                ui.notifications.error(`ConsoleManager encountered an invalid button data-action '${action}' in _handleButtonClick`)
+                ui.notifications.error(`Console | ConsoleManager encountered an invalid button data-action '${action}' in _handleButtonClick`)
         }
     }
 
