@@ -121,7 +121,13 @@ export default class ConsoleApp extends FormApplication {
             delete this._represents.apps[this.appId]
             return super.close(...args)
         } else {
-            ui.notifications.warn("Console | Cannot close this window while it is anchored")
+            const anchorITags = Array.from(document.getElementsByClassName('fas fa-anchor'))
+            anchorITags.forEach((tag) => {
+                tag.classList.add("wiggle")
+                setTimeout(() => {
+                    tag.classList.remove("wiggle")
+                }, 500)
+            })
         }
     }
 
