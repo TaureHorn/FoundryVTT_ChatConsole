@@ -1,3 +1,49 @@
+@keyframes shake {
+    0% {
+        transform: translate(1px, 0);
+    }
+
+    10% {
+        transform: translate(-1px, 0);
+    }
+
+    20% {
+        transform: translate(-3px, 0);
+    }
+
+    30% {
+        transform: translate(3px, 0);
+    }
+
+    40% {
+        transform: translate(1px, 0);
+    }
+
+    50% {
+        transform: translate(-1px, 0);
+    }
+
+    60% {
+        transform: translate(-3px, 0);
+    }
+
+    70% {
+        transform: translate(3px, 0);
+    }
+
+    80% {
+        transform: translate(-1px, 0);
+    }
+
+    90% {
+        transform: translate(1px, 0);
+    }
+
+    100% {
+        transform: translate(1px, 0);
+    }
+}
+
 #chat-log {
     flex: auto;
 }
@@ -73,4 +119,10 @@
     justify-content: space-evenly;
     margin: 0 auto;
     width: 100%;
+}
+
+.wiggle {
+    animation-duration: 0.5s;
+    animation-name: shake;
+    animation-iteration-count: 1;
 }
