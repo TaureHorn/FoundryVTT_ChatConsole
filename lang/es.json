@@ -17,6 +17,12 @@
                 "height": "Altura",
                 "width": "Anchura"
             },
+             "default-anchor": {
+                "header": "Estado de anclaje por defecto",
+                "hover-info": "Una ventana anclada no se puede cerrar mientras está anclada. El estado activo se puede cambiar dentro de la ventana de la aplicación.",
+                "not-anchored": "No anclada",
+                "anchored": "Anclada"
+            },
             "style": {
                 "header": "Estilo",
                 "messenger": "Messenger",
@@ -37,12 +43,13 @@
             },
             "scenes": {
                 "header": "Escenas",
-                "hover-info": "Sigue la pista de las escenas en las que esta consola puede ser relevante"
+                "hover-info": "Sigue la pista de las escenas en las que esta consola puede ser relevante."
             },
             "submit": "Enviar"
         },
         "console": {
             "app-info": "Haga clic con el botón izquierdo para copiar un mensaje en el portapapeles. Haz clic con el botón derecho para borrar un mensaje.",
+            "anchor-app": "Permite alternar si esta ventana está anclada. Una ventana anclada no se puede cerrar.",
             "characters": "Personajes",
             "close": "Cerrar",
             "limit": "limitar",
@@ -53,6 +60,10 @@
         "consoles": "Consolas",
         "manager": {
             "add-new-console": "Añadir nueva consola",
+            "archive-console": "Archivar Consola",
+            "cancel": "Cancelar",
+            "confirm-archive": "Esto convertirá esta consola en una página en la entrada del diario '_console-data' y borrará la consola del gestor. Esto es irreversible. ¿Estás seguro de que quieres archivar esta consola?",
+            "confirm-delete": "¿Estás seguro de que quieres borrar esta consola?",
             "current-character": "PERSONAJE ACTUAL",
             "delete-console": "Borrar Consola",
             "description": "Descripcion",
