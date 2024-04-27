@@ -56,8 +56,8 @@ export default class ConsoleApp extends FormApplication {
                 label: "",
                 onclick: () => {
                     this.options.anchored = this.options.anchored ? false : true
-                    const header = this._element.find('.window-title')[0]
-                    header.innerHTML = this.options.anchored ? `<i class="fas fa-anchor"></i>${header.innerText}` : `${header.innerText}`
+                    const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
+                    this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
                 },
                 tooltip: game.i18n.localize("CONSOLE.console.anchor-app")
             },
@@ -288,9 +288,8 @@ export default class ConsoleApp extends FormApplication {
             element.style.border = `2px solid ${this.data.styling.fg}`
             element.style.borderRadius = "0px";
 
-            const header = this._element.find('.window-title')[0]
-            header.innerHTML = this.options.anchored ? `<i class="fas fa-anchor"></i>${header.innerText}` : `${header.innerText}`
-
+            const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
+            this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
         }, 100)
     }
 
