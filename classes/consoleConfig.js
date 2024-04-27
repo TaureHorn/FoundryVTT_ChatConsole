@@ -7,7 +7,6 @@ export default class ConsoleConfig extends FormApplication {
 
         const overrider = {
             height: 'auto',
-            id: 'console-config',
             left: 1340,
             resizable: true,
             template: Console.TEMPLATES.CONFIG,
@@ -20,8 +19,8 @@ export default class ConsoleConfig extends FormApplication {
         return mergedOptions
     }
 
-    getData(options) {
-        const console = ConsoleData.getConsoles().find((obj) => obj.id === options.id)
+    getData() {
+        const console = ConsoleData.getConsoles().find((obj) => obj.id === this.object)
         this.versionMigration(console)
 
         let players = game.users._source

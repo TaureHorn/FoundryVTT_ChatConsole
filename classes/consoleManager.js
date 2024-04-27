@@ -65,7 +65,12 @@ export default class ConsoleManager extends FormApplication {
             icon: '<i class="fas fa-pen-to-square"></i>',
             callback: async (item) => {
                 const id = item[0].dataset.consoleId
-                new ConsoleConfig().render(true, { id })
+                const appWindow = document.getElementById(id)
+                if (appWindow) {
+                    ui.windows[appWindow.dataset.appid].close()
+                }
+                const config = new ConsoleConfig(id)
+                config.render(true, { "id": `console-config-${id}` })
             }
         },
         {
