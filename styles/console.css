@@ -44,6 +44,24 @@
     }
 }
 
+@keyframes flash {
+    0% {
+        filter: invert(0.25)
+    }
+
+    33% {
+        filter: initial;
+    }
+
+    66% {
+        filter: invert(0.25);
+    }
+
+    100% {
+        filter: initial;
+    }
+}
+
 #chat-log {
     flex: auto;
 }
@@ -119,6 +137,12 @@
     justify-content: space-evenly;
     margin: 0 auto;
     width: 100%;
+}
+
+.flash {
+    animation-duration: 0.25s;
+    animation-name: flash;
+    animation-iteration-count: 1;
 }
 
 .wiggle {

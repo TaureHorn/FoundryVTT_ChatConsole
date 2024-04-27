@@ -159,7 +159,18 @@ export default class ConsoleManager extends FormApplication {
                 await ConsoleData.createConsole("new console")
                 break;
             case 'open-console':
-                new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width }).updateAppClasses()
+                const appWindow = document.getElementById(console.id)
+                if (!appWindow) {
+                    // render app if not open
+                    new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width }).updateAppClasses()
+                } else {
+                    // if open bring to front and flash
+                    ui.windows[appWindow.dataset.appid].bringToTop()
+                    appWindow.classList.add('flash')
+                    setTimeout(() => {
+                        appWindow.classList.remove('flash')
+                    }, 500)
+                }
                 break;
             default:
                 ui.notifications.error(`Console | ConsoleManager encountered an invalid button data-action '${action}' in _handleButtonClick`)
