@@ -52,7 +52,7 @@ export default class ConsoleApp extends FormApplication {
             },
             {
                 class: "anchor",
-                icon: "fas fa-anchor",
+                icon: "fas fa-anchor anchorButton",
                 label: "",
                 onclick: () => {
                     this.options.anchored = this.options.anchored ? false : true
@@ -121,13 +121,11 @@ export default class ConsoleApp extends FormApplication {
             delete this._represents.apps[this.appId]
             return super.close(...args)
         } else {
-            const anchorITags = Array.from(document.getElementsByClassName('fas fa-anchor'))
-            anchorITags.forEach((tag) => {
-                tag.classList.add("wiggle")
-                setTimeout(() => {
-                    tag.classList.remove("wiggle")
-                }, 500)
-            })
+            const anchorButton = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
+            anchorButton.classList.add("wiggle")
+            setTimeout(() => {
+                anchorButton.classList.remove("wiggle")
+            }, 500)
         }
     }
 
