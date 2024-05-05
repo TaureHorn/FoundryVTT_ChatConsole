@@ -18,7 +18,7 @@ export default class ConsoleManager extends FormApplication {
             id: 'console-manager',
             left: canvas.app.screen.width - 712,
             template: game.user.isGM ? Console.TEMPLATES.MANAGER : Console.TEMPLATES.MANAGER_PLAYER,
-            title: `${game.settings.get(Console.ID, 'moduleElementsName')} Manager` || "Console Manager",
+            title: Console.getRename("Manager", "Console Manager"),
             top: 10,
             width: 400,
         }
