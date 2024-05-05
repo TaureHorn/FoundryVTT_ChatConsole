@@ -198,7 +198,8 @@ export default class ConsoleApp extends FormApplication {
         if (this._represents) {
             this._represents.apps[this.appId] = this
         }
-        return super.render(...args)
+        super.render(...args)
+        this.updateAppClasses()
     }
 
     shareApp() {
@@ -248,7 +249,7 @@ export default class ConsoleApp extends FormApplication {
         if (users.includes(game.userId)) {
             const data = ConsoleData.getConsoles().find((obj) => obj.id === id)
             const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
-            return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width }).updateAppClasses()
+            return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width })
         }
     }
 
@@ -288,9 +289,13 @@ export default class ConsoleApp extends FormApplication {
             element.style.border = `2px solid ${this.data.styling.fg}`
             element.style.borderRadius = "0px";
 
+            const input = this._element.find(`#consoleInputText${this.options.id}`)[0]
+            input.selectionStart = input.selectionEnd = input.value.length
+            input.focus()
+
             const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
             this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
-        }, 100)
+        }, 200)
     }
 
     _updateObject(event, formData) {

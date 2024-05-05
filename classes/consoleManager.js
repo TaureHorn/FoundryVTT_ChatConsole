@@ -167,7 +167,7 @@ export default class ConsoleManager extends FormApplication {
                 const appWindow = document.getElementById(console.id)
                 if (!appWindow) {
                     // render app if not open
-                    new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width }).updateAppClasses()
+                    new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width })
                 } else {
                     // if open bring to front and flash
                     ui.windows[appWindow.dataset.appid].bringToTop()
