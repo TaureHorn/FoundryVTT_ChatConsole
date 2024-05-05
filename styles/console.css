@@ -77,14 +77,6 @@
     overflow: hidden scroll;
 }
 
-.console-manage-button {
-    background: none;
-    border: 1px solid #bbb;
-    border-radius: 0;
-    color: #bbb;
-    padding: 0;
-}
-
 .console-manager-entry {
     display: flex;
     justify-content: space-between;
