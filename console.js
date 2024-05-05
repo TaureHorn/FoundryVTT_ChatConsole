@@ -31,21 +31,31 @@ export default class Console {
         }
     }
 
+    static getRename(append, fallback) {
+        const rename = game.settings.get(Console.ID, 'moduleElementsName')
+        if (!rename || rename === '') {
+            return fallback
+        } else {
+            return append ? `${rename} ${append}` : rename
+        }
+    }
+
 }
 
 Hooks.on('init', function() {
     game.settings.register(Console.ID, 'moduleElementsName', {
         name: "Module elements name",
-        hint: "If you don't like them being called 'Consoles', if it doesn't fit with your fantasy setting, rename it to something else",
+        hint: "If you don't like them being called 'Consoles', if it doesn't fit with your fantasy setting, rename it to something else. REQUIRES RELOAD",
         scope: 'world',
         config: true,
-        type: String
+        type: String,
+        requiresReload: true
     })
 })
 
 // add button to chat
 Hooks.on('renderSidebarTab', (chatLog, html) => {
-    const name = game.settings.get(Console.ID, 'moduleElementsName') || game.i18n.localize('CONSOLE.consoles')
+    const name = Console.getRename("", game.i18n.localize('CONSOLE.consoles'))
     const tooltip = game.i18n.localize('CONSOLE.button-title')
     const button = `<button id="console-manager-launcher" data-tooltip="${tooltip}"><i class="fas fa-terminal"></i> ${name}</button>`
     html.find('#chat-controls').after(button)
@@ -58,7 +68,7 @@ Hooks.on('renderSidebarTab', (chatLog, html) => {
 // tracks the input of an app and records its value in the object as part of preventing an input being cleared in the document update cycle
 Hooks.on('renderConsoleApp', (...args) => {
     document.querySelector(`#consoleInputText${args[0].id}`).addEventListener('keyup', (event) => {
-        args[0]._inputVal = event.target.value 
+        args[0]._inputVal = event.target.value
     })
 })
 

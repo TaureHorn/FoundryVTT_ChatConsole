@@ -47,7 +47,7 @@ export default class ConsoleData {
     }
 
     static async createConsole() {
-        const title = `new ${game.settings.get(Console.ID, 'moduleElementsName').toLowerCase()}` || "new console"
+        const title = Console.getRename("", "new console")
         if (game.user.isGM) {
             const newConsole = {
                 content: {

@@ -10,7 +10,7 @@ export default class ConsoleConfig extends FormApplication {
             left: 1340,
             resizable: true,
             template: Console.TEMPLATES.CONFIG,
-            title: `${game.settings.get(Console.ID, 'moduleElementsName')} Config` || "Console Config",
+            title: Console.getRename("Config", "Console Config"),
             top: 40,
             width: 350
         }
