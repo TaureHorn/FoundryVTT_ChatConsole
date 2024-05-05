@@ -33,9 +33,19 @@ export default class Console {
 
 }
 
+Hooks.on('init', function() {
+    game.settings.register(Console.ID, 'moduleElementsName', {
+        name: "Module elements name",
+        hint: "If you don't like them being called 'Consoles', if it doesn't fit with your fantasy setting, rename it to something else",
+        scope: 'world',
+        config: true,
+        type: String
+    })
+})
+
 // add button to chat
 Hooks.on('renderSidebarTab', (chatLog, html) => {
-    const name = game.i18n.localize('CONSOLE.consoles')
+    const name = game.settings.get(Console.ID, 'moduleElementsName') || game.i18n.localize('CONSOLE.consoles')
     const tooltip = game.i18n.localize('CONSOLE.button-title')
     const button = `<button id="console-manager-launcher" data-tooltip="${tooltip}"><i class="fas fa-terminal"></i> ${name}</button>`
     html.find('#chat-controls').after(button)

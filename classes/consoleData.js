@@ -46,17 +46,18 @@ export default class ConsoleData {
         await data.createEmbeddedDocuments(newEntry.constructor.name, [newEntry])
     }
 
-    static async createConsole(name) {
+    static async createConsole() {
+        const title = `new ${game.settings.get(Console.ID, 'moduleElementsName').toLowerCase()}` || "new console"
         if (game.user.isGM) {
             const newConsole = {
                 content: {
                     body: [],
-                    title: name,
+                    title: title,
                 },
                 description: "description",
                 gmInfo: "GM info",
                 id: foundry.utils.randomID(Console.IDLENGTH),
-                name: name,
+                name: title,
                 limits: {
                     hardLimit: 2048, // inbuilt character limit so you can't just send the entire bee movie script
                     marker: '...',

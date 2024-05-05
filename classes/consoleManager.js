@@ -18,7 +18,7 @@ export default class ConsoleManager extends FormApplication {
             id: 'console-manager',
             left: canvas.app.screen.width - 712,
             template: game.user.isGM ? Console.TEMPLATES.MANAGER : Console.TEMPLATES.MANAGER_PLAYER,
-            title: "Console Manager",
+            title: `${game.settings.get(Console.ID, 'moduleElementsName')} Manager` || "Console Manager",
             top: 10,
             width: 400,
         }
@@ -161,7 +161,7 @@ export default class ConsoleManager extends FormApplication {
 
         switch (action) {
             case 'create':
-                await ConsoleData.createConsole("new console")
+                await ConsoleData.createConsole()
                 break;
             case 'open-console':
                 const appWindow = document.getElementById(console.id)
