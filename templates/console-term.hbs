@@ -11,7 +11,7 @@
     <form id="input">
         <div style="display:flex">
             <div style="border:1px solid {{styling.fg}};border-radius:0px;border-right:none;color:{{styling.fg}};padding:3px 5px"><span>{{character}}: </span></div>
-            <input style="border:1px solid {{styling.fg}};border-left:none;border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px 0px" id="consoleInputText{{id}}" maxlength="{{limits.hardLimit}}" minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..."/>
+            <input style="border:1px solid {{styling.fg}};border-left:none;border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px 0px" id="consoleInputText{{id}}" {{#equal limits.type 'characters'}} maxlength="{{limits.value}}" {{else}} maxlength="{{limits.hardLimit}}" {{/equal}}  minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..."/>
             <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:1;outline:none" id="submitButton" type="submit">{{localize "CONSOLE.console.send"}}</button>
         </div>
     </form>

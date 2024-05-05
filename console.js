@@ -37,7 +37,7 @@ export default class Console {
 Hooks.on('renderSidebarTab', (chatLog, html) => {
     const name = game.i18n.localize('CONSOLE.consoles')
     const tooltip = game.i18n.localize('CONSOLE.button-title')
-    const button = `<button id="console-manager-launcher" class="console-manage-button" data-tooltip="${tooltip}"><i class="fas fa-terminal"></i> ${name}</button>`
+    const button = `<button id="console-manager-launcher" data-tooltip="${tooltip}"><i class="fas fa-terminal"></i> ${name}</button>`
     html.find('#chat-controls').after(button)
 
     html.on('click', '#console-manager-launcher', (event) => {
