@@ -1,4 +1,5 @@
 import Console from "../console.js"
+import ConsoleConfig from "./consoleConfig.js"
 import ConsoleData from "./consoleData.js"
 
 export default class ConsoleApp extends FormApplication {
@@ -253,6 +254,12 @@ export default class ConsoleApp extends FormApplication {
         }
     }
 
+    #stringifyArguments(arr) {
+        let args = [...arr]
+        args.shift()
+        return args.join(" ")
+    }
+
     truncateMessage(msg, limits) {
         switch (limits.type) {
             case "characters":
@@ -298,20 +305,115 @@ export default class ConsoleApp extends FormApplication {
         }, 200)
     }
 
-    _updateObject(event, formData) {
-        if (!this.data.locked) {
-            const console = this.getData()
-            const messageLog = [...console.content.body]
-            const message = {
-                "text": this.truncateMessage(formData.consoleInputText, console.limits),
-                "user": this.getName("")
+    async _updateObject(event, formData) {
+        const cmdMode = formData.consoleInputText.substring(0, 1) === "/" ? true : false
+        const console = this.getData()
+
+        const cmd = formData.consoleInputText.substring(1).split(' ')
+        if (cmdMode && game.user.isGM) {
+            // process commands for GMs
+            switch (cmd[0]) {
+                case "alias":
+                    let alias = this.#stringifyArguments(cmd)
+                    const character = game.actors.getName(alias) ? game.actors.getName(alias) : null
+                    character ? game.user.update({ "character": character }) : ui.notifications.warn('Console | An actor with that name does not exist')
+                    break;
+                case "clear":
+                    console.content.body = []
+                    ConsoleData.updateConsole(console.id, console)
+                    break;
+                case "close":
+                    this.close()
+                    break;
+                case "duplicate":
+                    ConsoleData.duplicateConsole(console.id)
+                    break;
+                case "edit":
+                    this.close()
+                    new ConsoleConfig(console.id).render(true, { "id": `console-config-${console.id}` })
+                    break;
+                case "incognito":
+                    game.user.update({ "character": null })
+                    break;
+                case "invite":
+                    let nameToInvite = this.#stringifyArguments(cmd)
+                    const user = game.users.getName(nameToInvite) ? game.users.getName(nameToInvite) : null
+                    if (user) {
+                        console.playerOwnership.push(user._id)
+                        ConsoleData.updateConsole(console.id, console)
+                    } else {
+                        ui.notifications.warn('Console | A user with that name does not exist')
+                    }
+                    break;
+                case "kick":
+                    let nameToKick = this.#stringifyArguments(cmd)
+                    const player = game.users.getName(nameToKick) ? game.users.getName(nameToKick) : null
+                    if (player) {
+                        console.playerOwnership.splice(console.playerOwnership.indexOf(player._id), 1)
+                        ConsoleData.updateConsole(console.id, console)
+                    } else {
+                        ui.notifications.warn('Console | A user with that name does not exist')
+                    }
+                    break;
+                case "lock":
+                    ConsoleData.toggleLock(console.id)
+                    break;
+                case "name":
+                    console.name = this.#stringifyArguments(cmd)
+                    ConsoleData.updateConsole(console.id, console)
+                    break;
+                case "share":
+                    this.shareApp()
+                    break;
+                case "show":
+                    ConsoleData.toggleVisibility(console.id)
+                    break;
+                case "title":
+                    console.content.title = this.#stringifyArguments(cmd)
+                    ConsoleData.updateConsole(console.id, console)
+                    break;
+                default:
+                    ui.notifications.warn(`Console | That is not a recognised command`)
             }
             this._inputVal = ""
-            messageLog.push(message)
-            console.content.body = messageLog
-            ConsoleData.updateConsole(console.id, console)
+        } else if (cmdMode && !game.user.isGM) {
+            // process commands for non gm users
+            switch (cmd[0]) {
+                case "alias":
+                    let alias = this.#stringifyArguments(cmd)
+                    const character = game.actors.getName(alias) ? game.actors.getName(alias) : null
+                    if (character) {
+                        const ownership = character.isOwner ? true : false
+                        ownership ? game.user.update({ "character": character }) : ui.notifications.warn('Console | You do not have ownership over this character')
+                    } else {
+                        ui.notifications.warn('Console | An actor with that name does not exist')
+                    }
+                    break;
+                case "close":
+                    this.close()
+                    break;
+                case "incognito":
+                    game.user.update({"character": null})
+                    break;
+                default:
+                    ui.notifications.warn(`Console | That is not a recognised command`)
+            }
+            this._inputVal = ""
         } else {
-            ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
+            if (!this.data.locked) {
+                // update with message as normal
+                const messageLog = [...console.content.body]
+                const message = {
+                    "text": this.truncateMessage(formData.consoleInputText, console.limits),
+                    "user": this.getName("")
+                }
+                this._inputVal = ""
+                messageLog.push(message)
+                console.content.body = messageLog
+                ConsoleData.updateConsole(console.id, console)
+            } else {
+                ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
+            }
         }
     }
 }
