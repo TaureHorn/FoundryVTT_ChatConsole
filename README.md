@@ -11,6 +11,24 @@ A console window can be set to anchor. An anchored window cannot be closed and w
 Any console can be archived by a GM by selecting the archive option in the right-click drop down menu. This action is irreversible and will prompt you to confirm. On confirmation, the console is turned into a page in the _console-data journal entry. After which, the console is deleted from the manager.
 
 As of yet there is no way to un-archive a console.
+### Commands
+The input box of the console app accepts a list of commands that trigger app functions rather than send messages. These are mostly for GM use, but players do have access to a few commands.
+
+To use a command type one of the following command names prepended by a forward slash. E.g. `/invite player 1`
+#### Command List
+- `/alias <actor name>`: Changes which character you are represented by in the app (and the rest of game). Player & GM.
+- `/clear`: Deletes all messasges. GM only.
+- `/close`: Closes the app window. Player & GM.
+- `/duplicate`: Makes a copy of this console. GM only.
+- `/edit`: Open the config window for this console. GM only.
+- `/incognito`: Unselects the character representing you. For GM's the app will show your messages without a name, for players, your message show your player name. Player & GM.
+- `/invite <player name>`: Add a player to this list of owners for this console. GM only.
+- `/kick <player name>`: Remove a player from the list of owner for this console. GM only.
+- `/lock`: Toggle the lock state of this console. GM only.
+- `/name <string>`: Set the name of this console. GM only.
+- `/share`: Share the app with players, making the app window render on their screens. GM only.
+- `/show`: Toggle the consosle visibility to players with ownership. GM only.
+- `/title <string>`: Set the title of this console. GM only.
 ### _console-data
 This journal entry is what stores all of the data for this module. The module fetches this journal entry by name. As such, this journal entry should not be renamed lest you lose access to all of your consoles data. Further, any archived consoles appear as pages within this journal entry. Feel free to move it into folders or duplicate it for a backup.
 ### Console visibility to players
