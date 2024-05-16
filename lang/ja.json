@@ -61,7 +61,7 @@
         "manager": {
             "add-new-console": "新規コンソール追加",
             "cancel": "キャンセル",
-            "confirm-archive": "これによりこのコンソールを '_console-data' 資料内のページに変換し、コンソールをマネージャから削除します。これはやり直せません。本当にこのコンソールをアーカイブしますか?",
+            "confirm-archive": "これによりこのコンソールを '_console-data' 資料内のページに変換し、コンソールをマネージャから削除します。これは元に戻せません。本当にこのコンソールをアーカイブしますか?",
             "confirm-delete": "本当にこのコンソールを消しますか?",
             "current-character": "CURRENT CHARACTER",
             "delete-console": "コンソール削除",
