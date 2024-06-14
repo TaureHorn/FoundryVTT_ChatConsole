@@ -1,47 +1,47 @@
 {
-  "id": "console",
-  "title": "Console - stylish chat or terminal windows",
-  "version": "1.6.1",
-  "compatibility": {
-    "minimum": "11",
-    "verified": "11.315"
-  },
-  "authors": [
-    {
-      "name": "TaureHorn",
-      "url": "https://github.com/TaureHorn",
-      "flags": {}
-    }
-  ],
-  "url": "https://github.com/TaureHorn/FoundryVTT_ChatConsole",
-  "description": "Create floating windows with configurable styles for either an instant-messenger style chat app or a terminal console",
-  "esmodules": [
-    "console.js"
-  ],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json",
-      "flags": {}
+    "id": "console",
+    "title": "Console - stylish chat or terminal windows",
+    "version": "1.6.1",
+    "compatibility": {
+        "minimum": "11",
+        "verified": "11.315"
     },
-    {
-      "lang": "ja",
-      "name": "日本語",
-      "path": "lang/ja.json",
-      "flags": {}
-    },
-    {
-      "lang": "es",
-      "name": "Español",
-      "path": "lang/es.json",
-      "flags": {}
-    }
-  ],
-  "styles": [
-    "styles/console.css"
-  ],
-  "download": "https://github.com/TaureHorn/FoundryVTT_ChatConsole/releases/download/v1.6.1/console_v1.6.1.zip",
-  "manifest": "https://github.com/TaureHorn/FoundryVTT_ChatConsole/releases/download/v1.6.1/module.json",
-  "socket": true
+    "authors": [
+        {
+            "name": "TaureHorn",
+            "url": "https://github.com/TaureHorn",
+            "flags": {}
+        }
+    ],
+    "url": "https://github.com/TaureHorn/FoundryVTT_ChatConsole",
+    "description": "Create floating windows with configurable styles for either an instant-messenger style chat app or a terminal console",
+    "esmodules": [
+        "console.js"
+    ],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json",
+            "flags": {}
+        },
+        {
+            "lang": "ja",
+            "name": "日本語",
+            "path": "lang/ja.json",
+            "flags": {}
+        },
+        {
+            "lang": "es",
+            "name": "Español",
+            "path": "lang/es.json",
+            "flags": {}
+        }
+    ],
+    "styles": [
+        "styles/console.css"
+    ],
+    "download": "https://github.com/TaureHorn/FoundryVTT_ChatConsole/releases/download/v1.6.1/console_v1.6.1.zip",
+    "manifest": "https://github.com/TaureHorn/FoundryVTT_ChatConsole/releases/download/v1.6.1/module.json",
+    "socket": true
 }
