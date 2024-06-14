@@ -53,7 +53,7 @@ export default class ConsoleConfig extends FormApplication {
             },
             defaultAnchor: formData.defaultAnchor === "true" ? true : false,
             description: formData.description === "" ? oldData.description : formData.description,
-            gmInfo: formData.description === "" ? oldData.gmInfo : formData.gmInfo,
+            gmInfo: formData.gmInfo === "" ? oldData.gmInfo : formData.gmInfo,
             id: oldData.id,
             name: formData.name,
             limits: {
@@ -102,6 +102,8 @@ export default class ConsoleConfig extends FormApplication {
                 ui.notifications.error(`Console | Unable to save scene data. Invalid formData type`)
             }
         }
+         
+        Console.log(true, newData)
 
         try {
             await ConsoleData.updateConsole(oldData.id, newData)
