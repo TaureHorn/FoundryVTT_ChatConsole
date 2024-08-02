@@ -50,7 +50,26 @@ Hooks.on('init', function() {
         config: true,
         type: String,
         requiresReload: true
+    }),
+    game.settings.register(Console.ID, 'defaultBackgroundColor', {
+        name: "Default console background color",
+        hint: "Set the default background color that all new consoles will have.",
+        scope: 'world',
+        config: true,
+        default: '#000000', 
+        type: String,
+        requiresReload: false
+    }), 
+    game.settings.register(Console.ID, 'defaultForegroundColor', {
+        name: "Default console foreground color",
+        hint: "Set the default foreground color that all new consoles will have.",
+        scope: 'world',
+        config: true,
+        default: '#ffffff', 
+        type: String,
+        requiresReload: false
     })
+
 })
 
 // add button to chat

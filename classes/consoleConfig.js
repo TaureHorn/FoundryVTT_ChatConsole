@@ -103,8 +103,6 @@ export default class ConsoleConfig extends FormApplication {
             }
         }
          
-        Console.log(true, newData)
-
         try {
             await ConsoleData.updateConsole(oldData.id, newData)
         } catch (err) {

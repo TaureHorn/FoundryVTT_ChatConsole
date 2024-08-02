@@ -40,6 +40,34 @@ export default class ConsoleData {
         return arr
     }
 
+    static hexValidator(hexstring) {
+    if (typeof hexstring != "string") {
+        Console.log(true, `consoleData/hexValidator: ${arguments[0]}, invalid type`)
+        return false
+    }
+
+    const hex = hexstring.split('')
+
+    if (hex[0] != '#') {
+        Console.log(true, `consoleData/hexValidator: ${arguments[0]}, missing '#'`)
+        return false
+    }
+    if (hex.length != 7) {
+        Console.log(true, `consoleData/hexValidator: ${arguments[0]}, incorrect length`)
+        return false
+    }
+
+    const alpha = '#01234567889abcedfABCDEF'
+    const charChecker = hex.map((character) => alpha.includes(character) ? true : false)
+    if (charChecker.includes(false)) {
+        Console.log(true, `consoleData/hexValidator: ${arguments[0]}, includes none-hexidecimal character(s)`)
+        return false
+    }
+
+    return true
+
+}
+
     static async createJournalPage(console) {
         const data = this.getDataPool()
         const newEntry = new JournalEntryPage({ "name": console.name })
@@ -47,6 +75,19 @@ export default class ConsoleData {
     }
 
     static async createConsole() {
+        let fg = game.settings.get(Console.ID, 'defaultForegroundColor');
+        let bg = game.settings.get(Console.ID, 'defaultBackgroundColor');
+
+        if (!this.hexValidator(fg)){
+            fg = "#ffffff"
+            ui.notifications.warn("Console | your default console foreground color is invalid. Check the browser console for more details.")
+        }
+        
+        if (!this.hexValidator(bg)){
+            bg = "#000000"
+            ui.notifications.warn("Console | your default console background color is invalid. Check the browser console for more details.")
+        }
+
         const title = Console.getRename("", "new console")
         if (game.user.isGM) {
             const newConsole = {
@@ -54,7 +95,7 @@ export default class ConsoleData {
                     body: [],
                     title: title,
                 },
-                description: "description",
+                description: "Description",
                 gmInfo: "GM info",
                 id: foundry.utils.randomID(Console.IDLENGTH),
                 name: title,
@@ -70,9 +111,9 @@ export default class ConsoleData {
                 scenes: [],
                 sceneNames: [],
                 styling: {
-                    bg: "#120b10",
+                    bg: bg, 
                     bgImg: "",
-                    fg: "#ff0055",
+                    fg: fg,
                     height: 880,
                     messengerStyle: true,
                     width: 850
