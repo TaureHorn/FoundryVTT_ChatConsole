@@ -18,7 +18,7 @@ To use a command type one of the following command names prepended by a forward 
 #### Command List
 - `/alias <actor name>`: Changes which character you are represented by in the app (and the rest of game). Player & GM.
 - `/clear`: Deletes all messasges. GM only.
-- `/close`: Closes the app window. Player & GM.
+- `/close` or `/exit`: Closes the app window. Player & GM.
 - `/duplicate`: Makes a copy of this console. GM only.
 - `/edit`: Open the config window for this console. GM only.
 - `/incognito`: Unselects the character representing you. For GM's the app will show your messages without a name, for players, your message show your player name. Player & GM.
@@ -55,3 +55,10 @@ No more counting out your words for the *Sending* spell in DnD5e.
 8. Terminal style console window.
 
 Messages within a console can be copied to the OS clipboard with a left-click or deleted with a right click. Players can only delete their own messages, GMs can delete all messages.
+
+## Potential Planned Improvements
+- Add ability to set default configuration for all consoles variables [name, title, bgImg, type, limits...]
+- Add message timestamps >> integration with SimpleCalendar and SmallTime?
+- New message notifications?
+- Refactor module so parts of it feel less like a hot mess and the code is easier for users to understand and build macros for.
+- Port the v12's 'Application_v2' thingy?
