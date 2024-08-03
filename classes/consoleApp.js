@@ -329,6 +329,7 @@ export default class ConsoleApp extends FormApplication {
                     ConsoleData.updateConsole(console.id, console)
                     break;
                 case "close":
+                case "exit":
                     this.close()
                     break;
                 case "duplicate":
@@ -403,6 +404,7 @@ export default class ConsoleApp extends FormApplication {
                     }
                     break;
                 case "close":
+                case "exit":
                     this.close()
                     break;
                 case "incognito":
