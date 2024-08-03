@@ -6,7 +6,7 @@ Create, manage and customise floating chat windows for stylised in-game instant-
 ## Features
 The following are a few of the modules features that warrant a little explanation.
 ### Anchoring
-A console window can be set to anchor. An anchored window cannot be closed and will remain open even when a user presses the 'Esc' key to close all open windows. A GM can configure a console to be anchored by default or not.
+A console window can be set to anchor. An anchored window cannot be closed and will remain open even when a user presses the 'Esc' key to close all open windows. A GM can configure a console to be anchored by default or not. An anchored window can still be closed by clicking on the anchor icon in the top right and then clicking the close button.
 ### Archiving
 Any console can be archived by a GM by selecting the archive option in the right-click drop down menu. This action is irreversible and will prompt you to confirm. On confirmation, the console is turned into a page in the _console-data journal entry. After which, the console is deleted from the manager.
 
@@ -58,6 +58,7 @@ Messages within a console can be copied to the OS clipboard with a left-click or
 
 ## Potential Planned Improvements
 - Add ability to set default configuration for all consoles variables [name, title, bgImg, type, limits...]
+- Module instructions / readme in the auto generated '_consoleData' journal entry.
 - Add message timestamps >> integration with SimpleCalendar and SmallTime?
 - New message notifications?
 - Refactor module so parts of it feel less like a hot mess and the code is easier for users to understand and build macros for.
