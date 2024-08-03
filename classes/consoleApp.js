@@ -10,6 +10,7 @@ export default class ConsoleApp extends FormApplication {
         this._represents = getUser
     }
 
+    // _inputVal keeps a record of the text in an input so unsent messages can persist between renders
     _inputVal = ""
 
     static get defaultOptions() {
@@ -128,6 +129,11 @@ export default class ConsoleApp extends FormApplication {
                 anchorButton.classList.remove("wiggle")
             }, 500)
         }
+    }
+
+    // called when a message is sent to clear the input box
+    clearInput() {
+        return document.getElementById(`consoleInputText${this.data.id}`).value = ""
     }
 
     copyToClipboard(text) {
@@ -333,7 +339,13 @@ export default class ConsoleApp extends FormApplication {
                     new ConsoleConfig(console.id).render(true, { "id": `console-config-${console.id}` })
                     break;
                 case "incognito":
-                    game.user.update({ "character": null })
+                    if (game.user.character) {
+                        game.user.update({ "character": null })
+                    }
+                    else {
+                        ui.notifications.warn(" Console | You are not currently represented by a character and are therefore already incognito")
+                    }
+                    Console.log(true, "incognito flow")
                     break;
                 case "invite":
                     let nameToInvite = this.#stringifyArguments(cmd)
@@ -376,6 +388,7 @@ export default class ConsoleApp extends FormApplication {
                     ui.notifications.warn(`Console | That is not a recognised command`)
             }
             this._inputVal = ""
+            this.clearInput()
         } else if (cmdMode && !game.user.isGM) {
             // process commands for non gm users
             switch (cmd[0]) {
@@ -393,12 +406,13 @@ export default class ConsoleApp extends FormApplication {
                     this.close()
                     break;
                 case "incognito":
-                    game.user.update({"character": null})
+                    game.user.update({ "character": null })
                     break;
                 default:
                     ui.notifications.warn(`Console | That is not a recognised command`)
             }
             this._inputVal = ""
+            this.clearInput()
         } else {
             if (!this.data.locked) {
                 // update with message as normal
@@ -408,10 +422,12 @@ export default class ConsoleApp extends FormApplication {
                     "user": this.getName("")
                 }
                 this._inputVal = ""
+                this.clearInput()
                 messageLog.push(message)
                 console.content.body = messageLog
                 ConsoleData.updateConsole(console.id, console)
             } else {
+                this.clearInput()
                 ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
             }
         }
