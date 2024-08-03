@@ -289,7 +289,7 @@ export default class ConsoleApp extends FormApplication {
                     return msg
                 }
             default:
-                ui.notifications.error("Console | ConsoleApp has encountered an invalid limitType in truncateMessage")
+                ui.notifications.error(`Console | ConsoleApp has encountered an invalid limitType ('${limits.type}') in truncateMessage`)
         }
     }
 
@@ -322,7 +322,7 @@ export default class ConsoleApp extends FormApplication {
                 case "alias":
                     let alias = this.#stringifyArguments(cmd)
                     const character = game.actors.getName(alias) ? game.actors.getName(alias) : null
-                    character ? game.user.update({ "character": character }) : ui.notifications.warn('Console | An actor with that name does not exist')
+                    character ? game.user.update({ "character": character }) : ui.notifications.warn(`Console | An actor with the name '${alias}' does not exist`)
                     break;
                 case "clear":
                     console.content.body = []
@@ -342,11 +342,9 @@ export default class ConsoleApp extends FormApplication {
                 case "incognito":
                     if (game.user.character) {
                         game.user.update({ "character": null })
-                    }
-                    else {
+                    } else {
                         ui.notifications.warn(" Console | You are not currently represented by a character and are therefore already incognito")
                     }
-                    Console.log(true, "incognito flow")
                     break;
                 case "invite":
                     let nameToInvite = this.#stringifyArguments(cmd)
@@ -355,7 +353,7 @@ export default class ConsoleApp extends FormApplication {
                         console.playerOwnership.push(user._id)
                         ConsoleData.updateConsole(console.id, console)
                     } else {
-                        ui.notifications.warn('Console | A user with that name does not exist')
+                        ui.notifications.warn(`Console | A user with the name '${nameToInvite}' does not exist`)
                     }
                     break;
                 case "kick":
@@ -365,7 +363,7 @@ export default class ConsoleApp extends FormApplication {
                         console.playerOwnership.splice(console.playerOwnership.indexOf(player._id), 1)
                         ConsoleData.updateConsole(console.id, console)
                     } else {
-                        ui.notifications.warn('Console | A user with that name does not exist')
+                        ui.notifications.warn(`Console | A user with the name '${nameToKick}' does not exist`)
                     }
                     break;
                 case "lock":
@@ -386,7 +384,8 @@ export default class ConsoleApp extends FormApplication {
                     ConsoleData.updateConsole(console.id, console)
                     break;
                 default:
-                    ui.notifications.warn(`Console | That is not a recognised command`)
+                    Console.log(true, cmd)
+                    ui.notifications.warn(`Console | '/${cmd.join(" ")}' is not a recognised command`)
             }
             this._inputVal = ""
             this.clearInput()
@@ -398,9 +397,9 @@ export default class ConsoleApp extends FormApplication {
                     const character = game.actors.getName(alias) ? game.actors.getName(alias) : null
                     if (character) {
                         const ownership = character.isOwner ? true : false
-                        ownership ? game.user.update({ "character": character }) : ui.notifications.warn('Console | You do not have ownership over this character')
+                        ownership ? game.user.update({ "character": character }) : ui.notifications.warn(`Console | You do not have ownership over the character '${alias}'`)
                     } else {
-                        ui.notifications.warn('Console | An actor with that name does not exist')
+                        ui.notifications.warn(`Console | An actor with the name '${alias}' does not exist`)
                     }
                     break;
                 case "close":
@@ -408,10 +407,14 @@ export default class ConsoleApp extends FormApplication {
                     this.close()
                     break;
                 case "incognito":
-                    game.user.update({ "character": null })
+                    if (game.user.character) {
+                        game.user.update({ "character": null })
+                    } else {
+                        ui.notifications.warn(" Console | You are not currently represented by a character and are therefore already incognito")
+                    }
                     break;
                 default:
-                    ui.notifications.warn(`Console | That is not a recognised command`)
+                    ui.notifications.warn(`Console | '/${cmd.join(" ")}' is not a recognised command`)
             }
             this._inputVal = ""
             this.clearInput()
