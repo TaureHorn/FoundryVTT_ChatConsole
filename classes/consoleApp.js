@@ -200,7 +200,7 @@ export default class ConsoleApp extends FormApplication {
             this._represents.apps[this.appId] = this
         }
         super.render(...args)
-        this.updateAppClasses()
+        this.updateAppClasses(this.data.id)
     }
 
     shareApp() {
@@ -287,9 +287,9 @@ export default class ConsoleApp extends FormApplication {
         }
     }
 
-    async updateAppClasses() {
+    async updateAppClasses(id) {
         setTimeout(() => {
-            const element = this._element[0]
+            const element = document.getElementById(id)
             element.className = `app window-app form console-app`
             element.style.color = this.data.styling.fg
             element.style.background = this.data.styling.bg
