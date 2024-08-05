@@ -8,7 +8,12 @@ export default class ConsoleData {
 
     static createDataPool() {
         if (game.user.isGM) {
-            JournalEntry.create({ "name": this.name })
+            JournalEntry.create({
+                "name": this.name,
+                "ownership": {
+                    "default": 3
+                }
+            })
         } else {
             ui.notifications.error(`Console | No data storage Document of name '${this.name}' exists and you lack the permissions to create one. Consult your GM.`)
         }
