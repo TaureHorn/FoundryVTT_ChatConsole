@@ -1,16 +1,14 @@
 import Console from "../console.js"
-import ConsoleData from "./consoleData.js"
 
-export default class ConsoleConfig extends FormApplication {
+export default class DefaultConfig extends FormApplication {
     static get defaultOptions() {
         const defaults = super.defaultOptions
-
         const overrider = {
             height: 'auto',
             left: 1340,
             resizable: true,
             template: Console.TEMPLATES.CONFIG,
-            title: Console.getRename("Config", "Console Config"),
+            title: Console.getRename("Config", "Default Console Config"),
             top: 40,
             width: 350
         }
@@ -19,15 +17,54 @@ export default class ConsoleConfig extends FormApplication {
         return mergedOptions
     }
 
+    _defaultData = {
+        content: {
+            body: [],
+            title: "title",
+        },
+        description: "Description",
+        gmInfo: "GM info",
+        name: "title",
+        limits: {
+            hardLimit: 2048, // inbuilt character limit so you can't just send the entire bee movie script
+            marker: '...',
+            type: 'none', // options are 'words', 'characters' and 'none'.
+            value: 0
+        },
+        locked: false,
+        playerOwnership: [],
+        public: false,
+        scenes: [],
+        sceneNames: [],
+        styling: {
+            bg: '#000000',
+            bgImg: "",
+            fg: '#ffffff',
+            height: 880,
+            messengerStyle: true,
+            width: 850
+        }
+    }
+
     getData() {
-        const console = ConsoleData.getConsoles().find((obj) => obj.id === this.object)
-        this.versionMigration(console)
+        const config = {
+            console: {},
+            players: [],
+            scenes: []
+        }
+
+        if (game.settings.get(Console.ID, 'defaultConfig')) {
+            config.console = game.settings.get(Console.ID, 'defaultConfig')
+        } else {
+            config.console = structuredClone(this._defaultData)
+        }
 
         let players = game.users._source
         const GM = players.find((obj) => obj.role === 4)
         if (GM) {
             players.splice(players.indexOf(GM), 1)
         }
+        config.players = players
 
         const scenesData = []
         game.scenes._source.forEach((scene) => {
@@ -37,18 +74,15 @@ export default class ConsoleConfig extends FormApplication {
                 "thumbnail": scene.thumb
             })
         })
-        return {
-            console: console,
-            players: players,
-            scenes: scenesData
-        }
-    }
+        config.scenes = scenesData
 
+        return config
+    }
     async _updateObject(event, formData) {
-        const oldData = this.getData(this.options).console
+        const oldData = game.settings.get(Console.ID, 'defaultConfig')
         const newData = {
             content: {
-                body: oldData.content.body,
+                body: [],
                 title: formData.title
             },
             defaultAnchor: formData.defaultAnchor === "true" ? true : false,
@@ -104,37 +138,10 @@ export default class ConsoleConfig extends FormApplication {
         }
 
         try {
-            await ConsoleData.updateConsole(oldData.id, newData)
+            game.settings.set(Console.ID, 'defaultConfig', newData)
         } catch (err) {
             console.error(err)
-            ui.notifications.error(`Console | Unable to update this console. See browser console for error`)
-        }
-
-    }
-
-    versionMigration(console) {
-        if (!console.playerOwnership) {
-            console.playerOwnership = []
-            ConsoleData.updateConsole(console.id, console)
-        }
-        if (!console.limits) {
-            console.limits = {
-                hardLimit: 2048,
-                marker: '...',
-                type: 'none',
-                value: 0
-            }
-            ConsoleData.updateConsole(console.id, console)
-        }
-        if (!console.scenes) {
-            console.scenes = []
-            ConsoleData.updateConsole(console.id, console)
-        }
-        if (!console.sceneNames) {
-            console.sceneNames = []
-            ConsoleData.updateConsole(console.id, console)
+            ui.notifications.error(`Console | Unable to update the default config. See browser console for error`)
         }
     }
 }
-
-
