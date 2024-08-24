@@ -1,4 +1,5 @@
 import ConsoleApp from "./classes/consoleApp.js";
+import DefaultConfig from "./classes/defaultConfig.js";
 import ConsoleData from "./classes/consoleData.js";
 import ConsoleManager from "./classes/consoleManager.js"
 
@@ -51,25 +52,22 @@ Hooks.on('init', function() {
         type: String,
         requiresReload: true
     }),
-    game.settings.register(Console.ID, 'defaultBackgroundColor', {
-        name: "Default console background color",
-        hint: "Set the default background color that all new consoles will have.",
-        scope: 'world',
+    game.settings.registerMenu(Console.ID, 'defaultConfigMenu', {
+        name: "Default console configuration",
+        label: "Open config",
+        hint: "Configure the default console appearance and functionality",
+        scope: "world",
         config: true,
-        default: '#000000', 
-        type: String,
-        requiresReload: false
-    }), 
-    game.settings.register(Console.ID, 'defaultForegroundColor', {
-        name: "Default console foreground color",
-        hint: "Set the default foreground color that all new consoles will have.",
-        scope: 'world',
-        config: true,
-        default: '#ffffff', 
-        type: String,
+        type: DefaultConfig,
+        restricted: true,
         requiresReload: false
     })
-
+    game.settings.register(Console.ID, 'defaultConfig', {
+        scope: "world",
+        config: false,
+        type: Object,
+        default: {},
+    })
 })
 
 // add button to chat
@@ -98,11 +96,17 @@ Hooks.once('ready', function() {
     game.socket.on("module.console", (data) => {
         ConsoleApp._handleShareApp(data.users, data.id)
     })
+
     if (game.user.isGM) {
         ConsoleData.getDataPool()
     }
-})
 
+    const defaultSetting = game.settings.get(Console.ID, 'defaultConfig')
+    if (Object.keys(defaultSetting).length === 0) {
+        const defaultConfig = new DefaultConfig
+        game.settings.set(Console.ID, 'defaultConfig', defaultConfig._defaultData)
+    }
+})
 
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
     registerPackageDebugFlag(Console.ID)
