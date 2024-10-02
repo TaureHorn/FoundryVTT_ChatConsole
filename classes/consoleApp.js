@@ -230,16 +230,18 @@ export default class ConsoleApp extends FormApplication {
                             users.push(obj._id)
                         })
                         game.socket.emit('module.console', {
-                            users: users,
-                            id: this.options.id
+                            event: "shareApp",
+                            id: this.options.id,
+                            users: users
                         })
                     }
                 },
                 owners: {
                     label: "Owners only", callback: () => {
                         game.socket.emit('module.console', {
-                            users: this.data.playerOwnership,
-                            id: this.options.id
+                            event: "shareApp",
+                            id: this.options.id,
+                            users: this.data.playerOwnership
                         })
                     }
                 }
@@ -252,12 +254,34 @@ export default class ConsoleApp extends FormApplication {
 
     }
 
-    static _handleShareApp(users, id) {
-        if (users.includes(game.userId)) {
-            const data = ConsoleData.getConsoles().find((obj) => obj.id === id)
-            const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
-            return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width })
+    static _handleShareApp(id) {
+        const data = ConsoleData.getConsoles().find((obj) => obj.id === id)
+        const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
+        return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width })
+    }
+
+    static async notifyRecieve(console) {
+        // Play sound if not globally disable in module settings.
+        if (!game.settings.get(Console.ID, 'globalNotificationSounds')) {
+            // TODO allow changing of audio context
+            const notifContext = game.audio.interface
+            // TODO allow customisation of notif sound --> console specific || default settings || module default
+            const bloop = new foundry.audio.Sound("./modules/console/resources/msgNotification.ogg", { "context": notifContext })
+            await bloop.load()
+            await bloop.play()
         }
+
+        // Update UI to show notification pip if console manager not already open.
+        if (!document.getElementById('console-manager')) {
+            const mainButton = document.getElementById('console-manager-launcher')
+            mainButton.innerHTML = `<i class="fas fa-terminal"></i> ${game.i18n.localize('CONSOLE.consoles')} <i class="fas fa-message-dots notifHighlight wiggle" ></i>`
+        }
+    }
+
+    async notifySend(console) {
+        const users = console.playerOwnership
+        users.push(game.users.activeGM.id)
+        game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
     }
 
     #stringifyArguments(arr) {
@@ -431,6 +455,7 @@ export default class ConsoleApp extends FormApplication {
                 messageLog.push(message)
                 console.content.body = messageLog
                 ConsoleData.updateConsole(console.id, console)
+                this.notifySend(console)
             } else {
                 this.clearInput()
                 ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)

@@ -131,6 +131,10 @@
     width: 100%;
 }
 
+.notifHighlight {
+    color: var(--color-border-highlight-alt);
+}
+
 .flash {
     animation-duration: 0.25s;
     animation-name: flash;

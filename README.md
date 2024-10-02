@@ -63,3 +63,7 @@ Messages within a console can be copied to the OS clipboard with a left-click or
 - New message notifications?
 - Refactor module so parts of it feel less like a hot mess and the code is easier for users to understand and build macros for.
 - Port the v12's 'Application_v2' thingy?
+
+## Sources
+Message notifcation sound: freesound.org - deadrobotmusic
+https://freesound.org/people/deadrobotmusic/sounds/750607/

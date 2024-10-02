@@ -44,6 +44,7 @@ export default class Console {
 }
 
 Hooks.on('init', function() {
+
     game.settings.register(Console.ID, 'moduleElementsName', {
         name: "Module elements name",
         hint: "If you don't like them being called 'Consoles', if it doesn't fit with your fantasy setting, rename it to something else. REQUIRES RELOAD",
@@ -52,6 +53,7 @@ Hooks.on('init', function() {
         type: String,
         requiresReload: true
     }),
+
     game.settings.registerMenu(Console.ID, 'defaultConfigMenu', {
         name: "Default console configuration",
         label: "Open config",
@@ -61,24 +63,41 @@ Hooks.on('init', function() {
         type: DefaultConfig,
         restricted: true,
         requiresReload: false
-    })
+    }),
+
     game.settings.register(Console.ID, 'defaultConfig', {
         scope: "world",
         config: false,
         type: Object,
         default: {},
+    }),
+
+    game.settings.register(Console.ID, 'globalNotificationSounds', {
+        name: "Notification sounds",
+        hint: "Globally mute notification sounds? Volume is controlled using the 'Interface' slider on the audio tab.",
+        scope: 'client',
+        config: true,
+        requiresReload: false,
+        type: Boolean,
+        default: false
     })
+
 })
 
 // add button to chat
 Hooks.on('renderSidebarTab', (chatLog, html) => {
-    const name = Console.getRename("", game.i18n.localize('CONSOLE.consoles'))
+    const id='console-manager-launcher'
     const tooltip = game.i18n.localize('CONSOLE.button-title')
-    const button = `<button id="console-manager-launcher" data-tooltip="${tooltip}"><i class="fas fa-terminal"></i> ${name}</button>`
-    html.find('#chat-controls').after(button)
+    const name = Console.getRename("", game.i18n.localize('CONSOLE.consoles'))
+    const inner = `<i class="fas fa-terminal"></i> ${name}`
+    html.find('#chat-controls').after(`<button id=${id} data-tooltip="${tooltip}">${inner}</button>`)
 
     html.on('click', '#console-manager-launcher', (event) => {
         new ConsoleManager(ConsoleData.getDataPool(), game.user).render(true)
+        const btn = document.getElementById(id)
+        if (btn.innerHTML != inner) {
+            btn.innerHTML = inner
+        }
     })
 })
 
@@ -93,8 +112,16 @@ Hooks.on('renderConsoleApp', (...args) => {
 //      register socket to share apps with players
 //      to pre-create a document to store module data 
 Hooks.once('ready', function() {
-    game.socket.on("module.console", (data) => {
-        ConsoleApp._handleShareApp(data.users, data.id)
+    game.socket.on("module.console", async (data) => {
+        // check if user in id arrya of shared clients
+        if (data.users.includes(game.userId)) {
+            if (data.event === 'shareApp') {
+                ConsoleApp._handleShareApp(data.id)
+            }
+            if (data.event === 'messageNotification') {
+                await ConsoleApp.notifyRecieve(data.console)
+            }
+        }
     })
 
     if (game.user.isGM) {
