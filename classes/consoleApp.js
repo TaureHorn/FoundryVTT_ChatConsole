@@ -282,17 +282,29 @@ export default class ConsoleApp extends FormApplication {
                 mainButton.classList.remove('strobe')
             }, 1000)
         }
-
-        // Set console id to users flags
-        const unreadList = game.user.getFlag(Console.ID, Console.FLAGS.UNREAD) ? [...game.user.getFlag(Console.ID, Console.FLAGS.UNREAD)] : []
-        unreadList.push(console.id)
-        game.user.setFlag(Console.ID, Console.FLAGS.UNREAD, unreadList)
     }
 
-    async notifySend(console) {
+    async notifySend(context, console) {
         const users = [...console.playerOwnership]
-        users.push(game.users.activeGM.id)
-        game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
+        if (users.includes(game.userId)) {
+            // remove self from list of notification recipients
+            users.splice(users.indexOf(game.userId), 1)
+        }
+        if (!game.user.isGM) {
+            // if not GM, add GM to list of notification recipients
+            users.push(game.users.activeGM.id)
+        }
+        switch (context) {
+            case 'clear':
+                await ConsoleData.removeFromPlayerFlags('messageNotification', users, console.id)
+                break;
+            case 'messageNotification':
+                await ConsoleData.setPlayerFlags({ 'context': 'messageNotification', 'operation': true }, users, console.id)
+                await game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
+                break;
+            default:
+                Console.log(true, 'encountered invalid switch case in consoleApp.notifySend')
+        }
     }
 
     #stringifyArguments(arr) {
@@ -362,6 +374,7 @@ export default class ConsoleApp extends FormApplication {
                 case "clear":
                     console.content.body = []
                     ConsoleData.updateConsole(console.id, console)
+                    this.notifySend('clear', console)
                     break;
                 case "close":
                 case "exit":
@@ -466,7 +479,7 @@ export default class ConsoleApp extends FormApplication {
                 messageLog.push(message)
                 console.content.body = messageLog
                 ConsoleData.updateConsole(console.id, console)
-                this.notifySend(console)
+                this.notifySend('messageNotification', console)
             } else {
                 this.clearInput()
                 ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
