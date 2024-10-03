@@ -165,14 +165,10 @@ export default class ConsoleManager extends FormApplication {
                 await ConsoleData.createConsole()
                 break;
             case 'open-console':
+
                 const appWindow = document.getElementById(console.id)
                 if (!appWindow) {
                     // render app if not open
-                    // clear notifications for unread messages if they exist
-                    const flags = [...game.user.getFlag(Console.ID, Console.FLAGS.UNREAD)]
-                    if (flags.includes(console.id)) {
-                        await ConsoleData.removeFromPlayerFlags('messageNotification', [game.userId], console.id)
-                    }
                     new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width })
                 } else {
                     // if open bring to front and flash
@@ -182,6 +178,13 @@ export default class ConsoleManager extends FormApplication {
                         appWindow.classList.remove('flash')
                     }, 500)
                 }
+
+                // clear notifications for unread messages if they exist
+                const flags = [...game.user.getFlag(Console.ID, Console.FLAGS.UNREAD)]
+                if (flags.includes(console.id)) {
+                    await ConsoleData.removeFromPlayerFlags('messageNotification', [game.userId], console.id)
+                }
+
                 break;
             default:
                 ui.notifications.error(`Console | ConsoleManager encountered an invalid button data-action '${action}' in _handleButtonClick`)

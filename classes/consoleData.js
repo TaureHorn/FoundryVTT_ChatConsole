@@ -128,6 +128,7 @@ export default class ConsoleData {
         // @param {string} context
         // @param {Array of strings}} idList
         // @pararm {any} data
+    
         idList.forEach(async (id) => {
             const user = await game.users.get(id)
             switch (context){
@@ -140,6 +141,7 @@ export default class ConsoleData {
                     Console.log(true, 'encountered invalid switch case in consoleData.removeFromPlayerFlags')
             }
         })
+
     }
 
     static async setPlayerFlags(opts, idList, data) {

@@ -300,6 +300,7 @@ export default class ConsoleApp extends FormApplication {
             // if GM set all messageNotification flags for all relevant players
             switch (context) {
                 case 'clear':
+                    users.push(game.userId)
                     await ConsoleData.removeFromPlayerFlags('messageNotification', users, console.id)
                     break;
                 case 'messageNotification':
@@ -307,7 +308,7 @@ export default class ConsoleApp extends FormApplication {
                     await game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
                     break;
                 default:
-                    Console.log(true, 'encountered invalid switch case in consoleApp.notifySend')
+                    Console.log(true, `encountered invalid switch case '${context}' in consoleApp.notifySend`)
             }
         } else {
             if (game.users.activeGM) {
@@ -360,19 +361,23 @@ export default class ConsoleApp extends FormApplication {
     async updateAppClasses(id) {
         setTimeout(() => {
             const element = document.getElementById(id)
-            element.className = `app window-app form console-app`
-            element.style.color = this.data.styling.fg
-            element.style.background = this.data.styling.bg
-            element.style.border = `2px solid ${this.data.styling.fg}`
-            element.style.borderRadius = "0px";
+            if (element) {
+                element.className = `app window-app form console-app`
+                element.style.color = this.data.styling.fg
+                element.style.background = this.data.styling.bg
+                element.style.border = `2px solid ${this.data.styling.fg}`
+                element.style.borderRadius = "0px";
+                
+            }
+            const input = this._element?.find(`#consoleInputText${this.options.id}`)[0]
+            if (input) {
+                input.selectionStart = input.selectionEnd = input.value.length
+                input.focus()
 
-            const input = this._element.find(`#consoleInputText${this.options.id}`)[0]
-            input.selectionStart = input.selectionEnd = input.value.length
-            input.focus()
-
-            const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
-            this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
-        }, 200)
+                const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
+                this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
+            }
+        }, 300)
     }
 
     async _updateObject(event, formData) {
@@ -426,7 +431,8 @@ export default class ConsoleApp extends FormApplication {
                     const player = game.users.getName(nameToKick) ? game.users.getName(nameToKick) : null
                     if (player) {
                         console.playerOwnership.splice(console.playerOwnership.indexOf(player._id), 1)
-                        ConsoleData.updateConsole(console.id, console)
+                        await ConsoleData.updateConsole(console.id, console)
+                        await ConsoleData.removeFromPlayerFlags('messageNotification', [player._id], console.id)
                     } else {
                         ui.notifications.warn(`Console | A user with the name '${nameToKick}' does not exist`)
                     }
@@ -449,7 +455,7 @@ export default class ConsoleApp extends FormApplication {
                     ConsoleData.updateConsole(console.id, console)
                     break;
                 default:
-                    Console.log(true, cmd)
+                    Console.log(true, `/${cmd.join(" ")} is not a recongised command`)
                     ui.notifications.warn(`Console | '/${cmd.join(" ")}' is not a recognised command`)
             }
             this._inputVal = ""
@@ -496,7 +502,9 @@ export default class ConsoleApp extends FormApplication {
                 messageLog.push(message)
                 console.content.body = messageLog
                 ConsoleData.updateConsole(console.id, console)
-                this.notifySend('messageNotification', console)
+                if (console.public) {
+                    this.notifySend('messageNotification', console)
+                }
             } else {
                 this.clearInput()
                 ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
