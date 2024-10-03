@@ -263,23 +263,30 @@ export default class ConsoleApp extends FormApplication {
     static async notifyRecieve(console) {
         // Play sound if not globally disable in module settings.
         if (!game.settings.get(Console.ID, 'globalNotificationSounds')) {
-            // TODO allow changing of audio context
-            const notifContext = game.audio.interface
+            const notifContext = game.audio.interface // TODO allow changing of audio context
+            const audioSrc = "./modules/console/resources/msgNotification.ogg"
             // TODO allow customisation of notif sound --> console specific || default settings || module default
-            const bloop = new foundry.audio.Sound("./modules/console/resources/msgNotification.ogg", { "context": notifContext })
+            const bloop = new foundry.audio.Sound(audioSrc, { "context": notifContext })
             await bloop.load()
             await bloop.play()
         }
 
         // Update UI to show notification pip if console manager not already open.
-        if (!document.getElementById('console-manager')) {
-            const mainButton = document.getElementById('console-manager-launcher')
-            mainButton.innerHTML = `<i class="fas fa-terminal"></i> ${game.i18n.localize('CONSOLE.consoles')} <i class="fas fa-message-dots notifHighlight wiggle" ></i>`
+        const mainButton = document.getElementById('console-manager-launcher')
+        if (mainButton) {
+            mainButton.innerHTML = `<i class="fas fa-terminal">
+                </i> ${game.i18n.localize('CONSOLE.consoles')} 
+                <i class="fas fa-message-dots notifHighlight" ></i>`
+            mainButton.classList.add('strobe')
+            setTimeout(() => {
+                mainButton.classList.remove('strobe')
+            }, 1000)
         }
+
     }
 
     async notifySend(console) {
-        const users = console.playerOwnership
+        const users = [...console.playerOwnership]
         users.push(game.users.activeGM.id)
         game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
     }
