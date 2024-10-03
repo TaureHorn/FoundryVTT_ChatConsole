@@ -168,6 +168,11 @@ export default class ConsoleManager extends FormApplication {
                 const appWindow = document.getElementById(console.id)
                 if (!appWindow) {
                     // render app if not open
+                    const flags = [...game.user.getFlag(Console.ID, Console.FLAGS.UNREAD)]
+                    if (flags.includes(console.id)) {
+                        const filteredFlags = flags.filter(i => i !== console.id)
+                        await game.user.setFlag(Console.ID, Console.FLAGS.UNREAD, filteredFlags)
+                    }
                     new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width })
                 } else {
                     // if open bring to front and flash
