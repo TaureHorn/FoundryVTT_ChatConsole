@@ -292,19 +292,36 @@ export default class ConsoleApp extends FormApplication {
         }
         if (!game.user.isGM) {
             // if not GM, add GM to list of notification recipients
-            users.push(game.users.activeGM.id)
+            users.push(game.users.find((usr) => usr.role === 4).id)
         }
-        switch (context) {
-            case 'clear':
-                await ConsoleData.removeFromPlayerFlags('messageNotification', users, console.id)
-                break;
-            case 'messageNotification':
-                await ConsoleData.setPlayerFlags({ 'context': 'messageNotification', 'operation': true }, users, console.id)
+
+        // send
+        if (game.user.isGM) {
+            // if GM set all messageNotification flags for all relevant players
+            switch (context) {
+                case 'clear':
+                    await ConsoleData.removeFromPlayerFlags('messageNotification', users, console.id)
+                    break;
+                case 'messageNotification':
+                    await ConsoleData.setPlayerFlags({ context: 'messageNotification', addition: true }, users, console.id)
+                    await game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
+                    break;
+                default:
+                    Console.log(true, 'encountered invalid switch case in consoleApp.notifySend')
+            }
+        } else {
+            if (game.users.activeGM) {
+                // if not GM send notifications data to GM to set messageNotification flags for all players
+                await game.socket.emit('module.console', { event: "gmPropagateNotifications", users: users, console: console })
                 await game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
-                break;
-            default:
-                Console.log(true, 'encountered invalid switch case in consoleApp.notifySend')
+            } else {
+                // if not GM and no GM online send messageNotifications to be handled by online players only
+                await game.socket.emit('module.console', { event: "userPropagateNotifications", users: users, console: console })
+                await game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
+            }
         }
+
+
     }
 
     #stringifyArguments(arr) {

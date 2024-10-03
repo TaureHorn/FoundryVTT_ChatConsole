@@ -114,13 +114,28 @@ Hooks.on('renderConsoleApp', (...args) => {
 //      to pre-create a document to store module data 
 Hooks.once('ready', function() {
     game.socket.on("module.console", async (data) => {
-        // check if user in id arrya of shared clients
+        // @param {Object} data
+        // check if user in id array of shared clients
         if (data.users.includes(game.userId)) {
-            if (data.event === 'shareApp') {
-                ConsoleApp._handleShareApp(data.id)
-            }
-            if (data.event === 'messageNotification') {
-                await ConsoleApp.notifyRecieve(data.console)
+            switch (data.event) {
+                case 'gmPropagateNotifications':
+                    if (game.user.isGM) {
+                        await ConsoleData.setPlayerFlags({ context: 'messageNotification', addition: true }, data.users, data.console.id)
+                    }
+                    break;
+                case 'messageNotification':
+                    await ConsoleApp.notifyRecieve(data.console)
+                    break;
+                case 'shareApp':
+                    ConsoleApp._handleShareApp(data.id)
+                    break;
+                case 'userPropagateNotifications':
+                    if (!game.user.isGM) {
+                        await ConsoleData.setPlayerFlags({context: 'messageNotification', addition: true }, [game.userId], data.console.id)
+                    }
+                    break;
+                default:
+                    Console.log(true, `encountered an incorrect socket event string '${data.event}' in console.socket.on`)
             }
         }
     })

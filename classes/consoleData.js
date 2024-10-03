@@ -148,13 +148,14 @@ export default class ConsoleData {
         //     opts.operation {Boolean} --> true = add data , false = remove data
         // @param {Array of strings}} idList
         // @pararm {any} data
+         
         idList.forEach(async (id) => {
             const user = await game.users.get(id)
             switch (opts.context) {
                 case 'messageNotification':
                     const unreadList = await user.getFlag(Console.ID, Console.FLAGS.UNREAD) ? [...user.getFlag(Console.ID, Console.FLAGS.UNREAD)] : []
-                    opts.operation ? unreadList.push(data) : unreadList.splice(unreadList.indexOf(data), 1)
-                    await game.users.get(id).setFlag(Console.ID, Console.FLAGS.UNREAD, unreadList)
+                    opts.addition ? unreadList.push(data) : unreadList.splice(unreadList.indexOf(data), 1)
+                    await user.setFlag(Console.ID, Console.FLAGS.UNREAD, unreadList)
                     break;
                 default:
                     Console.log(true, 'encountered invalid switch case in consoleData.setPlayerFlags')
