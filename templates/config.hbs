@@ -1,6 +1,6 @@
 <form>
     <fieldset>
-    <legend>{{localize "CONSOLE.config.text.header"}}</legend>
+    <legend class="field-header">{{localize "CONSOLE.config.text.header"}}</legend>
         <div class="console-config-flex">
             <label for="name">{{localize "CONSOLE.config.text.name"}}:</label>
             <input id="name" name="name" type="text" placeholder="{{console.name}}" value="{{console.name}}" minlength="1" maxlength="128"/>
@@ -15,7 +15,7 @@
         <textarea id="gmInfo" name="gmInfo" placeholder="{{console.gmInfo}}" maxlength="256"></textarea>
     </fieldset>
     <fieldset>
-    <legend>{{localize "CONSOLE.config.appearance.header"}}</legend>
+    <legend class="field-header">{{localize "CONSOLE.config.appearance.header"}}</legend>
         <div class="console-config-flex">
             <label for="fgCol">{{localize "CONSOLE.config.appearance.fg-col"}}:</label>
             <input id="fgCol" name="fgCol" type="color" value="{{console.styling.fg}}"/>
@@ -41,7 +41,7 @@
         </div>
     </fieldset>
     <fieldset>
-    <legend>{{localize "CONSOLE.config.notifications.header"}}</legend>
+    <legend class="field-header">{{localize "CONSOLE.config.notifications.header"}}</legend>
         <div class="console-config-flex">
             <label for="notificationSound">{{localize "CONSOLE.config.notifications.src"}}</label>
             <div style="display:flex;flex:1;flex-wrap:nowrap;justify-content:flex-end">
@@ -55,7 +55,7 @@
         </div>
     </fieldset>
     <fieldset>
-    <legend>{{localize "CONSOLE.config.default-anchor.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.default-anchor.hover-info"}}"></i></legend>
+    <legend class="field-header">{{localize "CONSOLE.config.default-anchor.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.default-anchor.hover-info"}}"></i></legend>
         <div>
             <input id="no-anchor" name="defaultAnchor" type="radio" value="false" {{#unless console.defaultAnchor}}checked{{/unless}}/>
             <label for="no-anchor">{{localize "CONSOLE.config.default-anchor.not-anchored"}}</label>
@@ -64,7 +64,7 @@
         </div>
     </fieldset>
     <fieldset>
-    <legend>{{localize "CONSOLE.config.style.header"}}</legend>
+    <legend class="field-header">{{localize "CONSOLE.config.style.header"}}</legend>
         <div>
             <input id="messenger" name="messengerStyle" type="radio" value="true" {{#if console.styling.messengerStyle}}checked{{/if}}/> 
             <label for="messenger">{{localize "CONSOLE.config.style.messenger"}}</label>
@@ -73,7 +73,7 @@
         </div>
     </fieldset>
     <fieldset>
-    <legend>{{localize "CONSOLE.config.limits.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.limits.hover-info"}}"></i></legend>
+    <legend class="field-header">{{localize "CONSOLE.config.limits.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.limits.hover-info"}}"></i></legend>
         <div>
             <input id="nolimit" name="limitType" type="radio" value="none" {{#equal console.limits.type "none"}}checked{{/equal}}/>
             <label for="nolimit">{{localize "CONSOLE.config.limits.none"}}</label>
@@ -92,7 +92,7 @@
         </div>
     </fieldset>
     <fieldset class="console-config-limited">
-    <legend>{{localize "CONSOLE.config.players.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.players.hover-info"}}"></i></legend>
+    <legend class="field-header">{{localize "CONSOLE.config.players.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.players.hover-info"}}"></i></legend>
         <div>
             {{#each players}}
                 <input id="{{_id}}" name="players"[{{@index}}] type="checkbox" value="{{_id}}" {{#inArray _id ../console.playerOwnership}}checked{{/inArray}}/>
@@ -102,7 +102,7 @@
         </div>
     </fieldset>
     <fieldset class="console-config-limited">
-    <legend>{{localize "CONSOLE.config.scenes.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.scenes.hover-info"}}"></i></legend>
+    <legend class="field-header">{{localize "CONSOLE.config.scenes.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.scenes.hover-info"}}"></i></legend>
         {{#each scenes}}
             <input type="checkbox" id="{{id}}" name="scenes"[{{@index}}] value="{{id}}" {{#inArray this.id ../console.scenes }}checked{{/inArray}}/>
             <label for="{{id}}">{{name}}</label>

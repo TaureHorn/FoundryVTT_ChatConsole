@@ -20,7 +20,7 @@
             "notifications": {
                 "header": "Notifications",
                 "src": "Audio source",
-                "mute": "Mute notifications for this console?"
+                "mute": "Mute notification sounds"
             },
             "default-anchor": {
                 "header": "Default anchor state",
