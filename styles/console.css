@@ -62,11 +62,27 @@
     }
 }
 
+@keyframes strobe {
+    0% {
+        filter: initial;
+    }
+
+    50% {
+        filter: invert();
+    }
+
+    100% {
+        filter: initial;
+    }
+}
+
 #chat-log {
     flex: auto;
 }
 
 .console-config-flex {
+    align-items: center;
+    gap: 10px;
     display: flex;
     justify-content: space-between;
     margin: 5px;
@@ -131,6 +147,21 @@
     width: 100%;
 }
 
+.field-header {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.notifHighlight {
+    color: var(--color-border-highlight-alt);
+}
+
+.notifPip {
+    background-color: var(--color-border-highlight-alt);
+    border-radius: 50% 50% 0% 50%;
+    padding: 0px 5px;
+}
+
 .flash {
     animation-duration: 0.25s;
     animation-name: flash;
@@ -139,6 +170,12 @@
 
 .invert {
     filter: invert();
+}
+
+.strobe {
+    animation-duration: 0.25s;
+    animation-name: strobe;
+    animation-iteration-count: 2;
 }
 
 .wiggle {

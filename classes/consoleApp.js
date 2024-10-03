@@ -230,16 +230,18 @@ export default class ConsoleApp extends FormApplication {
                             users.push(obj._id)
                         })
                         game.socket.emit('module.console', {
-                            users: users,
-                            id: this.options.id
+                            event: "shareApp",
+                            id: this.options.id,
+                            users: users
                         })
                     }
                 },
                 owners: {
                     label: "Owners only", callback: () => {
                         game.socket.emit('module.console', {
-                            users: this.data.playerOwnership,
-                            id: this.options.id
+                            event: "shareApp",
+                            id: this.options.id,
+                            users: this.data.playerOwnership
                         })
                     }
                 }
@@ -252,12 +254,78 @@ export default class ConsoleApp extends FormApplication {
 
     }
 
-    static _handleShareApp(users, id) {
-        if (users.includes(game.userId)) {
-            const data = ConsoleData.getConsoles().find((obj) => obj.id === id)
-            const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
-            return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width })
+    static _handleShareApp(id) {
+        const data = ConsoleData.getConsoles().find((obj) => obj.id === id)
+        const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
+        return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width })
+    }
+
+    static async notifyRecieve(console) {
+        // Play sound if not muted by console or globally muted in module settings.
+        if (!console.styling.mute && !game.settings.get(Console.ID, 'globalNotificationSounds')) {
+            const customCtx = game.settings.get(Console.ID, 'notificationContext') || 'interface'
+            const notifContext = game.audio[customCtx]
+            const audioFile =
+                console.styling.notificationSound ||
+                game.settings.get(Console.ID, 'defaultConfig').styling.notificationSound ||
+                "modules/console/resources/msgNotification.ogg"
+            const bloop = new foundry.audio.Sound(`./${audioFile}`, { "context": notifContext })
+            await bloop.load()
+            await bloop.play()
         }
+
+        // Update UI to show notification pip if console manager not already open.
+        const mainButton = document.getElementById('console-manager-launcher')
+        if (mainButton) {
+            mainButton.innerHTML = `<i class="fas fa-terminal">
+                </i> ${game.i18n.localize('CONSOLE.consoles')} 
+                <i class="fas fa-message-dots notifHighlight" ></i>`
+            mainButton.classList.add('strobe')
+            setTimeout(() => {
+                mainButton.classList.remove('strobe')
+            }, 1000)
+        }
+    }
+
+    async notifySend(context, console) {
+        const users = [...console.playerOwnership]
+        if (users.includes(game.userId)) {
+            // remove self from list of notification recipients
+            users.splice(users.indexOf(game.userId), 1)
+        }
+        if (!game.user.isGM) {
+            // if not GM, add GM to list of notification recipients
+            users.push(game.users.find((usr) => usr.role === 4).id)
+        }
+
+        // send
+        if (game.user.isGM) {
+            // if GM set all messageNotification flags for all relevant players
+            switch (context) {
+                case 'clear':
+                    users.push(game.userId)
+                    await ConsoleData.removeFromPlayerFlags('messageNotification', users, console.id)
+                    break;
+                case 'messageNotification':
+                    await ConsoleData.setPlayerFlags({ context: 'messageNotification', addition: true }, users, console.id)
+                    await game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
+                    break;
+                default:
+                    Console.log(true, `encountered invalid switch case '${context}' in consoleApp.notifySend`)
+            }
+        } else {
+            if (game.users.activeGM) {
+                // if not GM send notifications data to GM to set messageNotification flags for all players
+                await game.socket.emit('module.console', { event: "gmPropagateNotifications", users: users, console: console })
+                await game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
+            } else {
+                // if not GM and no GM online send messageNotifications to be handled by online players only
+                await game.socket.emit('module.console', { event: "userPropagateNotifications", users: users, console: console })
+                await game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
+            }
+        }
+
+
     }
 
     #stringifyArguments(arr) {
@@ -296,18 +364,22 @@ export default class ConsoleApp extends FormApplication {
     async updateAppClasses(id) {
         setTimeout(() => {
             const element = document.getElementById(id)
-            element.className = `app window-app form console-app`
-            element.style.color = this.data.styling.fg
-            element.style.background = this.data.styling.bg
-            element.style.border = `2px solid ${this.data.styling.fg}`
-            element.style.borderRadius = "0px";
+            if (element) {
+                element.className = `app window-app form console-app`
+                element.style.color = this.data.styling.fg
+                element.style.background = this.data.styling.bg
+                element.style.border = `2px solid ${this.data.styling.fg}`
+                element.style.borderRadius = "0px";
 
-            const input = this._element.find(`#consoleInputText${this.options.id}`)[0]
-            input.selectionStart = input.selectionEnd = input.value.length
-            input.focus()
+            }
+            const input = this._element?.find(`#consoleInputText${this.options.id}`)[0]
+            if (input) {
+                input.selectionStart = input.selectionEnd = input.value.length
+                input.focus()
 
-            const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
-            this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
+                const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
+                this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
+            }
         }, 200)
     }
 
@@ -327,6 +399,7 @@ export default class ConsoleApp extends FormApplication {
                 case "clear":
                     console.content.body = []
                     ConsoleData.updateConsole(console.id, console)
+                    this.notifySend('clear', console)
                     break;
                 case "close":
                 case "exit":
@@ -361,7 +434,8 @@ export default class ConsoleApp extends FormApplication {
                     const player = game.users.getName(nameToKick) ? game.users.getName(nameToKick) : null
                     if (player) {
                         console.playerOwnership.splice(console.playerOwnership.indexOf(player._id), 1)
-                        ConsoleData.updateConsole(console.id, console)
+                        await ConsoleData.updateConsole(console.id, console)
+                        await ConsoleData.removeFromPlayerFlags('messageNotification', [player._id], console.id)
                     } else {
                         ui.notifications.warn(`Console | A user with the name '${nameToKick}' does not exist`)
                     }
@@ -384,7 +458,7 @@ export default class ConsoleApp extends FormApplication {
                     ConsoleData.updateConsole(console.id, console)
                     break;
                 default:
-                    Console.log(true, cmd)
+                    Console.log(true, `/${cmd.join(" ")} is not a recongised command`)
                     ui.notifications.warn(`Console | '/${cmd.join(" ")}' is not a recognised command`)
             }
             this._inputVal = ""
@@ -431,6 +505,9 @@ export default class ConsoleApp extends FormApplication {
                 messageLog.push(message)
                 console.content.body = messageLog
                 ConsoleData.updateConsole(console.id, console)
+                if (console.public) {
+                    this.notifySend('messageNotification', console)
+                }
             } else {
                 this.clearInput()
                 ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)

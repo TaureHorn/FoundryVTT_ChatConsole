@@ -42,6 +42,8 @@ export default class DefaultConfig extends FormApplication {
             fg: '#ffffff',
             height: 880,
             messengerStyle: true,
+            mute: false,
+            notificationSound: "",
             width: 850
         }
     }
@@ -105,6 +107,8 @@ export default class DefaultConfig extends FormApplication {
                 fg: formData.fgCol,
                 height: formData.height,
                 messengerStyle: formData.messengerStyle === "true" ? true : false,
+                mute: formData.notificationMute === "true" ? true : false,
+                notificationSound: formData.notificationSound === "" ? oldData.notificationSound : formData.notificationSound,
                 width: formData.width
             }
         }

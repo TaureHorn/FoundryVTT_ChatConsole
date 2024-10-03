@@ -17,6 +17,11 @@
                 "height": "Height",
                 "width": "Width"
             },
+            "notifications": {
+                "header": "Notifications",
+                "src": "Audio source",
+                "mute": "Mute notification sounds"
+            },
             "default-anchor": {
                 "header": "Default anchor state",
                 "hover-info": "An anchored window cannot be closed while anchored. The active state can be toggled within the app window.",

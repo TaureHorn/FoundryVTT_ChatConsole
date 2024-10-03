@@ -88,6 +88,8 @@ export default class ConsoleData {
                         fg: '#ffffff',
                         height: 880,
                         messengerStyle: true,
+                        mute: false,
+                        notificationSound: "",
                         width: 850
                     }
                 }
@@ -122,6 +124,48 @@ export default class ConsoleData {
             [clonedConsole.id]: clonedConsole
         }
         this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, newConsoles)
+    }
+
+    static async removeFromPlayerFlags(context, idList, data) {
+        // @param {string} context
+        // @param {Array of strings}} idList
+        // @pararm {any} data
+    
+        idList.forEach(async (id) => {
+            const user = await game.users.get(id)
+            switch (context){
+                case 'messageNotification':
+                    const flags = await user.getFlag(Console.ID, Console.FLAGS.UNREAD)
+                    const filteredFlags = flags.filter(i => i !== data)
+                    await user.setFlag(Console.ID, Console.FLAGS.UNREAD, filteredFlags)
+                    break;
+                default:
+                    Console.log(true, 'encountered invalid switch case in consoleData.removeFromPlayerFlags')
+            }
+        })
+
+    }
+
+    static async setPlayerFlags(opts, idList, data) {
+        // @param {Object} opts
+        //     opts.context {string} --> operation to perform
+        //     opts.operation {Boolean} --> true = add data , false = remove data
+        // @param {Array of strings}} idList
+        // @pararm {any} data
+         
+        idList.forEach(async (id) => {
+            const user = await game.users.get(id)
+            switch (opts.context) {
+                case 'messageNotification':
+                    const unreadList = await user.getFlag(Console.ID, Console.FLAGS.UNREAD) ? [...user.getFlag(Console.ID, Console.FLAGS.UNREAD)] : []
+                    opts.addition ? unreadList.push(data) : unreadList.splice(unreadList.indexOf(data), 1)
+                    await user.setFlag(Console.ID, Console.FLAGS.UNREAD, unreadList)
+                    break;
+                default:
+                    Console.log(true, 'encountered invalid switch case in consoleData.setPlayerFlags')
+            }
+
+        })
     }
 
     static async toggleLock(id) {

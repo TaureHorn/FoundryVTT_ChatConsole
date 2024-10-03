@@ -34,12 +34,15 @@ export default class ConsoleManager extends FormApplication {
             console.scenes.forEach((id) => {
                 console.sceneNames.push(this.getSceneName(id))
             })
-            this.versionMigration(console)
+            if (game.user.isGM) {
+                this.versionMigration(console)
+            }
         })
         return {
             consoles: consoles,
+            flags: game.user.getFlag(Console.ID, Console.FLAGS.UNREAD),
             manager: this,
-            user: game.user._id
+            userId: game.user._id
         }
     }
 
@@ -164,6 +167,7 @@ export default class ConsoleManager extends FormApplication {
                 await ConsoleData.createConsole()
                 break;
             case 'open-console':
+
                 const appWindow = document.getElementById(console.id)
                 if (!appWindow) {
                     // render app if not open
@@ -176,6 +180,13 @@ export default class ConsoleManager extends FormApplication {
                         appWindow.classList.remove('flash')
                     }, 500)
                 }
+
+                // clear notifications for unread messages if they exist
+                const flags = [...game.user.getFlag(Console.ID, Console.FLAGS.UNREAD)]
+                if (flags.includes(console.id)) {
+                    await ConsoleData.removeFromPlayerFlags('messageNotification', [game.userId], console.id)
+                }
+
                 break;
             default:
                 ui.notifications.error(`Console | ConsoleManager encountered an invalid button data-action '${action}' in _handleButtonClick`)
@@ -197,19 +208,14 @@ export default class ConsoleManager extends FormApplication {
     }
 
     versionMigration(console) {
-        if (!console.public) {
-            console.public = false
-            ConsoleData.updateConsole(console.id, console)
-        }
-        if (!console.locked) {
-            console.locked = false
-            ConsoleData.updateConsole(console.id, console)
-        }
-        if (!console.defaultAnchor) {
-            console.defaultAnchor = false
-            ConsoleData.updateConsole(console.id, console)
-        }
-    }
 
+        !console.public ? console.public = false : null
+        !console.locked ? console.locked = false : null
+        !console.defaultAnchor ? console.defaultAnchor = false : null
+        !console.styling.notificationSound ? console.styling.notificationSound = "" : null
+        !console.styling.mute ? console.styling.mute = false : null
+
+        ConsoleData.updateConsole(console.id, console)
+    }
 }
 
