@@ -34,7 +34,9 @@ export default class ConsoleManager extends FormApplication {
             console.scenes.forEach((id) => {
                 console.sceneNames.push(this.getSceneName(id))
             })
-            this.versionMigration(console)
+            if (game.user.isGM) {
+                this.versionMigration(console)
+            }
         })
         return {
             consoles: consoles,
@@ -206,18 +208,14 @@ export default class ConsoleManager extends FormApplication {
     }
 
     versionMigration(console) {
-        if (!console.public) {
-            console.public = false
-            ConsoleData.updateConsole(console.id, console)
-        }
-        if (!console.locked) {
-            console.locked = false
-            ConsoleData.updateConsole(console.id, console)
-        }
-        if (!console.defaultAnchor) {
-            console.defaultAnchor = false
-            ConsoleData.updateConsole(console.id, console)
-        }
+
+        !console.public ? console.public = false : null
+        !console.locked ? console.locked = false : null
+        !console.defaultAnchor ? console.defaultAnchor = false : null
+        !console.styling.notificationSound ? console.styling.notificationSound = "" : null
+        !console.styling.mute ? console.styling.mute = false : null
+
+        ConsoleData.updateConsole(console.id, console)
     }
 }
 

@@ -261,12 +261,15 @@ export default class ConsoleApp extends FormApplication {
     }
 
     static async notifyRecieve(console) {
-        // Play sound if not globally disable in module settings.
-        if (!game.settings.get(Console.ID, 'globalNotificationSounds')) {
-            const notifContext = game.audio.interface // TODO allow changing of audio context
-            const audioSrc = "./modules/console/resources/msgNotification.ogg"
-            // TODO allow customisation of notif sound --> console specific || default settings || module default
-            const bloop = new foundry.audio.Sound(audioSrc, { "context": notifContext })
+        // Play sound if not muted by console or globally muted in module settings.
+        if (!console.styling.mute && !game.settings.get(Console.ID, 'globalNotificationSounds')) {
+            const customCtx = game.settings.get(Console.ID, 'notificationContext') || 'interface'
+            const notifContext = game.audio[customCtx]
+            const audioFile =
+                console.styling.notificationSound ||
+                game.settings.get(Console.ID, 'defaultConfig').styling.notificationSound ||
+                "modules/console/resources/msgNotification.ogg"
+            const bloop = new foundry.audio.Sound(`./${audioFile}`, { "context": notifContext })
             await bloop.load()
             await bloop.play()
         }
@@ -367,7 +370,7 @@ export default class ConsoleApp extends FormApplication {
                 element.style.background = this.data.styling.bg
                 element.style.border = `2px solid ${this.data.styling.fg}`
                 element.style.borderRadius = "0px";
-                
+
             }
             const input = this._element?.find(`#consoleInputText${this.options.id}`)[0]
             if (input) {
@@ -377,7 +380,7 @@ export default class ConsoleApp extends FormApplication {
                 const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
                 this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
             }
-        }, 300)
+        }, 200)
     }
 
     async _updateObject(event, formData) {

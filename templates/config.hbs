@@ -41,6 +41,20 @@
         </div>
     </fieldset>
     <fieldset>
+    <legend>{{localize "CONSOLE.config.notifications.header"}}</legend>
+        <div class="console-config-flex">
+            <label for="notificationSound">{{localize "CONSOLE.config.notifications.src"}}</label>
+            <div style="display:flex;flex:1;flex-wrap:nowrap;justify-content:flex-end">
+                <input id="notificationSound" name="notificationSound" type="text" value="{{console.styling.notificationSound}}"/>
+                <button class="file-picker" type="button" data-type="audio" data-target="notificationSound" title="Browse Files" tabindex="-1"><i class="fas fa-file-import fa-fw"></i></button>
+            </div>
+        </div>
+        <div class="console-config-flex">
+            <label for="notificationMute">{{localize "CONSOLE.config.notifications.mute"}}</label>
+            <input id="notificationMute" name="notificationMute" type="checkbox" value="true" {{#if console.styling.mute}}checked{{/if}}>
+        </div>
+    </fieldset>
+    <fieldset>
     <legend>{{localize "CONSOLE.config.default-anchor.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.default-anchor.hover-info"}}"></i></legend>
         <div>
             <input id="no-anchor" name="defaultAnchor" type="radio" value="false" {{#unless console.defaultAnchor}}checked{{/unless}}/>

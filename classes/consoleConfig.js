@@ -46,6 +46,7 @@ export default class ConsoleConfig extends FormApplication {
 
     async _updateObject(event, formData) {
         const oldData = this.getData(this.options).console
+        Console.log(true, "_updateObject", formData)
         const newData = {
             content: {
                 body: oldData.content.body,
@@ -71,6 +72,8 @@ export default class ConsoleConfig extends FormApplication {
                 fg: formData.fgCol,
                 height: formData.height,
                 messengerStyle: formData.messengerStyle === "true" ? true : false,
+                mute: formData.notificationMute === "true" ? true : false,
+                notificationSound: formData.notificationSound === "" ? oldData.notificationSound : formData.notificationSound,
                 width: formData.width
             }
         }
@@ -112,11 +115,11 @@ export default class ConsoleConfig extends FormApplication {
 
     }
 
-    versionMigration(console) {
-        if (!console.playerOwnership) {
-            console.playerOwnership = []
-            ConsoleData.updateConsole(console.id, console)
-        }
+    async versionMigration(console) {
+
+        !console.playerOwnership ? console.playerOwnership = [] : null
+        !console.scenes ? console.scenes = [] : null
+        !console.sceneNames ? console.sceneNames = [] : null
         if (!console.limits) {
             console.limits = {
                 hardLimit: 2048,
@@ -124,17 +127,8 @@ export default class ConsoleConfig extends FormApplication {
                 type: 'none',
                 value: 0
             }
-            ConsoleData.updateConsole(console.id, console)
         }
-        if (!console.scenes) {
-            console.scenes = []
-            ConsoleData.updateConsole(console.id, console)
-        }
-        if (!console.sceneNames) {
-            console.sceneNames = []
-            ConsoleData.updateConsole(console.id, console)
-        }
+        await ConsoleData.updateConsole(console.id, console)
     }
 }
-
 

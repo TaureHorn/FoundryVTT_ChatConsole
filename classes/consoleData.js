@@ -88,6 +88,8 @@ export default class ConsoleData {
                         fg: '#ffffff',
                         height: 880,
                         messengerStyle: true,
+                        mute: false,
+                        notificationSound: "",
                         width: 850
                     }
                 }
