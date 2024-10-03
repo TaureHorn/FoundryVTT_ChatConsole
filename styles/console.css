@@ -147,6 +147,12 @@
     color: var(--color-border-highlight-alt);
 }
 
+.notifPip {
+    background-color: var(--color-border-highlight-alt);
+    border-radius: 50% 50% 0% 50%;
+    padding: 0px 5px;
+}
+
 .flash {
     animation-duration: 0.25s;
     animation-name: flash;

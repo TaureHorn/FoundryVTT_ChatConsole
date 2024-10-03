@@ -283,6 +283,10 @@ export default class ConsoleApp extends FormApplication {
             }, 1000)
         }
 
+        // Set console id to users flags
+        const unreadList = game.user.getFlag(Console.ID, Console.FLAGS.UNREAD) ? [...game.user.getFlag(Console.ID, Console.FLAGS.UNREAD)] : []
+        unreadList.push(console.id)
+        game.user.setFlag(Console.ID, Console.FLAGS.UNREAD, unreadList)
     }
 
     async notifySend(console) {

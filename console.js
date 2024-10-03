@@ -12,7 +12,8 @@ export default class Console {
     static IDLENGTH = 16
 
     static FLAGS = {
-        "CONSOLE": "consoles"
+        "CONSOLE": "consoles",
+        "UNREAD": "unread"
     }
 
     static TEMPLATES = {
@@ -54,39 +55,39 @@ Hooks.on('init', function() {
         requiresReload: true
     }),
 
-    game.settings.registerMenu(Console.ID, 'defaultConfigMenu', {
-        name: "Default console configuration",
-        label: "Open config",
-        hint: "Configure the default console appearance and functionality",
-        scope: "world",
-        config: true,
-        type: DefaultConfig,
-        restricted: true,
-        requiresReload: false
-    }),
+        game.settings.registerMenu(Console.ID, 'defaultConfigMenu', {
+            name: "Default console configuration",
+            label: "Open config",
+            hint: "Configure the default console appearance and functionality",
+            scope: "world",
+            config: true,
+            type: DefaultConfig,
+            restricted: true,
+            requiresReload: false
+        }),
 
-    game.settings.register(Console.ID, 'defaultConfig', {
-        scope: "world",
-        config: false,
-        type: Object,
-        default: {},
-    }),
+        game.settings.register(Console.ID, 'defaultConfig', {
+            scope: "world",
+            config: false,
+            type: Object,
+            default: {},
+        }),
 
-    game.settings.register(Console.ID, 'globalNotificationSounds', {
-        name: "Notification sounds",
-        hint: "Globally mute notification sounds? Volume is controlled using the 'Interface' slider on the audio tab.",
-        scope: 'client',
-        config: true,
-        requiresReload: false,
-        type: Boolean,
-        default: false
-    })
+        game.settings.register(Console.ID, 'globalNotificationSounds', {
+            name: "Notification sounds",
+            hint: "Globally mute notification sounds? Volume is controlled using the 'Interface' slider on the audio tab.",
+            scope: 'client',
+            config: true,
+            requiresReload: false,
+            type: Boolean,
+            default: false
+        })
 
 })
 
 // add button to chat
 Hooks.on('renderSidebarTab', (chatLog, html) => {
-    const id='console-manager-launcher'
+    const id = 'console-manager-launcher'
     const tooltip = game.i18n.localize('CONSOLE.button-title')
     const name = Console.getRename("", game.i18n.localize('CONSOLE.consoles'))
     const inner = `<i class="fas fa-terminal"></i> ${name}`
@@ -138,6 +139,19 @@ Hooks.once('ready', function() {
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
     registerPackageDebugFlag(Console.ID)
 });
+
+Handlebars.registerHelper('countInArray', function(data, arr) {
+    // @param {any} data
+    // @param {Array} arr
+    // @return {Number} number of times @data appears in @arr
+    let number = 0
+    arr.forEach((id) => {
+        if (id === data) {
+            number = ++number
+        }
+    })
+    return number
+})
 
 // custom helper for ConsoleApp console.hbs
 Handlebars.registerHelper('equal', function(input1, input2, options) {

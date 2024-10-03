@@ -38,8 +38,9 @@ export default class ConsoleManager extends FormApplication {
         })
         return {
             consoles: consoles,
+            flags: game.user.getFlag(Console.ID, Console.FLAGS.UNREAD),
             manager: this,
-            user: game.user._id
+            userId: game.user._id
         }
     }
 
@@ -210,6 +211,5 @@ export default class ConsoleManager extends FormApplication {
             ConsoleData.updateConsole(console.id, console)
         }
     }
-
 }
 
