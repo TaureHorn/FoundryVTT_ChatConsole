@@ -25,6 +25,7 @@ To use a command type one of the following command names prepended by a forward 
 - `/invite <player name>`: Add a player to this list of owners for this console. GM only.
 - `/kick <player name>`: Remove a player from the list of owner for this console. GM only.
 - `/lock`: Toggle the lock state of this console. GM only.
+- `/mute`: Toggle the mute state of this console. GM only
 - `/name <string>`: Set the name of this console. GM only.
 - `/share`: Share the app with players, making the app window render on their screens. GM only.
 - `/show`: Toggle the consosle visibility to players with ownership. GM only.
@@ -57,10 +58,10 @@ No more counting out your words for the *Sending* spell in DnD5e.
 Messages within a console can be copied to the OS clipboard with a left-click or deleted with a right click. Players can only delete their own messages, GMs can delete all messages.
 
 ## Potential Planned Improvements
-- Add ability to set default configuration for all consoles variables [name, title, bgImg, type, limits...]
+- ~~Add ability to set default configuration for all consoles variables [name, title, bgImg, type, limits...]~~
 - Module instructions / readme in the auto generated '_consoleData' journal entry.
 - Add message timestamps >> integration with SimpleCalendar and SmallTime?
-- New message notifications?
+- ~~New message notifications?~~
 - Refactor module so parts of it feel less like a hot mess and the code is easier for users to understand and build macros for.
 - Port the v12's 'Application_v2' thingy?
 
