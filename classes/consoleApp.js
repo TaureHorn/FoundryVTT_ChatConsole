@@ -4,10 +4,11 @@ import ConsoleData from "./consoleData.js"
 
 export default class ConsoleApp extends FormApplication {
 
-    constructor(getDocument, getUser) {
+    constructor(getDocument, getUser, managerId) {
         super()
         this._document = getDocument
         this._represents = getUser
+        this._parentApp = managerId
     }
 
     // _inputVal keeps a record of the text in an input so unsent messages can persist between renders
@@ -28,7 +29,7 @@ export default class ConsoleApp extends FormApplication {
     }
 
     getData() {
-        const console = ConsoleData.getConsoles().find((obj) => obj.id === this.options.id)
+        const console = ConsoleData.getConsole(this.options.id)
         let data = {
             ...console
         }
@@ -186,7 +187,7 @@ export default class ConsoleApp extends FormApplication {
             const id = game.user.character ? game.user.character._id : game.userId
             const permission = id === data.userid || game.user.isGM ? true : false
             if (data.action === "message-interact" && permission) {
-                const newData = ConsoleData.getConsoles().find((obj) => obj.id === data.consoleId)
+                const newData = ConsoleData.getConsole(data.consoleId)
                 newData.content.body.splice(data.messageIndex, 1)
                 ConsoleData.updateConsole(newData.id, newData)
             } else if (data.action === "message-interact" && !permission) {
@@ -203,7 +204,7 @@ export default class ConsoleApp extends FormApplication {
         }
         this._document.apps[this.appId] = this
         if (this._represents) {
-            this._represents.apps[this.appId] = this
+            this._represents.apps[this.appId, this._parentApp] = this
         }
         super.render(...args)
         this.updateAppClasses(this.data.id)
@@ -255,7 +256,7 @@ export default class ConsoleApp extends FormApplication {
     }
 
     static _handleShareApp(id) {
-        const data = ConsoleData.getConsoles().find((obj) => obj.id === id)
+        const data = ConsoleData.getConsole(id)
         const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
         return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width })
     }

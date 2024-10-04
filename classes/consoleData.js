@@ -33,7 +33,7 @@ export default class ConsoleData {
         }
     }
 
-    static getConsoles() {
+    static getAllConsoles() {
         // return {Array} 
         const data = this.getDataPool()
         let arr = []
@@ -43,6 +43,19 @@ export default class ConsoleData {
             })
         }
         return arr
+    }
+
+    static getConsole(id){
+        // @param {String} id
+        // @return {Object} console
+        return this.getAllConsoles().find((obj) => obj.id === id)
+    }
+
+    static getConsoleName(name) {
+        // @param {String} name
+        // @return {Object} console
+        // returns the first match of console with that name
+        return this.getAllConsoles().find((obj) => obj.name === name)
     }
 
     static async createJournalPage(console) {
@@ -116,7 +129,7 @@ export default class ConsoleData {
 
     static async duplicateConsole(id) {
         // @param {string} id
-        const consoleToCopy = this.getConsoles().find((obj) => obj.id === id)
+        const consoleToCopy = this.getConsole(id)
         const clonedConsole = structuredClone(consoleToCopy)
         clonedConsole.id = foundry.utils.randomID(16)
         clonedConsole.name = `${consoleToCopy.name} (copy)`
@@ -166,10 +179,11 @@ export default class ConsoleData {
             }
 
         })
+
     }
 
     static async toggleLock(id) {
-        const console = this.getConsoles().find((obj) => obj.id === id)
+        const console = this.getConsole(id)
         console.locked = console.locked ? false : true
         const update = {
             [id]: console
@@ -179,7 +193,7 @@ export default class ConsoleData {
 
     static async toggleVisibility(id) {
         // @param {string} id
-        const consoleToCopy = this.getConsoles().find((obj) => obj.id === id)
+        const consoleToCopy = this.getConsole(id)
         consoleToCopy.public = consoleToCopy.public ? false : true
         const update = {
             [id]: consoleToCopy
