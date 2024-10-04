@@ -491,9 +491,6 @@ export default class ConsoleApp extends FormApplication {
                         ui.notifications.warn(" Console | You are not currently represented by a character and are therefore already incognito")
                     }
                     break;
-                case "mute":
-                    ConsoleData.toggleBoolean(console.id, 'mute')
-                    break;
                 default:
                     ui.notifications.warn(`Console | '/${cmd.join(" ")}' is not a recognised command`)
             }
