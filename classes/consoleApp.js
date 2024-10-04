@@ -442,17 +442,20 @@ export default class ConsoleApp extends FormApplication {
                     }
                     break;
                 case "lock":
-                    ConsoleData.toggleLock(console.id)
+                    ConsoleData.toggleBoolean(console.id, 'lock')
                     break;
                 case "name":
                     console.name = this.#stringifyArguments(cmd)
                     ConsoleData.updateConsole(console.id, console)
                     break;
+                case "mute":
+                    ConsoleData.toggleBoolean(console.id, 'mute')
+                    break;
                 case "share":
                     this.shareApp()
                     break;
                 case "show":
-                    ConsoleData.toggleVisibility(console.id)
+                    ConsoleData.toggleBoolean(console.id, 'show')
                     break;
                 case "title":
                     console.content.title = this.#stringifyArguments(cmd)
@@ -487,6 +490,9 @@ export default class ConsoleApp extends FormApplication {
                     } else {
                         ui.notifications.warn(" Console | You are not currently represented by a character and are therefore already incognito")
                     }
+                    break;
+                case "mute":
+                    ConsoleData.toggleBoolean(console.id, 'mute')
                     break;
                 default:
                     ui.notifications.warn(`Console | '/${cmd.join(" ")}' is not a recognised command`)
