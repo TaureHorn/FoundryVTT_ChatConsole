@@ -94,6 +94,12 @@
     <fieldset class="console-config-limited">
     <legend class="field-header">{{localize "CONSOLE.config.players.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.players.hover-info"}}"></i></legend>
         <div>
+            <input id="hide-console" name="public" type="radio" value="false" {{#unless console.public}}checked{{/unless}}>
+            <label for="hide-console">{{localize "CONSOLE.config.players.hide"}}:</label>
+            <input id="show-console" name="public" type="radio" value="true" {{#if console.public}}checked{{/if}}>
+            <label for="show-console">{{localize "CONSOLE.config.players.show"}}:</label>
+        </div>
+        <div>
             {{#each players}}
                 <input id="{{_id}}" name="players"[{{@index}}] type="checkbox" value="{{_id}}" {{#inArray _id ../console.playerOwnership}}checked{{/inArray}}/>
                 <label for="{{_id}}">{{name}}</legend>

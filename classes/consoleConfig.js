@@ -62,7 +62,7 @@ export default class ConsoleConfig extends FormApplication {
             },
             locked: oldData.locked,
             playerOwnership: [],
-            public: oldData.public,
+            public: formData.public === "true" ? true : false,
             scenes: [],
             styling: {
                 bg: formData.bgCol,

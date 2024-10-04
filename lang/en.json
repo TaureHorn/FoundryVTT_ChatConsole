@@ -44,6 +44,8 @@
             },
             "players": {
                 "header": "Player Ownership",
+                "hide": "Hide from owners",
+                "show": "Show to owners",
                 "hover-info": "Select who can see this console in their console manager. This is seperate from whether or not a console is public/private"
             },
             "scenes": {
@@ -79,6 +81,7 @@
             "open-console": "Open",
             "scenes": "Scenes",
             "toggle-lock": "Toggle lock to disable/enable editing",
+            "toggle-mute": "Toggle mute notifications",
             "toggle-visibility": "Toggle visibility to owners"
         },
         "version-migration": "Migrating module data to latest verison."

@@ -78,7 +78,7 @@ export default class ConsoleManager extends FormApplication {
             icon: '<i class="fas fa-eye"></i>',
             callback: async (item) => {
                 const id = item[0].dataset.consoleId
-                await ConsoleData.toggleVisibility(id)
+                await ConsoleData.toggleBoolean(id, 'show')
             }
         },
         {
@@ -86,7 +86,15 @@ export default class ConsoleManager extends FormApplication {
             icon: '<i class="fas fa-lock"></i>',
             callback: async (item) => {
                 const id = item[0].dataset.consoleId
-                await ConsoleData.toggleLock(id)
+                await ConsoleData.toggleBoolean(id, 'lock')
+            }
+        },
+        {
+            name: game.i18n.localize('CONSOLE.manager.toggle-mute'),
+            icon: '<i class="fas fa-volume-xmark"></i>',
+            callback: async (item) => {
+                const id = item[0].dataset.consoleId
+                await ConsoleData.toggleBoolean(id, 'mute')
             }
         },
         {
