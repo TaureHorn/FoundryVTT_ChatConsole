@@ -459,7 +459,7 @@ export default class ConsoleApp extends FormApplication {
                     ConsoleData.updateConsole(console.id, console)
                     break;
                 default:
-                    Console.warn(true, `/${cmd.join(" ")} is not a recongised command`)
+                    Console.error(true, 'warn', `/${cmd.join(" ")} is not a recongised command`)
                     ui.notifications.warn(`Console | '/${cmd.join(" ")}' is not a recognised command`)
             }
             this._inputVal = ""
