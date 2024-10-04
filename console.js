@@ -25,13 +25,25 @@ export default class Console {
         MANAGER_PLAYER: `modules/${this.ID}/templates/manager_player.hbs`
     }
 
-    static log(force, ...args) {
+    static print(force, action, ...args){
         const shouldLog = force || game.modules.get('_dev-mode')?.api?.getPackageDebugValue(this.ID);
-
-        if (shouldLog) {
-            console.log(this.ID + " debug", '|', ...args);
+        if (shouldLog){
+            switch(action){
+                case 'error':
+                    console.error("Module: Console --> error", '|', ...args)
+                    break;
+                case 'log':
+                   console.log("Module: Console --> debug", '|', ...args);
+                    break;
+                case 'warn':
+                    console.warn("Module: Console --> warning!", '|', ...args)
+                    break;
+                default:
+                    console.error("Module: Console --> Console.print encountered an invalid switch case '" + action + "'")
+            }
         }
     }
+
 
     static getRename(append, fallback) {
         const rename = game.settings.get(Console.ID, 'moduleElementsName')
@@ -55,39 +67,39 @@ Hooks.on('init', function() {
         requiresReload: true
     }),
 
-        game.settings.registerMenu(Console.ID, 'defaultConfigMenu', {
-            name: "Default console configuration",
-            label: "Open config",
-            hint: "Configure the default console appearance and functionality",
-            scope: "world",
-            config: true,
-            type: DefaultConfig,
-            restricted: true,
-            requiresReload: false
-        }),
+    game.settings.registerMenu(Console.ID, 'defaultConfigMenu', {
+        name: "Default console configuration",
+        label: "Open config",
+        hint: "Configure the default console appearance and functionality",
+        scope: "world",
+        config: true,
+        type: DefaultConfig,
+        restricted: true,
+        requiresReload: false
+    }),
 
-        game.settings.register(Console.ID, 'defaultConfig', {
-            scope: "world",
-            config: false,
-            type: Object,
-            default: {},
-        }),
+    game.settings.register(Console.ID, 'defaultConfig', {
+        scope: "world",
+        config: false,
+        type: Object,
+        default: {},
+    }),
 
-        game.settings.register(Console.ID, 'notificationContext', {
-            name: "Notification volume control context",
-            hint: "Which volume control context would you like to use for console notifications? Interface, environent or music",
-            scope: 'client',
-            config: true,
-            requiresReload: false,
-            type: new foundry.data.fields.StringField({
-                choices: {
-                    'interface': 'interface',
-                    'environment': 'environent',
-                    'music': 'music'
-                }
-            }),
-            default: 'interface'
-        })
+    game.settings.register(Console.ID, 'notificationContext', {
+        name: "Notification volume control context",
+        hint: "Which volume control context would you like to use for console notifications? Interface, environent or music",
+        scope: 'client',
+        config: true,
+        requiresReload: false,
+        type: new foundry.data.fields.StringField({
+            choices: {
+                'interface': 'interface',
+                'environment': 'environent',
+                'music': 'music'
+            }
+        }),
+        default: 'interface'
+    })
 
     game.settings.register(Console.ID, 'globalNotificationSounds', {
         name: "Mute notification sounds",
@@ -152,7 +164,7 @@ Hooks.once('ready', function() {
                     }
                     break;
                 default:
-                    Console.log(true, `encountered an incorrect socket event string '${data.event}' in console.socket.on`)
+                    Console.print(true, 'error', `encountered an incorrect socket event string '${data.event}' in console.socket.on`)
             }
         }
     })

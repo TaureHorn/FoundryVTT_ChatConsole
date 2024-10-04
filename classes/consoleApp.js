@@ -312,7 +312,7 @@ export default class ConsoleApp extends FormApplication {
                     await game.socket.emit('module.console', { event: "messageNotification", users: users, console: console })
                     break;
                 default:
-                    Console.log(true, `encountered invalid switch case '${context}' in consoleApp.notifySend`)
+                    Console.print(true, 'error', `encountered invalid switch case '${context}' in consoleApp.notifySend`)
             }
         } else {
             if (game.users.activeGM) {
@@ -459,7 +459,7 @@ export default class ConsoleApp extends FormApplication {
                     ConsoleData.updateConsole(console.id, console)
                     break;
                 default:
-                    Console.log(true, `/${cmd.join(" ")} is not a recongised command`)
+                    Console.warn(true, `/${cmd.join(" ")} is not a recongised command`)
                     ui.notifications.warn(`Console | '/${cmd.join(" ")}' is not a recognised command`)
             }
             this._inputVal = ""
