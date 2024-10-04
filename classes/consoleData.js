@@ -64,9 +64,8 @@ export default class ConsoleData {
     }
 
     static async createJournalPage(console) {
-        const data = this.getDataPool()
         const newEntry = new JournalEntryPage({ "name": console.name })
-        await data.createEmbeddedDocuments(newEntry.constructor.name, [newEntry])
+        await this.getDataPool().createEmbeddedDocuments(newEntry.constructor.name, [newEntry])
     }
 
     static async createConsole() {
@@ -77,22 +76,20 @@ export default class ConsoleData {
             const newConsole = validDefault ? customDefault : DefaultConfig._defaultData
             newConsole.id = foundry.utils.randomID(Console.IDLENGTH)
 
-            const data = this.getDataPool()
             const newConsoles = {
                 [newConsole.id]: newConsole
             }
-            data.setFlag(Console.ID, Console.FLAGS.CONSOLE, newConsoles)
+            this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, newConsoles)
         }
     }
 
     static async deleteConsole(id) {
         // @param {string} id
         if (game.user.isGM) {
-            const data = this.getDataPool()
             const idDeletion = {
                 [`-=${id}`]: null
             }
-            data.setFlag(Console.ID, Console.FLAGS.CONSOLE, idDeletion)
+            this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, idDeletion)
         }
     }
 
@@ -151,21 +148,26 @@ export default class ConsoleData {
 
     }
 
-    static async toggleLock(id) {
+    static async toggleBoolean(id, action){
+        // @param {String} id
+        // @param {String} action
         const console = this.getConsole(id)
-        console.locked = console.locked ? false : true
+
+        switch(action){
+            case 'lock':
+                console.locked = console.locked ? false : true
+                break;
+            case 'mute':
+                console.styling.mute = console.styling.mute ? false : true
+                break;
+            case 'show':
+                console.public = console.public ? false : true
+                break;
+            default:
+        }
+
         const update = {
             [id]: console
-        }
-        this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, update)
-    }
-
-    static async toggleVisibility(id) {
-        // @param {string} id
-        const consoleToCopy = this.getConsole(id)
-        consoleToCopy.public = consoleToCopy.public ? false : true
-        const update = {
-            [id]: consoleToCopy
         }
         this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, update)
     }
@@ -173,11 +175,10 @@ export default class ConsoleData {
     static async updateConsole(id, updateData) {
         // @param {string} id
         // @param {object} updateData
-        const data = this.getDataPool()
         const update = {
             [id]: updateData
         }
-        data.setFlag(Console.ID, Console.FLAGS.CONSOLE, update)
+        this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, update)
     }
 
     static async updateJournalPage(console) {
