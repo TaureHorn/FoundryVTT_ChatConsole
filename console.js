@@ -13,6 +13,7 @@ export default class Console {
 
     static FLAGS = {
         "CONSOLE": "consoles",
+        "MOD_VERSION": "version",
         "UNREAD": "unread"
     }
 
@@ -25,15 +26,18 @@ export default class Console {
         MANAGER_PLAYER: `modules/${this.ID}/templates/manager_player.hbs`
     }
 
-    static print(force, action, ...args){
+    static print(force, action, ...args) {
         const shouldLog = force || game.modules.get('_dev-mode')?.api?.getPackageDebugValue(this.ID);
-        if (shouldLog){
-            switch(action){
+        if (shouldLog) {
+            switch (action) {
                 case 'error':
                     console.error("Module: Console --> error", '|', ...args)
                     break;
                 case 'log':
-                   console.log("Module: Console --> debug", '|', ...args);
+                    console.log("Module: Console --> debug", '|', ...args);
+                    break;
+                case 'update':
+                    console.log("Module: Console --> updating", '|', ...args)
                     break;
                 case 'warn':
                     console.warn("Module: Console --> warning!", '|', ...args)
@@ -65,6 +69,7 @@ Hooks.on('init', function() {
         config: true,
         type: String,
         requiresReload: true
+
     }),
 
     game.settings.registerMenu(Console.ID, 'defaultConfigMenu', {
@@ -141,7 +146,7 @@ Hooks.on('renderConsoleApp', (...args) => {
 // runs automatically on load
 //      register socket to share apps with players
 //      to pre-create a document to store module data 
-Hooks.once('ready', function() {
+Hooks.once('ready', async function() {
     game.socket.on("module.console", async (data) => {
         // @param {Object} data
         // check if user in id array of shared clients
@@ -170,18 +175,26 @@ Hooks.once('ready', function() {
     })
 
     if (!game.user.getFlag(Console.ID, 'unread')) {
-        ConsoleData.setPlayerFlags({ "context": "messageNotification", "addition": true }, [game.userId], {})
+        await ConsoleData.setPlayerFlags({ "context": "messageNotification", "addition": true }, [game.userId], {})
     }
 
     if (game.user.isGM) {
-        ConsoleData.getDataPool()
+        const data = ConsoleData.getDataPool()
+        const version = data.getFlag(Console.ID, Console.FLAGS.MOD_VERSION)
+        if (!version || version !== game.modules.get(Console.ID).version) {
+            // check version and update data if not current version
+            ui.notifications.notify(`Console | ${game.i18n.localize("CONSOLE.version-migration")}`)
+            await ConsoleData.versionControl(data, version)
+        }
+
+        const defaultSetting = game.settings.get(Console.ID, 'defaultConfig')
+        if (Object.keys(defaultSetting).length === 0) {
+            const defaultConfig = new DefaultConfig
+            game.settings.set(Console.ID, 'defaultConfig', defaultConfig._defaultData)
+        }
     }
 
-    const defaultSetting = game.settings.get(Console.ID, 'defaultConfig')
-    if (Object.keys(defaultSetting).length === 0) {
-        const defaultConfig = new DefaultConfig
-        game.settings.set(Console.ID, 'defaultConfig', defaultConfig._defaultData)
-    }
+
 
 })
 

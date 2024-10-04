@@ -1,4 +1,5 @@
 import Console from "../console.js"
+import DefaultConfig from "./defaultConfig.js"
 
 export default class ConsoleData {
 
@@ -6,9 +7,15 @@ export default class ConsoleData {
 
     static ID = "Rk3WTT9Rvm0smJKg"
 
-    static createDataPool() {
+    static async createDataPool() {
         if (game.user.isGM) {
-            JournalEntry.create({
+            await JournalEntry.create({
+                "flags": {
+                    "console": {
+                        "consoles": {},
+                        "version": game.modules.get(Console.ID).version
+                    }
+                },
                 "name": this.name,
                 "ownership": {
                     "default": 3
@@ -36,16 +43,14 @@ export default class ConsoleData {
     static getAllConsoles() {
         // return {Array} 
         const data = this.getDataPool()
-        let arr = []
         if (data?.flags?.console?.consoles) {
-            Array.from(Object.entries(data.flags.console.consoles)).forEach((entry) => {
-                arr.push(entry[1])
-            })
+            return Array.from(Object.values(data.flags.console.consoles))
+        } else {
+            Console.print(true, 'error', `flags for journal entry ${this.name} are not set correctly`)
         }
-        return arr
     }
 
-    static getConsole(id){
+    static getConsole(id) {
         // @param {String} id
         // @return {Object} console
         return this.getAllConsoles().find((obj) => obj.id === id)
@@ -66,47 +71,11 @@ export default class ConsoleData {
 
     static async createConsole() {
         if (game.user.isGM) {
-            const title = Console.getRename("", "new console")
-            const defaultConfig = game.settings.get(Console.ID, 'defaultConfig')
-            const validDefault = Object.keys(defaultConfig).length > 0
+            const customDefault = game.settings.get(Console.ID, 'defaultConfig')
+            const validDefault = Object.keys(customDefault).length > 0
 
-            let newConsole = {}
-            if (validDefault) {
-                defaultConfig.id = foundry.utils.randomID(Console.IDLENGTH)
-                newConsole = defaultConfig
-            } else {
-                newConsole = {
-                    content: {
-                        body: [],
-                        title: title,
-                    },
-                    description: "Description",
-                    gmInfo: "GM info",
-                    id: foundry.utils.randomID(Console.IDLENGTH),
-                    name: title,
-                    limits: {
-                        hardLimit: 2048, // inbuilt character limit so you can't just send the entire bee movie script
-                        marker: '...',
-                        type: 'none', // options are 'words', 'characters' and 'none'.
-                        value: 0
-                    },
-                    locked: false,
-                    playerOwnership: [],
-                    public: false,
-                    scenes: [],
-                    sceneNames: [],
-                    styling: {
-                        bg: '#000000',
-                        bgImg: "",
-                        fg: '#ffffff',
-                        height: 880,
-                        messengerStyle: true,
-                        mute: false,
-                        notificationSound: "",
-                        width: 850
-                    }
-                }
-            }
+            const newConsole = validDefault ? customDefault : DefaultConfig._defaultData
+            newConsole.id = foundry.utils.randomID(Console.IDLENGTH)
 
             const data = this.getDataPool()
             const newConsoles = {
@@ -143,10 +112,10 @@ export default class ConsoleData {
         // @param {string} context
         // @param {Array of strings}} idList
         // @pararm {any} data
-    
+
         idList.forEach(async (id) => {
             const user = await game.users.get(id)
-            switch (context){
+            switch (context) {
                 case 'messageNotification':
                     const flags = await user.getFlag(Console.ID, Console.FLAGS.UNREAD)
                     const filteredFlags = flags.filter(i => i !== data)
@@ -165,7 +134,7 @@ export default class ConsoleData {
         //     opts.operation {Boolean} --> true = add data , false = remove data
         // @param {Array of strings}} idList
         // @pararm {any} data
-         
+
         idList.forEach(async (id) => {
             const user = await game.users.get(id)
             switch (opts.context) {
@@ -248,6 +217,56 @@ export default class ConsoleData {
             },
         }])
 
+
+    }
+
+    static async versionControl(data, version) {
+        const consoles = Array.from(Object.values(data.getFlag(Console.ID, Console.FLAGS.CONSOLE)))
+
+        // update version number
+        if (!version || !version !== game.modules.get(Console.ID).version) {
+            version = game.modules.get(Console.ID).version
+            Console.print(true, 'update', `changed stored version number to current version: '${game.modules.get(Console.ID).version}'`)
+            await data.setFlag(Console.ID, Console.FLAGS.MOD_VERSION, version)
+        }
+
+        // iterate through each console and add missing key:value pairs
+        const updatedConsoles = {}
+        const df = DefaultConfig._defaultData
+        consoles.forEach((console) => {
+            Console.print(true, 'update', `Data for ${console.id} (${console.name}) is being scanned for changes from the new module version)`)
+            !console.id ? console.id = foundry.utils.randomID(Console.IDLENGTH) : null
+            !console.content ? console.content = df.content : null
+            !console.content.body ? console.content.body = df.content.body : null
+            !console.content.title ? console.content.title = df.content.title : null
+            !console.defaultAnchor ? console.defaultAnchor = df.defaultAnchor : null
+            !console.description ? console.description = df.description : null
+            !console.gmInfo ? console.gmInfo = df.gmInfo : null
+            !console.name ? console.name = df.name : null
+            !console.limits ? console.limits = df.limits : null
+            !console.limits.hardLimit ? console.limits.hardLimit = df.limits.hardLimit : null
+            !console.limits.marker ? console.limits.marker = df.limits.marker : null
+            !console.limits.type ? console.limits.type = df.limits.type : null
+            !console.limits.value ? console.limits.value = df.limits.value : null
+            !console.locked ? console.locked = df.locked : null
+            !console.playerOwnership ? console.playerOwnership = df.playerOwnership : null
+            !console.public ? console.public = df.public : null
+            !console.scenes ? console.scenes = df.scenes : null
+            !console.styling ? console.styling = df.styling : null
+            !console.styling.bg ? console.styling.bg = df.styling.bg : null
+            !console.styling.bgImg ? console.styling.bgImg = df.styling.bgImg : null
+            !console.styling.fg ? console.styling.fg = df.styling.fg : null
+            !console.styling.height ? console.styling.height = df.styling.height : null
+            !console.styling.messengerStyle ? console.styling.messengerStyle = df.styling.messengerStyle : null
+            !console.styling.mute ? console.styling.mute = df.styling.mute : null
+            !console.styling.notificationSound ? console.styling.notificationSound = df.styling.notificationSound : null
+            !console.styling.width ? console.styling.width = df.styling.width : null
+
+            updatedConsoles[console.id] = console
+        })
+
+        await data.setFlag(Console.ID, Console.FLAGS.CONSOLE, updatedConsoles)
+        Console.print(true, 'update', 'Version migration complete. Return -->', updatedConsoles)
 
     }
 }
