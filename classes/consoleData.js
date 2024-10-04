@@ -153,7 +153,7 @@ export default class ConsoleData {
                     await user.setFlag(Console.ID, Console.FLAGS.UNREAD, filteredFlags)
                     break;
                 default:
-                    Console.log(true, 'encountered invalid switch case in consoleData.removeFromPlayerFlags')
+                    Console.print(true, 'error', 'encountered invalid switch case in consoleData.removeFromPlayerFlags')
             }
         })
 
@@ -175,7 +175,7 @@ export default class ConsoleData {
                     await user.setFlag(Console.ID, Console.FLAGS.UNREAD, unreadList)
                     break;
                 default:
-                    Console.log(true, 'encountered invalid switch case in consoleData.setPlayerFlags')
+                    Console.print(true, 'error', 'encountered invalid switch case in consoleData.setPlayerFlags')
             }
 
         })
