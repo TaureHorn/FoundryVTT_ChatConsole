@@ -80,6 +80,7 @@
             "scenes": "Scenes",
             "toggle-lock": "Toggle lock to disable/enable editing",
             "toggle-visibility": "Toggle visibility to owners"
-        }
+        },
+        "version-migration": "Migrating module data to latest verison."
     }
 }

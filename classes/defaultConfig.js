@@ -17,11 +17,12 @@ export default class DefaultConfig extends FormApplication {
         return mergedOptions
     }
 
-    _defaultData = {
+    static _defaultData = {
         content: {
             body: [],
             title: "title",
         },
+        defaultAnchor: false,
         description: "Description",
         gmInfo: "GM info",
         name: "title",

@@ -21,7 +21,6 @@ export default class ConsoleConfig extends FormApplication {
 
     getData() {
         const console = ConsoleData.getConsole(this.object)
-        this.versionMigration(console)
 
         let players = game.users._source
         const GM = players.find((obj) => obj.role === 4)
@@ -114,20 +113,5 @@ export default class ConsoleConfig extends FormApplication {
 
     }
 
-    async versionMigration(console) {
-
-        !console.playerOwnership ? console.playerOwnership = [] : null
-        !console.scenes ? console.scenes = [] : null
-        !console.sceneNames ? console.sceneNames = [] : null
-        if (!console.limits) {
-            console.limits = {
-                hardLimit: 2048,
-                marker: '...',
-                type: 'none',
-                value: 0
-            }
-        }
-        await ConsoleData.updateConsole(console.id, console)
-    }
 }
 
