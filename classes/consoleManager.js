@@ -28,7 +28,7 @@ export default class ConsoleManager extends FormApplication {
     }
 
     getData() {
-        const consoles = ConsoleData.getConsoles().sort((a, b) => a.name.localeCompare(b.name))
+        const consoles = ConsoleData.getAllConsoles().sort((a, b) => a.name.localeCompare(b.name))
         consoles.forEach((console) => {
             console.sceneNames = []
             console.scenes.forEach((id) => {
@@ -105,7 +105,7 @@ export default class ConsoleManager extends FormApplication {
             icon: '<i class="fas fa-box-archive"></i>',
             callback: async (item) => {
                 const id = item[0].dataset.consoleId
-                const console = ConsoleData.getConsoles().find((obj) => obj.id === id)
+                const console = ConsoleData.getConsole(id)
 
                 const confirm = new Dialog({
                     buttons: {
@@ -160,7 +160,7 @@ export default class ConsoleManager extends FormApplication {
         const clickedElement = $(event.currentTarget)
         const action = clickedElement.data().action
         const id = clickedElement.data().consoleId
-        const console = ConsoleData.getConsoles().find((obj) => obj.id === id)
+        const console = ConsoleData.getConsole(id)
 
         switch (action) {
             case 'create':
@@ -171,7 +171,8 @@ export default class ConsoleManager extends FormApplication {
                 const appWindow = document.getElementById(console.id)
                 if (!appWindow) {
                     // render app if not open
-                    new ConsoleApp(ConsoleData.getDataPool(), game.user).render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width })
+                    new ConsoleApp(ConsoleData.getDataPool(), game.user, this.appId)
+                        .render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width })
                 } else {
                     // if open bring to front and flash
                     ui.windows[appWindow.dataset.appid].bringToTop()

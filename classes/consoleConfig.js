@@ -20,7 +20,7 @@ export default class ConsoleConfig extends FormApplication {
     }
 
     getData() {
-        const console = ConsoleData.getConsoles().find((obj) => obj.id === this.object)
+        const console = ConsoleData.getConsole(this.object)
         this.versionMigration(console)
 
         let players = game.users._source
@@ -46,7 +46,6 @@ export default class ConsoleConfig extends FormApplication {
 
     async _updateObject(event, formData) {
         const oldData = this.getData(this.options).console
-        Console.log(true, "_updateObject", formData)
         const newData = {
             content: {
                 body: oldData.content.body,

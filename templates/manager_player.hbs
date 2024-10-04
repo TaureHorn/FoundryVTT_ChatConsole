@@ -7,7 +7,6 @@
                 <button style="all:unset;cursor:pointer" title="{{localize "CONSOLE.manager.open-console"}}" data-console-id="{{this.id}}" data-action="open-console">
                     <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px" class="console-seperate">
                         <div>
-                        {{log ../flags}}
                             {{#inArray id ../flags}}<span class="notifPip" style="border: 1px solid {{styling.bg}};color:{{styling.fg}}">{{countInArray id ../flags}}{{/inArray}}</span>
                             <span><strong>{{name}}</strong></span>
                         </div>
