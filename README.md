@@ -25,7 +25,8 @@ To use a command type one of the following command names prepended by a forward 
 - `/invite <player name>`: Add a player to this list of owners for this console. GM only.
 - `/kick <player name>`: Remove a player from the list of owner for this console. GM only.
 - `/lock`: Toggle the lock state of this console. GM only.
-- `/mute`: Toggle the mute state of this console. GM only
+- `/mute`: Toggle the mute state of this console. GM only.
+- `/notifications`: Toggle enable/disable a console to send notifications when a new message is sent. GM only.
 - `/name <string>`: Set the name of this console. GM only.
 - `/share`: Share the app with players, making the app window render on their screens. GM only.
 - `/show`: Toggle the consosle visibility to players with ownership. GM only.
