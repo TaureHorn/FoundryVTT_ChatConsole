@@ -166,6 +166,9 @@ export default class ConsoleData {
             case 'show':
                 console.public = console.public ? false : true
                 break;
+            case 'timestamps':
+                console.timestamps = console.timestamps ? false : true
+                break;
             default:
         }
 
@@ -237,6 +240,7 @@ export default class ConsoleData {
         // iterate through each console and add missing key:value pairs
         const updatedConsoles = {}
         const df = DefaultConfig._defaultData
+
         consoles.forEach((console) => {
             Console.print(true, 'update', `Data for ${console.id} (${console.name}) is being scanned for changes from the new module version)`)
             !console.id ? console.id = foundry.utils.randomID(Console.IDLENGTH) : null
@@ -266,6 +270,7 @@ export default class ConsoleData {
             !console.styling.mute ? console.styling.mute = df.styling.mute : null
             !console.styling.notificationSound ? console.styling.notificationSound = df.styling.notificationSound : null
             !console.styling.width ? console.styling.width = df.styling.width : null
+            !console.timestamps ? console.timestamps = df.timestamps : null
 
             updatedConsoles[console.id] = console
         })

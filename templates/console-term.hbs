@@ -5,6 +5,7 @@
             {{#equal limits.type "words"}}[{{localize "CONSOLE.console.limit"}}:{{limits.value}} {{localize "CONSOLE.console.words"}}]{{/equal}}
             {{#equal limits.type "characters"}}[{{localize "CONSOLE.console.limit"}}:{{limits.value}} {{localize "CONSOLE.console.characters"}}]{{/equal}}
             {{#if locked}}<i class="fa-solid fa-lock"></i>{{/if}}
+            {{#if timestamps}}<i class="fas fa-clock"></i>{{/if}}
             {{#isGM}}<i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>{{/isGM}}
         </div>
     </div>
@@ -18,7 +19,7 @@
     {{#each content.body}}
         <div> 
         <button class="console-message-interact" style="background:none;color:{{../styling.fg}};margin:2px 0;text-align:start" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-message-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.console.app-info"}}">
-            {{#equal user.name ""}}<span>{{text}}</span>{{else}}<span style="background:{{../styling.fg}};color:{{../styling.bg}};padding:2px"><strong>{{user.name}}:</strong></span><span> {{text}}</span>{{/equal}}
+            {{#equal user.name ""}}<span>{{text}}</span>{{else}}<span style="background:{{../styling.fg}};color:{{../styling.bg}};padding:2px">{{#if ../timestamps}}<span>{{timestamp}} </span>{{/if}}<strong>{{user.name}}:</strong></span><span> {{text}}</span>{{/equal}}
         </button>
         </div>
     {{/each}}

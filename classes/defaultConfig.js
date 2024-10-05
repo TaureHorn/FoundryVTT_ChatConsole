@@ -47,7 +47,8 @@ export default class DefaultConfig extends FormApplication {
             mute: false,
             notificationSound: "",
             width: 850
-        }
+        },
+        timestamps: true,
     }
 
     getData() {
@@ -113,7 +114,8 @@ export default class DefaultConfig extends FormApplication {
                 mute: formData.notificationMute === "true" ? true : false,
                 notificationSound: formData.notificationSound === "" ? oldData.notificationSound : formData.notificationSound,
                 width: formData.width
-            }
+            },
+            timestamps: formData.timestamps === "true" ? true : false
         }
 
         if (formData.players) {

@@ -59,6 +59,13 @@
         </div>
     </fieldset>
     <fieldset>
+    <legend class="field-header">{{localize "CONSOLE.config.timestamps.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.timestamps.hover-info"}}"></i></legend>
+        <div class="console-config-flex">
+            <label for="timestampsBool">{{localize "CONSOLE.config.timestamps.enabled"}}</label>
+            <input id="timestampsBool" name="timestamps" type="checkbox" value="true" {{#if console.timestamps}}checked{{/if}}>
+        </div>
+    </fieldset>
+    <fieldset>
     <legend class="field-header">{{localize "CONSOLE.config.default-anchor.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.default-anchor.hover-info"}}"></i></legend>
         <div>
             <input id="no-anchor" name="defaultAnchor" type="radio" value="false" {{#unless console.defaultAnchor}}checked{{/unless}}/>
