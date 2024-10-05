@@ -33,6 +33,7 @@ export default class DefaultConfig extends FormApplication {
             value: 0
         },
         locked: false,
+        notifications: true,
         playerOwnership: [],
         public: false,
         scenes: [],
@@ -99,6 +100,7 @@ export default class DefaultConfig extends FormApplication {
                 value: formData.limitVal
             },
             locked: oldData.locked,
+            notifications: formData.notifications === "true" ? true : false,
             playerOwnership: [],
             public: formData.public === "true" ? true : false,
             scenes: [],

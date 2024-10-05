@@ -61,6 +61,7 @@ export default class ConsoleConfig extends FormApplication {
                 value: formData.limitVal
             },
             locked: oldData.locked,
+            notifications: formData.notifications === "true" ? true : false,
             playerOwnership: [],
             public: formData.public === "true" ? true : false,
             scenes: [],

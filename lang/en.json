@@ -19,6 +19,7 @@
             },
             "notifications": {
                 "header": "Notifications",
+                "enabled": "Enable notifications",
                 "src": "Audio source",
                 "mute": "Mute notification sounds"
             },
@@ -82,6 +83,7 @@
             "scenes": "Scenes",
             "toggle-lock": "Toggle lock to disable/enable editing",
             "toggle-mute": "Toggle mute notifications",
+            "toggle-notifications": "Toggle notifications",
             "toggle-visibility": "Toggle visibility to owners"
         },
         "version-migration": "Migrating module data to latest verison."

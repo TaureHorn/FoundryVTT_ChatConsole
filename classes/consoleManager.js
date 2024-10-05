@@ -98,6 +98,14 @@ export default class ConsoleManager extends FormApplication {
             }
         },
         {
+            name: game.i18n.localize('CONSOLE.manager.toggle-notifications'),
+            icon: '<i class="fas fa-message-dots"></i>',
+            callback: async (item) => {
+                const id = item[0].dataset.consoleId
+                await ConsoleData.toggleBoolean(id, 'notifications')
+            }
+        },
+        {
             name: game.i18n.localize('CONSOLE.manager.duplicate-console'),
             icon: '<i class="fas fa-clone"></i>',
             callback: async (item) => {

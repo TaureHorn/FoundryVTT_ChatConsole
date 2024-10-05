@@ -448,6 +448,9 @@ export default class ConsoleApp extends FormApplication {
                     console.name = this.#stringifyArguments(cmd)
                     ConsoleData.updateConsole(console.id, console)
                     break;
+                case "notifications":
+                    ConsoleData.toggleBoolean(console.id, 'notifications')
+                    break;
                 case "mute":
                     ConsoleData.toggleBoolean(console.id, 'mute')
                     break;
@@ -509,7 +512,7 @@ export default class ConsoleApp extends FormApplication {
                 messageLog.push(message)
                 console.content.body = messageLog
                 ConsoleData.updateConsole(console.id, console)
-                if (console.public) {
+                if (console.public && console.notifications) {
                     this.notifySend('messageNotification', console)
                 }
             } else {

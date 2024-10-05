@@ -13,6 +13,7 @@
                         <div>
                             <i class="fa solid {{#if styling.messengerStyle}}fa-comments{{else}}fa-terminal{{/if}}"></i>
                             {{#if locked}}<i class="fa-solid fa-lock"></i>{{/if}}
+                            {{#unless notifications}}<i class="fas fa-message-slash"></i>{{/unless}}
                             {{#if styling.mute}}<i class="fas fa-volume-xmark"></i>{{/if}}
                             <i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>
                         </div>

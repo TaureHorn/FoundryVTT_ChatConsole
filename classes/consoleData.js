@@ -160,6 +160,9 @@ export default class ConsoleData {
             case 'mute':
                 console.styling.mute = console.styling.mute ? false : true
                 break;
+            case 'notifications':
+                console.notifications = console.notifications ? false : true
+                break;
             case 'show':
                 console.public = console.public ? false : true
                 break;
@@ -250,6 +253,7 @@ export default class ConsoleData {
             !console.limits.type ? console.limits.type = df.limits.type : null
             !console.limits.value ? console.limits.value = df.limits.value : null
             !console.locked ? console.locked = df.locked : null
+            !console.notifications ? console.notifications = df.notifications : null
             !console.playerOwnership ? console.playerOwnership = df.playerOwnership : null
             !console.public ? console.public = df.public : null
             !console.scenes ? console.scenes = df.scenes : null

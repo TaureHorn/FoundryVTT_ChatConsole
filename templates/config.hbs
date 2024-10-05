@@ -43,6 +43,10 @@
     <fieldset>
     <legend class="field-header">{{localize "CONSOLE.config.notifications.header"}}</legend>
         <div class="console-config-flex">
+            <label for="notificationToggle">{{localize "CONSOLE.config.notifications.enabled"}}</label>
+            <input id="notificationToggle" name="notifications" type="checkbox" value="true" {{#if console.notifications}}checked{{/if}}>
+        </div>
+        <div class="console-config-flex">
             <label for="notificationSound">{{localize "CONSOLE.config.notifications.src"}}</label>
             <div style="display:flex;flex:1;flex-wrap:nowrap;justify-content:flex-end">
                 <input id="notificationSound" name="notificationSound" type="text" value="{{console.styling.notificationSound}}"/>
