@@ -58,10 +58,10 @@ export default class DefaultConfig extends FormApplication {
             scenes: []
         }
 
-        if (game.settings.get(Console.ID, 'defaultConfig')) {
+        if (Object.keys(game.settings.get(Console.ID, 'defaultConfig')).length >= 1) {
             config.console = game.settings.get(Console.ID, 'defaultConfig')
         } else {
-            config.console = structuredClone(this._defaultData)
+            config.console = structuredClone(DefaultConfig._defaultData)
         }
 
         let players = game.users._source

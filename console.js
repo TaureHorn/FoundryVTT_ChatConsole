@@ -204,12 +204,6 @@ Hooks.once('ready', async function() {
             ui.notifications.notify(`Console | ${game.i18n.localize("CONSOLE.version-migration")}`)
             await ConsoleData.versionControl(data, version)
         }
-
-        const defaultSetting = game.settings.get(Console.ID, 'defaultConfig')
-        if (Object.keys(defaultSetting).length === 0) {
-            const defaultConfig = new DefaultConfig
-            game.settings.set(Console.ID, 'defaultConfig', defaultConfig._defaultData)
-        }
     }
 
 
