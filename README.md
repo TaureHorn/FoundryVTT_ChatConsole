@@ -31,7 +31,8 @@ To use a command type one of the following command names prepended by a forward 
 - `/share`: Share the app with players, making the app window render on their screens. GM only.
 - `/show`: Toggle the consosle visibility to players with ownership. GM only.
 - `/title <string>`: Set the title of this console. GM only.
-- `/timestamps`: or `/time`: Toggle whether timestamps are recorded and shown for this console. GM only
+- `/timelog <string>`: Adds a timestamp directly into chat with a message, even if the consoles timestamps are disabled. GM only **requires SimpleCalendar**
+- `/timestamps`: or `/time`: Toggle whether timestamps are recorded and shown for this console. GM only. **requires SimpleCalendar**
 ### _console-data
 This journal entry is what stores all of the data for this module. The module fetches this journal entry by name. As such, this journal entry should not be renamed lest you lose access to all of your consoles data. Further, any archived consoles appear as pages within this journal entry. Feel free to move it into folders or duplicate it for a backup.
 ### Console visibility to players

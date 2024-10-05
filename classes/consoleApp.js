@@ -480,6 +480,17 @@ export default class ConsoleApp extends FormApplication {
                 case "show":
                     ConsoleData.toggleBoolean(console.id, 'show')
                     break;
+                case "timelog":
+                    const simpleCalendar = game.modules.get('foundryvtt-simple-calendar').active ? true : false
+                    if (simpleCalendar) {
+                        const data = {
+                            consoleInputText: `${this.#stringifyTimestamp(SimpleCalendar.api.currentDateTimeDisplay())} | ${this.#stringifyArguments(cmd)}`
+                        }
+                        this._updateObject(null, data)
+                    } else {
+                        ui.notifications.warn("Console | This command requires the module 'SimpleCalendar' to function")
+                    }
+                    break;
                 case "timestamps":
                 case "time":
                     ConsoleData.toggleBoolean(console.id, 'timestamps')
@@ -537,7 +548,7 @@ export default class ConsoleApp extends FormApplication {
 
                 const message = {
                     "text": this.#truncateMessage(formData.consoleInputText, console.limits),
-                    ...(useTimestamps && {"timestamp" : timestamp}),
+                    ...(useTimestamps && { "timestamp": timestamp }),
                     "user": this.getName("")
                 }
 
