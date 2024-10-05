@@ -335,7 +335,26 @@ export default class ConsoleApp extends FormApplication {
         return args.join(" ")
     }
 
-    truncateMessage(msg, limits) {
+    // process timestamp data extracted from the SimpleCalendar api
+    #stringifyTimestamp(time) {
+        const verbosity = game.settings.get(Console.ID, 'timestampVerbosity')
+        switch (verbosity) {
+            case 'time':
+                return time.time.slice(0, 5)
+            case 'time-date':
+                return `${time.time.slice(0, 5)} ${time.day}/${time.month}/${time.year}`
+            case 'date':
+                return `${time.day}/${time.month}/${time.year}`
+            case 'date-string':
+                return `${time.day}${time.daySuffix} ${time.monthName} ${time.year}`
+            case 'full':
+                return `${time.time.slice(0, 5)} ${time.day}${time.daySuffix} ${time.monthName} ${time.year}`
+            default:
+                Console.print(true, 'error', `encountered an incorrect verbosity string '${verbosity}' in consoleApp.#stringifyTimestamp`)
+        }
+    }
+
+    #truncateMessage(msg, limits) {
         switch (limits.type) {
             case "characters":
                 if (msg.length > limits.value) {
@@ -448,6 +467,7 @@ export default class ConsoleApp extends FormApplication {
                     console.name = this.#stringifyArguments(cmd)
                     ConsoleData.updateConsole(console.id, console)
                     break;
+                case 'notif':
                 case "notifications":
                     ConsoleData.toggleBoolean(console.id, 'notifications')
                     break;
@@ -459,6 +479,10 @@ export default class ConsoleApp extends FormApplication {
                     break;
                 case "show":
                     ConsoleData.toggleBoolean(console.id, 'show')
+                    break;
+                case "timestamps":
+                case "time":
+                    ConsoleData.toggleBoolean(console.id, 'timestamps')
                     break;
                 case "title":
                     console.content.title = this.#stringifyArguments(cmd)
@@ -503,10 +527,21 @@ export default class ConsoleApp extends FormApplication {
             if (!this.data.locked) {
                 // update with message as normal
                 const messageLog = [...console.content.body]
+
+                // TODO add integrations with SmallTime and SimpleCalendar
+                // timestamp integrations
+                const useTimestamps = game.modules.get('foundryvtt-simple-calendar').active && console.timestamps ? true : false
+                let timestamp = ""
+                if (useTimestamps) {
+                    timestamp = this.#stringifyTimestamp(SimpleCalendar.api.currentDateTimeDisplay())
+                }
+
                 const message = {
-                    "text": this.truncateMessage(formData.consoleInputText, console.limits),
+                    "text": this.#truncateMessage(formData.consoleInputText, console.limits),
+                    ...(useTimestamps && {"timestamp" : timestamp}),
                     "user": this.getName("")
                 }
+
                 this._inputVal = ""
                 this.clearInput()
                 messageLog.push(message)

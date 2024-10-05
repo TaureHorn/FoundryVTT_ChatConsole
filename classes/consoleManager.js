@@ -106,6 +106,14 @@ export default class ConsoleManager extends FormApplication {
             }
         },
         {
+            name: game.i18n.localize('CONSOLE.manager.toggle-timestamps'),
+            icon: '<i class="fas fa-clock"></i>',
+            callback: async (item) => {
+                const id = item[0].dataset.consoleId
+                await ConsoleData.toggleBoolean(id, 'timestamps')
+            }
+        },
+        {
             name: game.i18n.localize('CONSOLE.manager.duplicate-console'),
             icon: '<i class="fas fa-clone"></i>',
             callback: async (item) => {
@@ -222,4 +230,6 @@ export default class ConsoleManager extends FormApplication {
     }
 
 }
+
+globalThis.ConsoleManager = ConsoleManager
 

@@ -116,6 +116,24 @@ Hooks.on('init', function() {
         default: false
     })
 
+    game.settings.register(Console.ID, 'timestampVerbosity', {
+        name: "Timestamp verbosity",
+        hint: "Choose what data to show in chat timestamps",
+        scope: 'world',
+        config: true,
+        requiresReload: false,
+        restricted: true,
+        type: new foundry.data.fields.StringField({
+            choices: {
+                'time': 'Time: 18:23',
+                'time-date': 'Time & Date: 18:23 19/04/2024',
+                'date': 'Date: 19/04/2024',
+                'date-string': 'Datestring: 19th April 2024',
+                'full': 'Time & Datestring: 18:23 19th April 2024'
+            }
+        }),
+        default: 'time-date'
+    })
 
 })
 
