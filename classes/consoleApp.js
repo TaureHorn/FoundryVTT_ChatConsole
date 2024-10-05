@@ -528,7 +528,6 @@ export default class ConsoleApp extends FormApplication {
                 // update with message as normal
                 const messageLog = [...console.content.body]
 
-                // TODO add integrations with SmallTime and SimpleCalendar
                 // timestamp integrations
                 const useTimestamps = game.modules.get('foundryvtt-simple-calendar').active && console.timestamps ? true : false
                 let timestamp = ""

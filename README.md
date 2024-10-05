@@ -26,11 +26,12 @@ To use a command type one of the following command names prepended by a forward 
 - `/kick <player name>`: Remove a player from the list of owner for this console. GM only.
 - `/lock`: Toggle the lock state of this console. GM only.
 - `/mute`: Toggle the mute state of this console. GM only.
-- `/notifications`: Toggle enable/disable a console to send notifications when a new message is sent. GM only.
+- `/notifications`: or `notif`:Toggle enable/disable a console to send notifications when a new message is sent. GM only.
 - `/name <string>`: Set the name of this console. GM only.
 - `/share`: Share the app with players, making the app window render on their screens. GM only.
 - `/show`: Toggle the consosle visibility to players with ownership. GM only.
 - `/title <string>`: Set the title of this console. GM only.
+- `/timestamps`: or `/time`: Toggle whether timestamps are recorded and shown for this console. GM only
 ### _console-data
 This journal entry is what stores all of the data for this module. The module fetches this journal entry by name. As such, this journal entry should not be renamed lest you lose access to all of your consoles data. Further, any archived consoles appear as pages within this journal entry. Feel free to move it into folders or duplicate it for a backup.
 ### Console visibility to players
@@ -43,6 +44,9 @@ The `ConsoleApp` and `ConsoleData` classes are globally exposed and should be al
 You can configure a console to cut off messages after a certain amount of words/characters. You choose whether to cut off based on words or based on characters and you choose just how many. Further, you can choose a 'marker', a string of characters that get added to the end of a message that is cut off by the limit to alert you to the fact the message has been cut off.
 
 No more counting out your words for the *Sending* spell in DnD5e.
+
+### Timestamps
+Integrates with [SimpleCalendar](https://github.com/vigoren/foundryvtt-simple-calendar) to get date and time information that can be automatically added to send messages. Module settings menu allows a few different choices for date/time formats in chat timestamps.
 
 ## UI 
 ![ui](https://raw.githubusercontent.com/TaureHorn/FoundryVTT_ChatConsole/main/ui.png)
@@ -61,7 +65,7 @@ Messages within a console can be copied to the OS clipboard with a left-click or
 ## Potential Planned Improvements
 - ~~Add ability to set default configuration for all consoles variables [name, title, bgImg, type, limits...]~~
 - Module instructions / readme in the auto generated '_consoleData' journal entry.
-- Add message timestamps >> integration with SimpleCalendar and SmallTime?
+- ~~Add message timestamps >> integration with SimpleCalendar and SmallTime?~~
 - ~~New message notifications?~~
 - Refactor module so parts of it feel less like a hot mess and the code is easier for users to understand and build macros for.
 - Port the v12's 'Application_v2' thingy?
