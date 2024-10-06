@@ -56,6 +56,7 @@ export default class ConsoleManager extends FormApplication {
                 ContextMenu.create(this, node, '.console-manager-entry', this.#contextMenuOptions)
             }))
         }
+
         html.on('click', '[data-action]', this._handleButtonClick)
     }
 
@@ -188,7 +189,6 @@ export default class ConsoleManager extends FormApplication {
                 await ConsoleData.createConsole()
                 break;
             case 'open-console':
-
                 const appWindow = document.getElementById(console.id)
                 if (!appWindow) {
                     // render app if not open
@@ -207,6 +207,7 @@ export default class ConsoleManager extends FormApplication {
                 const flags = [...game.user.getFlag(Console.ID, Console.FLAGS.UNREAD)]
                 if (flags.includes(console.id)) {
                     await ConsoleData.removeFromPlayerFlags('messageNotification', [game.userId], console.id)
+                    ConsoleManager.renderLauncherButton(false)
                 }
 
                 break;
@@ -221,6 +222,34 @@ export default class ConsoleManager extends FormApplication {
             this._represents.apps[this.appId] = this
         }
         return super.render(...args)
+    }
+
+    static renderLauncherButton(notificationState, html) {
+        // @param {Bool} notificationState
+        // @param {jQuery object} html --> provided from render hook for initial render
+        const customName = game.settings.get('console', 'moduleElementsName')
+        let name = customName ? customName : game.i18n.localize('CONSOLE.consoles')
+        if (notificationState) {
+            name += ` <i class="fas fa-message-dots notifHighlight"></i>`
+        }
+
+        // build button
+        const id = 'console-manager-launcher'
+        const rendered = document.getElementById(id)
+        const inner = `<i class="fas fa-terminal"></i> ${name} `
+        if (rendered) {
+            // if button exists modify it
+            rendered.innerHTML = inner
+        } else {
+            // if button doesn't exist, create it
+            const tooltip = game.i18n.localize('CONSOLE.button-title')
+
+            html.find('#chat-controls').after(`<button id=${id} data-tooltip="${tooltip}">${inner}</button>`)
+            html.on('click', '#console-manager-launcher', (event) => {
+                new ConsoleManager(ConsoleData.getDataPool(), game.user).render(true)
+            })
+        }
+
     }
 
     async close(...args) {
