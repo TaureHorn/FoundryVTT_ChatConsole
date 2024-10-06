@@ -542,10 +542,13 @@ export default class ConsoleApp extends FormApplication {
                 const messageLog = [...console.content.body]
 
                 // timestamp integrations
-                const useTimestamps = game.modules.get('foundryvtt-simple-calendar').active && console.timestamps ? true : false
+                let useTimestamps = false
                 let timestamp = ""
-                if (useTimestamps) {
-                    timestamp = this.#stringifyTimestamp(SimpleCalendar.api.currentDateTimeDisplay())
+                if (game.modules.get('foundryvtt-simple-calendar')) {
+                    if (game.modules.get('foundryvtt-simple-calendar').active && console.timestamps) {
+                        useTimestamps = true
+                        timestamp = this.#stringifyTimestamp(SimpleCalendar.api.currentDateTimeDisplay())
+                    }
                 }
 
                 const message = {
