@@ -1,6 +1,7 @@
 import Console from "../console.js"
 import ConsoleConfig from "./consoleConfig.js"
 import ConsoleData from "./consoleData.js"
+import ConsoleManager from "./consoleManager.js"
 
 export default class ConsoleApp extends FormApplication {
 
@@ -277,10 +278,11 @@ export default class ConsoleApp extends FormApplication {
 
         // Update UI to show notification pip if console manager not already open.
         const mainButton = document.getElementById('console-manager-launcher')
+        const manager = document.getElementById('console-manager')
         if (mainButton) {
-            mainButton.innerHTML = `<i class="fas fa-terminal">
-                </i> ${game.i18n.localize('CONSOLE.consoles')} 
-                <i class="fas fa-message-dots notifHighlight" ></i>`
+            if (!manager) {
+                ConsoleManager.renderLauncherButton(true)
+            }
             mainButton.classList.add('strobe')
             setTimeout(() => {
                 mainButton.classList.remove('strobe')

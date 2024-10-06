@@ -48,7 +48,6 @@ export default class Console {
         }
     }
 
-
     static getRename(append, fallback) {
         const rename = game.settings.get(Console.ID, 'moduleElementsName')
         if (!rename || rename === '') {
@@ -70,7 +69,7 @@ Hooks.on('init', function() {
         type: String,
         requiresReload: true
 
-    }),
+    })
 
     game.settings.registerMenu(Console.ID, 'defaultConfigMenu', {
         name: "Default console configuration",
@@ -81,14 +80,14 @@ Hooks.on('init', function() {
         type: DefaultConfig,
         restricted: true,
         requiresReload: false
-    }),
+    })
 
     game.settings.register(Console.ID, 'defaultConfig', {
         scope: "world",
         config: false,
         type: Object,
         default: {},
-    }),
+    })
 
     game.settings.register(Console.ID, 'notificationContext', {
         name: "Notification volume control context",
@@ -137,21 +136,9 @@ Hooks.on('init', function() {
 
 })
 
-// add button to chat
+// render button to open consoleManager on first load
 Hooks.on('renderSidebarTab', (chatLog, html) => {
-    const id = 'console-manager-launcher'
-    const tooltip = game.i18n.localize('CONSOLE.button-title')
-    const name = Console.getRename("", game.i18n.localize('CONSOLE.consoles'))
-    const inner = `<i class="fas fa-terminal"></i> ${name}`
-    html.find('#chat-controls').after(`<button id=${id} data-tooltip="${tooltip}">${inner}</button>`)
-
-    html.on('click', '#console-manager-launcher', (event) => {
-        new ConsoleManager(ConsoleData.getDataPool(), game.user).render(true)
-        const btn = document.getElementById(id)
-        if (btn.innerHTML != inner) {
-            btn.innerHTML = inner
-        }
-    })
+    ConsoleManager.renderLauncherButton(false, html)
 })
 
 // tracks the input of an app and records its value in the object as part of preventing an input being cleared in the document update cycle
@@ -164,6 +151,7 @@ Hooks.on('renderConsoleApp', (...args) => {
 // runs automatically on load
 //      register socket to share apps with players
 //      to pre-create a document to store module data 
+//      to check if version has changed and launch verrion migration if so
 Hooks.once('ready', async function() {
     game.socket.on("module.console", async (data) => {
         // @param {Object} data
@@ -205,8 +193,6 @@ Hooks.once('ready', async function() {
             await ConsoleData.versionControl(data, version)
         }
     }
-
-
 
 })
 
