@@ -25,7 +25,6 @@ export default class ConsoleApp extends FormApplication {
             maximizable: true,
             minimizable: true,
             resizable: true,
-            // scrollY: ['#console-messages']
         }
         return foundry.utils.mergeObject(defaults, overrides)
     }
@@ -204,11 +203,11 @@ export default class ConsoleApp extends FormApplication {
         if (typeof this._priorState === "object") {
             this._inputVal = this._priorState.inputVal
         }
+        super.render(...args)
         this._document.apps[this.appId] = this
         if (this._represents) {
             this._represents.apps[this.appId, this._parentApp] = this
         }
-        super.render(...args)
         this.updateAppClasses(this.data.id)
     }
 
@@ -577,6 +576,7 @@ export default class ConsoleApp extends FormApplication {
                 if (console.public && console.notifications) {
                     this.notifySend('messageNotification', console)
                 }
+                $('#console-messages').scrollTop($('#console-messages')[0].scrollHeight)
             } else {
                 this.clearInput()
                 ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
