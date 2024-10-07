@@ -1,4 +1,17 @@
 <div class="console-container" style="background:{{styling.bg}} url({{styling.bgImg}});background-size:contain;border-top:2px solid {{styling.fg}}">
+    
+    <div id="console-messages" class="console-message-container">
+        <hr width="33%" style="border:1px solid {{styling.fg}}" />
+        {{#each content.body}}
+            <div> 
+                <button class="console-message-interact" style="background:none;color:{{../styling.fg}};margin:2px 0;text-align:start" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-message-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.console.app-info"}}">
+                    <div style="overflow-wrap:anywhere">{{#equal user.name ""}}<span>{{text}}</span>{{else}}<span style="background:{{../styling.fg}};color:{{../styling.bg}};padding:2px">{{#if ../timestamps}}<span>{{timestamp}} </span>{{/if}}<strong>{{user.name}}:</strong></span><span> {{text}}</span>{{/equal}}</div>
+                </button>
+            </div>
+        {{/each}}
+        </br>
+    </div>
+    </br>
     <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px" class="console-seperate">
         <span><strong>{{content.title}}</strong></span>
         <div>
@@ -9,23 +22,13 @@
             {{#isGM}}<i class="fa-solid {{#if public}}fa-eye{{else}}fa-eye-slash{{/if}}"></i>{{/isGM}}
         </div>
     </div>
+
     <form id="input">
         <div style="display:flex">
-            <div style="border:1px solid {{styling.fg}};border-radius:0px;border-right:none;color:{{styling.fg}};padding:3px 5px"><span>{{character}}: </span></div>
-            <input style="background:none;border:1px solid {{styling.fg}};border-left:none;border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px 0px" id="consoleInputText{{id}}" {{#equal limits.type 'characters'}} maxlength="{{limits.value}}" {{else}} maxlength="{{limits.hardLimit}}" {{/equal}}  minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..."/>
-            <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};flex:1;outline:none" id="submitButton" type="submit">{{localize "CONSOLE.console.send"}}</button>
+            <div style="align-items:center;border:1px solid {{styling.fg}};border-radius:0px;border-right:none;color:{{styling.fg}};display:flex;padding:3px 5px"><span>{{character}}: </span></div>
+            <input style="background:none;border:1px solid {{styling.fg}};border-left:none;border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px 5px" id="consoleInputText{{id}}" {{#equal limits.type 'characters'}} maxlength="{{limits.value}}" {{else}} maxlength="{{limits.hardLimit}}" {{/equal}}  minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..."/>
+            <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};display:none;flex:1;outline:none" id="submitButton" type="submit">{{localize "CONSOLE.console.send"}}</button>
         </div>
     </form>
-    <div id="console-messages" class="console-message-container">
-        {{#each content.body}}
-            <div> 
-                <button class="console-message-interact" style="background:none;color:{{../styling.fg}};margin:2px 0;text-align:start" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-message-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.console.app-info"}}">
-                    <div style="overflow-wrap:anywhere">{{#equal user.name ""}}<span>{{text}}</span>{{else}}<span style="background:{{../styling.fg}};color:{{../styling.bg}};padding:2px">{{#if ../timestamps}}<span>{{timestamp}} </span>{{/if}}<strong>{{user.name}}:</strong></span><span> {{text}}</span>{{/equal}}</div>
-                </button>
-            </div>
-        {{/each}}
-        </br>
-        <hr width="33%" style="border:1px solid {{styling.fg}}" />
-    </div>
 </div>
 

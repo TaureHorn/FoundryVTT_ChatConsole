@@ -25,7 +25,7 @@ export default class ConsoleApp extends FormApplication {
             maximizable: true,
             minimizable: true,
             resizable: true,
-            scrollY: ['#console-messages']
+            // scrollY: ['#console-messages']
         }
         return foundry.utils.mergeObject(defaults, overrides)
     }
@@ -384,16 +384,26 @@ export default class ConsoleApp extends FormApplication {
         }
     }
 
-    async updateAppClasses(id) {
+    updateAppClasses(id) {
+        
+        setTimeout(()=>{
+            const messages = document.getElementById('console-messages')
+            if (messages) {
+                messages.scrollTop = messages.scrollHeight
+            }
+        })
+
         setTimeout(() => {
-            const element = document.getElementById(id)
-            if (element) {
+
+            if (document.getElementById(id)) {
+                const element = document.getElementById(id)
                 element.className = `app window-app form console-app`
                 element.style.color = this.data.styling.fg
                 element.style.background = this.data.styling.bg
                 element.style.border = `2px solid ${this.data.styling.fg}`
                 element.style.borderRadius = "0px";
             }
+
             const input = this._element?.find(`#consoleInputText${this.options.id}`)[0]
             if (input) {
                 input.selectionStart = input.selectionEnd = input.value.length
@@ -404,7 +414,6 @@ export default class ConsoleApp extends FormApplication {
                 const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
                 this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
             }
-            // $('#console-messages').scrollTop($('#console-messages')[0].scrollHeight)
         }, 200)
     }
 
