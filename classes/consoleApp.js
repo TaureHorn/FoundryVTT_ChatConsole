@@ -25,6 +25,7 @@ export default class ConsoleApp extends FormApplication {
             maximizable: true,
             minimizable: true,
             resizable: true,
+            scrollY: ['#console-messages']
         }
         return foundry.utils.mergeObject(defaults, overrides)
     }
@@ -392,16 +393,18 @@ export default class ConsoleApp extends FormApplication {
                 element.style.background = this.data.styling.bg
                 element.style.border = `2px solid ${this.data.styling.fg}`
                 element.style.borderRadius = "0px";
-
             }
             const input = this._element?.find(`#consoleInputText${this.options.id}`)[0]
             if (input) {
                 input.selectionStart = input.selectionEnd = input.value.length
                 input.focus()
+                // TODO fix focus mechanism setting focus to non-submitted console when more than one consle is open
+                //      this might be a render flow path issue
 
                 const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
                 this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
             }
+            // $('#console-messages').scrollTop($('#console-messages')[0].scrollHeight)
         }, 200)
     }
 
