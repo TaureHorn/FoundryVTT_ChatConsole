@@ -252,6 +252,14 @@ export default class ConsoleManager extends FormApplication {
 
     }
 
+    toggle() {
+        if (document.getElementById(this.options.id)) {
+            Object.values(ui.windows).find((obj) => obj.options.id === this.options.id).close()
+        } else {
+            this.render(true)
+        }
+    }
+
     async close(...args) {
         delete this._document.apps[this.appId]
         delete this._represents.apps[this.appId]
