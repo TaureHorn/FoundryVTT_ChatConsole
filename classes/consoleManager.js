@@ -217,11 +217,11 @@ export default class ConsoleManager extends FormApplication {
     }
 
     render(...args) {
-        super.render(...args)
         this._document.apps[this.appId] = this
         if (this._represents) {
             this._represents.apps[this.appId] = this
         }
+        super.render(...args)
     }
 
     static renderLauncherButton(notificationState, html) {
