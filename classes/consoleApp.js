@@ -433,6 +433,13 @@ export default class ConsoleApp extends FormApplication {
                     const character = game.actors.getName(alias) ? game.actors.getName(alias) : null
                     character ? game.user.update({ "character": character }) : ui.notifications.warn(`Console | An actor with the name '${alias}' does not exist`)
                     break;
+                case "bg":
+                    let bg = this.#stringifyArguments(cmd)
+                    if (ConsoleData.hexValidator(bg)) {
+                        console.styling.bg = bg
+                        ConsoleData.updateConsole(console.id, console)
+                    }
+                    break;
                 case "clear":
                     console.content.body = []
                     ConsoleData.updateConsole(console.id, console)
@@ -442,12 +449,31 @@ export default class ConsoleApp extends FormApplication {
                 case "exit":
                     this.close()
                     break;
+                case "desc":
+                case "description":
+                    let desc = this.#stringifyArguments(cmd)
+                    console.description = desc
+                    ConsoleData.updateConsole(console.id, console)
+                    break;
                 case "duplicate":
                     ConsoleData.duplicateConsole(console.id)
                     break;
                 case "edit":
                     this.close()
                     new ConsoleConfig(console.id).render(true, { "id": `console-config-${console.id}` })
+                    break;
+                case "fg":
+                    let fg = this.#stringifyArguments(cmd)
+                    if (ConsoleData.hexValidator(fg)) {
+                        console.styling.fg = fg
+                        ConsoleData.updateConsole(console.id, console)
+                    }
+                    break;
+                case "gm":
+                case "gmInfo":
+                    let gm = this.#stringifyArguments(cmd)
+                    console.gmInfo = gm
+                    ConsoleData.updateConsole(console.id, console)
                     break;
                 case "incognito":
                     if (game.user.character) {
