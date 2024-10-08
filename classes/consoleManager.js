@@ -22,7 +22,7 @@ export default class ConsoleManager extends FormApplication {
             top: 10,
             width: 400,
         }
-         
+
         const mergedOptions = foundry.utils.mergeObject(defaults, overrider)
         return mergedOptions
     }
@@ -192,8 +192,7 @@ export default class ConsoleManager extends FormApplication {
                 const appWindow = document.getElementById(console.id)
                 if (!appWindow) {
                     // render app if not open
-                    new ConsoleApp(ConsoleData.getDataPool(), game.user, this.appId)
-                        .render(true, { "id": console.id, "height": console.styling.height, "width": console.styling.width })
+                    new ConsoleApp(console.id).render(true)
                 } else {
                     // if open bring to front and flash
                     ui.windows[appWindow.dataset.appid].bringToTop()
@@ -217,11 +216,10 @@ export default class ConsoleManager extends FormApplication {
     }
 
     render(...args) {
-        this._document.apps[this.appId] = this
-        if (this._represents) {
-            this._represents.apps[this.appId] = this
-        }
         super.render(...args)
+        // link app to documents so they re-render properly
+        this._document.apps[this.appId] = this
+        this._represents.apps[this.appId] = this
     }
 
     static renderLauncherButton(notificationState, html) {
