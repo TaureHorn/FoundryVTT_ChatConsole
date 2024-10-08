@@ -184,7 +184,7 @@ Hooks.once('ready', async function() {
                     await ConsoleApp.notifyRecieve(data.console)
                     break;
                 case 'shareApp':
-                    ConsoleApp._handleShareApp(data.id)
+                    new ConsoleApp(data.id).render(true)
                     break;
                 case 'userPropagateNotifications':
                     if (!game.user.isGM) {

@@ -257,12 +257,6 @@ export default class ConsoleApp extends FormApplication {
 
     }
 
-    static _handleShareApp(id) {
-        const data = ConsoleData.getConsole(id)
-        const console = new ConsoleApp(ConsoleData.getDataPool(), game.user)
-        return console.render(true, { "id": data.id, "height": data.styling.height, "width": data.styling.width })
-    }
-
     static async notifyRecieve(console) {
         // Play sound if not muted by console or globally muted in module settings.
         if (!console.styling.mute && !game.settings.get(Console.ID, 'globalNotificationSounds')) {
