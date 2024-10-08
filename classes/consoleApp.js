@@ -134,8 +134,9 @@ export default class ConsoleApp extends FormApplication {
     }
 
     // called when a message is sent to clear the input box
-    clearInput() {
-        return document.getElementById(`consoleInputText${this.data.id}`).value = ""
+    #clearInput() {
+        document.getElementById(`consoleInputText${this.data.id}`).value = ""
+        return this._inputVal = ""
     }
 
     copyToClipboard(text) {
@@ -200,9 +201,8 @@ export default class ConsoleApp extends FormApplication {
     }
 
     render(...args) {
-        if (typeof this._priorState === "object") {
-            this._inputVal = this._priorState.inputVal
-        }
+        // Console.print(true, 'log', 'ConsoleApp.render this', this)
+
         super.render(...args)
         this._document.apps[this.appId] = this
         if (this._represents) {
@@ -384,16 +384,17 @@ export default class ConsoleApp extends FormApplication {
     }
 
     updateAppClasses(id) {
-        
-        setTimeout(()=>{
-            const messages = document.getElementById('console-messages')
-            if (messages) {
-                messages.scrollTop = messages.scrollHeight
-            }
+
+        // scroll to the bottom of the messages div on re-render
+        //      set appart from the other due to the needed speed
+        setTimeout(() => {
+            const messages = $(`#console-messages${this.data.id}`)
+            messages.scrollTop(messages.prop('scrollHeight'))
         })
 
         setTimeout(() => {
 
+            // apply console specific styling to elements of the app window not available until after the app has rendered to the DOM
             if (document.getElementById(id)) {
                 const element = document.getElementById(id)
                 element.className = `app window-app form console-app`
@@ -403,16 +404,18 @@ export default class ConsoleApp extends FormApplication {
                 element.style.borderRadius = "0px";
             }
 
-            const input = this._element?.find(`#consoleInputText${this.options.id}`)[0]
-            if (input) {
-                input.selectionStart = input.selectionEnd = input.value.length
-                input.focus()
-                // TODO fix focus mechanism setting focus to non-submitted console when more than one consle is open
-                //      this might be a render flow path issue
+            // if user had text in input box when the app re-rendered focus the cursor at the end of the input box
+            const input = ui.activeWindow._element.find(`#consoleInputText${ui.activeWindow.options.id}`)
+            input.focus()
+            const len = input.val().length
+            input[0].setSelectionRange(len, len)
 
+            // style the anchor header buttons, invert when console anchored
+            if (this._element) {
                 const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
                 this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
             }
+
         }, 200)
     }
 
@@ -516,8 +519,8 @@ export default class ConsoleApp extends FormApplication {
                     Console.print(true, 'warn', `/${cmd.join(" ")} is not a recongised command`)
                     ui.notifications.warn(`Console | '/${cmd.join(" ")}' is not a recognised command`)
             }
-            this._inputVal = ""
-            this.clearInput()
+
+            this.#clearInput()
         } else if (cmdMode && !game.user.isGM) {
             // process commands for non gm users
             switch (cmd[0]) {
@@ -545,8 +548,7 @@ export default class ConsoleApp extends FormApplication {
                 default:
                     ui.notifications.warn(`Console | '/${cmd.join(" ")}' is not a recognised command`)
             }
-            this._inputVal = ""
-            this.clearInput()
+            this.#clearInput()
         } else {
             if (!this.data.locked) {
                 // update with message as normal
@@ -568,17 +570,15 @@ export default class ConsoleApp extends FormApplication {
                     "user": this.getName("")
                 }
 
-                this._inputVal = ""
-                this.clearInput()
+
+                this.#clearInput()
                 messageLog.push(message)
                 console.content.body = messageLog
                 ConsoleData.updateConsole(console.id, console)
                 if (console.public && console.notifications) {
                     this.notifySend('messageNotification', console)
                 }
-                $('#console-messages').scrollTop($('#console-messages')[0].scrollHeight)
             } else {
-                this.clearInput()
                 ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
             }
         }
