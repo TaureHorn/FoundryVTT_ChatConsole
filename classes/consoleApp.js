@@ -5,11 +5,11 @@ import ConsoleManager from "./consoleManager.js"
 
 export default class ConsoleApp extends FormApplication {
 
-    constructor(getDocument, getUser, managerId) {
+    constructor(id, managerId) {
         super()
-        this._document = getDocument
-        this._represents = getUser
-        this._parentApp = managerId
+        this.consoleId = id
+        this._document = ConsoleData.getDataPool()
+        this._represents = game.user
     }
 
     // _inputVal keeps a record of the text in an input so unsent messages can persist between renders
@@ -18,9 +18,9 @@ export default class ConsoleApp extends FormApplication {
     static get defaultOptions() {
         const defaults = super.defaultOptions;
         const overrides = {
+            anchored: true,
             classes: ['console-app'],
             closeOnSubmit: false,
-            anchored: true,
             popOut: true,
             maximizable: true,
             minimizable: true,
@@ -30,17 +30,19 @@ export default class ConsoleApp extends FormApplication {
     }
 
     getData() {
-        const console = ConsoleData.getConsole(this.options.id)
-        let data = {
-            ...console
-        }
-
+        const data = { ...ConsoleData.getConsole(this.consoleId) }
         data.character = this.getName("$user").name
         data.inputVal = this._inputVal
-        this.getTemplate(data)
-        this.options.anchored = data.defaultAnchor
-        this.options.title = data.name
+
         this.data = data
+
+        // apply defaults
+        this.options.anchored = this.data.defaultAnchor
+        this.options.height = this.data.styling.height
+        this.options.id = this.data.id
+        this.options.template = this.data.styling.messengerStyle ? Console.TEMPLATES.APP_IM : Console.TEMPLATES.APP_TERM
+        this.options.title = this.data.name
+        this.options.width = this.data.styling.width
 
         return data
     }
@@ -109,10 +111,6 @@ export default class ConsoleApp extends FormApplication {
         }
     }
 
-    getTemplate(data) {
-        return this.options.template = data.styling.messengerStyle ? Console.TEMPLATES.APP_IM : Console.TEMPLATES.APP_TERM
-    }
-
     activateListeners(html) {
         super.activateListeners(html)
         html.on('click', "[data-action]", this._handleLeftClick)
@@ -139,6 +137,7 @@ export default class ConsoleApp extends FormApplication {
         return this._inputVal = ""
     }
 
+    // called when a message is left clicked
     copyToClipboard(text) {
         // @param {string} text
         if (typeof text === 'string') {
@@ -201,14 +200,16 @@ export default class ConsoleApp extends FormApplication {
     }
 
     render(...args) {
-        // Console.print(true, 'log', 'ConsoleApp.render this', this)
+        // link app to documents so it re-renders normally
+        this._document.apps[this.appId] = this
+        this._represents.apps[this.appId] = this
 
         super.render(...args)
-        this._document.apps[this.appId] = this
-        if (this._represents) {
-            this._represents.apps[this.appId, this._parentApp] = this
-        }
-        this.updateAppClasses(this.data.id)
+
+        // set sizes and styles
+        this.position.height = this.options.height
+        this.position.width = this.options.width
+        this.updateAppClasses(this.consoleId)
     }
 
     shareApp() {
