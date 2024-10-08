@@ -105,6 +105,36 @@ export default class ConsoleData {
         this.getDataPool().setFlag(Console.ID, Console.FLAGS.CONSOLE, newConsoles)
     }
 
+    static hexValidator(hexstring) {
+        if (typeof hexstring != "string") {
+            Console.print(true, 'warn', ` HexValidator: ${hexstring} is an invalid type`)
+            ui.notifications.warn(`Console | HexValidator: ${hexstring} is an invalid type`)
+            return false
+        }
+
+        const hex = hexstring.split('')
+        if (hex[0] != '#') {
+            Console.print(true, 'warn', ` HexValidator: ${hexstring} missing '#'`)
+            ui.notifications.warn(`Console | HexValidator: ${hexstring} missing '#'`)
+            return false
+        }
+        if (hex.length != 7) {
+            Console.print(true, 'warn', ` HexValidator: ${hexstring} incorrect length ${hexstring.length}`)
+            ui.notifications.warn(`Console | HexValidator: ${hexstring} incorrect length ${hexstring.length}`)
+            return false
+        }
+
+        const alpha = '#01234567889abcedfABCDEF'
+        const charChecker = hex.map((character) => alpha.includes(character) ? true : false)
+        if (charChecker.includes(false)) {
+            Console.print(true, 'warn', ` HexValidator: ${hexstring} contains an invalid character that is not a hexidecimal character`)
+            ui.notifications.warn(`Console | HexValidator: ${hexstring} contains an invalid character that is not a hexidecimal character`)
+            return false
+        }
+
+        return true
+    }
+
     static async removeFromPlayerFlags(context, idList, data) {
         // @param {string} context
         // @param {Array of strings}} idList
@@ -148,12 +178,12 @@ export default class ConsoleData {
 
     }
 
-    static async toggleBoolean(id, action){
+    static async toggleBoolean(id, action) {
         // @param {String} id
         // @param {String} action
         const console = this.getConsole(id)
 
-        switch(action){
+        switch (action) {
             case 'lock':
                 console.locked = console.locked ? false : true
                 break;

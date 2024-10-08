@@ -17,10 +17,14 @@ The input box of the console app accepts a list of commands that trigger app fun
 To use a command type one of the following command names prepended by a forward slash. E.g. `/invite player 1`
 #### Command List
 - `/alias <actor name>`: Changes which character you are represented by in the app (and the rest of game). Player & GM.
+- `/bg <color hex code`: Change the console background color. GM only
 - `/clear`: Deletes all messasges. GM only.
 - `/close` or `/exit`: Closes the app window. Player & GM.
+- `/description <string>` or `/desc <string>`: Change the description of the console. GM only.
 - `/duplicate`: Makes a copy of this console. GM only.
 - `/edit`: Open the config window for this console. GM only.
+- `/fg <color hex code`: Change the console foreground color. GM only
+- `/gmInfo <string>` or `/gm <string>`: Change the gmInfo of the console. GM only.
 - `/incognito`: Unselects the character representing you. For GM's the app will show your messages without a name, for players, your message show your player name. Player & GM.
 - `/invite <player name>`: Add a player to this list of owners for this console. GM only.
 - `/kick <player name>`: Remove a player from the list of owner for this console. GM only.
