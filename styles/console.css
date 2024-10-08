@@ -80,6 +80,18 @@
     flex: auto;
 }
 
+.console-app {
+    scrollbar-width: unset !important;
+}
+
+.console-app>.window-content {
+    padding: 0px !important
+}
+
+.console-app>header {
+    border: none !important;
+}
+
 .console-config-flex {
     align-items: center;
     gap: 10px;
@@ -91,6 +103,23 @@
 .console-config-limited {
     max-height: 20vh;
     overflow: hidden scroll;
+}
+
+
+.console-container {
+    background-attachment: scroll;
+    height: 100%;
+    padding: 10px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.console-message-container {
+    height: calc(100% - 5.5em);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-right:1em;
+    scrollbar-width: auto !important;
 }
 
 .console-manager-entry {
@@ -110,7 +139,7 @@
     line-height: 110%;
     padding: 5px 5px;
     max-width: 100%;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
 }
 
 .console-message-interact {
@@ -129,14 +158,6 @@
     align-items: center;
     display: flex;
     justify-content: space-between;
-}
-
-.console-app>.window-content {
-    padding: 0px !important
-}
-
-.console-app>header {
-    border: none !important;
 }
 
 .control-buttons {

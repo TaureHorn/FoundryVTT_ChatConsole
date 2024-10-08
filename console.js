@@ -134,6 +134,23 @@ Hooks.on('init', function() {
         default: 'time-date'
     })
 
+    game.settings.register(Console.ID, 'launchManagerKeybind', {
+
+    })
+
+    game.keybindings.register(Console.ID, 'launchManager', {
+        name: "Launch Console Manager",
+        hint: "Opens up the console manager window",
+        editable: [
+            {
+                key: "KeyK",
+            }
+        ],
+        onDown: () => {
+            new ConsoleManager(ConsoleData.getDataPool(), game.user).toggle()
+        },
+    })
+
 })
 
 // render button to open consoleManager on first load

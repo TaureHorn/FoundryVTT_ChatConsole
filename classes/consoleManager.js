@@ -22,7 +22,7 @@ export default class ConsoleManager extends FormApplication {
             top: 10,
             width: 400,
         }
-
+         
         const mergedOptions = foundry.utils.mergeObject(defaults, overrider)
         return mergedOptions
     }
@@ -217,11 +217,11 @@ export default class ConsoleManager extends FormApplication {
     }
 
     render(...args) {
+        super.render(...args)
         this._document.apps[this.appId] = this
         if (this._represents) {
             this._represents.apps[this.appId] = this
         }
-        return super.render(...args)
     }
 
     static renderLauncherButton(notificationState, html) {
@@ -250,6 +250,14 @@ export default class ConsoleManager extends FormApplication {
             })
         }
 
+    }
+
+    toggle() {
+        if (document.getElementById(this.options.id)) {
+            Object.values(ui.windows).find((obj) => obj.options.id === this.options.id).close()
+        } else {
+            this.render(true)
+        }
     }
 
     async close(...args) {
