@@ -30,7 +30,7 @@ To use a command type one of the following command names prepended by a forward 
 - `/kick <player name>`: Remove a player from the list of owner for this console. GM only.
 - `/lock`: Toggle the lock state of this console. GM only.
 - `/mute`: Toggle the mute state of this console. GM only.
-- `/notifications`: or `notif`:Toggle enable/disable a console to send notifications when a new message is sent. GM only.
+- `/notifications`: or `/notif`:Toggle enable/disable a console to send notifications when a new message is sent. GM only.
 - `/name <string>`: Set the name of this console. GM only.
 - `/share`: Share the app with players, making the app window render on their screens. GM only.
 - `/show`: Toggle the consosle visibility to players with ownership. GM only.
@@ -51,7 +51,7 @@ You can configure a console to cut off messages after a certain amount of words/
 No more counting out your words for the *Sending* spell in DnD5e.
 
 ### Timestamps
-Integrates with [SimpleCalendar](https://github.com/vigoren/foundryvtt-simple-calendar) to get date and time information that can be automatically added to send messages. Module settings menu allows a few different choices for date/time formats in chat timestamps.
+Integrates with [SimpleCalendar](https://github.com/vigoren/foundryvtt-simple-calendar) to get date and time information that can be automatically added to sent messages. Module settings menu 'Date-time format' allows you to define custom timestamps that will piece togther different bits of data from SimpleCalendar however you like.
 
 ## UI 
 ![ui](https://raw.githubusercontent.com/TaureHorn/FoundryVTT_ChatConsole/main/ui.png)
