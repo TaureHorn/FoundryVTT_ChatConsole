@@ -2,6 +2,7 @@ import ConsoleApp from "./classes/consoleApp.js";
 import DefaultConfig from "./classes/defaultConfig.js";
 import ConsoleData from "./classes/consoleData.js";
 import ConsoleManager from "./classes/consoleManager.js"
+import MakeTimeFormat from "./classes/makeTimeFormat.js";
 
 // load module
 console.log("Console module | module load init")
@@ -22,6 +23,7 @@ export default class Console {
         APP_TERM: `modules/${this.ID}/templates/console-term.hbs`,
         APP_TERM_PLAYER: `modules/${this.ID}/templates/console-term_player.hbs`,
         CONFIG: `modules/${this.ID}/templates/config.hbs`,
+        MAKESTRING: `modules/${this.ID}/templates/time-format-maker.hbs`,
         MANAGER: `modules/${this.ID}/templates/manager.hbs`,
         MANAGER_PLAYER: `modules/${this.ID}/templates/manager_player.hbs`
     }
@@ -115,27 +117,29 @@ Hooks.on('init', function() {
         default: false
     })
 
-    game.settings.register(Console.ID, 'timestampVerbosity', {
-        name: "Timestamp verbosity",
-        hint: "Choose what data to show in chat timestamps",
+    game.settings.registerMenu(Console.ID, 'makeTimestring', {
+        name: 'Date-time format',
+        label: 'Open configurator',
+        hint: 'Make a custom format for displaying time and date in console timestamps',
         scope: 'world',
         config: true,
-        requiresReload: false,
+        type: MakeTimeFormat,
         restricted: true,
-        type: new foundry.data.fields.StringField({
-            choices: {
-                'time': 'Time: 18:23',
-                'time-date': 'Time & Date: 18:23 19/04/2024',
-                'date': 'Date: 19/04/2024',
-                'date-string': 'Datestring: 19th April 2024',
-                'full': 'Time & Datestring: 18:23 19th April 2024'
-            }
-        }),
-        default: 'time-date'
+        requiresReload: false
     })
 
-    game.settings.register(Console.ID, 'launchManagerKeybind', {
-
+    game.settings.register(Console.ID, 'timestampBuilder', {
+        scope: 'world',
+        config: false,
+        requiresReload: false,
+        restricted: true,
+        type: Object,
+        default: {
+            customs: {
+                custom1: "-"
+            },
+            stringArray: ['time-hm', 'space', 'day-numeric', 'custom-1', 'month-numeric', 'custom-1', 'year']
+        }
     })
 
     game.keybindings.register(Console.ID, 'launchManager', {

@@ -117,6 +117,65 @@ export default class ConsoleApp extends FormApplication {
         html.on('contextmenu', "[data-action]", this._handleRightClick)
     }
 
+    // build a timestamp based on game setting and SimpleCalendar data
+    #buildTimestamp(){
+        const data = SimpleCalendar.api.currentDateTimeDisplay()
+        data.timeShort = data.time.slice(0, 5)
+
+        let timestamp = ``
+        const obj = game.settings.get(Console.ID, 'timestampBuilder')
+
+        obj.stringArray.forEach((str) => {
+            switch (str) {
+                case 'time-hm':
+                    timestamp += `${data.timeShort}`
+                    break;
+                case 'time-hms':
+                    timestamp += `${data.time}`
+                    break;
+                case 'day-numeric':
+                    timestamp += `${data.day}`
+                    break;
+                case 'day-string':
+                    timestamp += `${data.day}${data.daySuffix}`
+                    break;
+                case 'month-numeric':
+                    timestamp += `${data.month}`
+                    break;
+                case 'month-string':
+                    timestamp += `${data.monthName}`
+                    break;
+                case 'year':
+                    timestamp += `${data.year}`
+                    break;
+                case 'year-name':
+                    timestamp += `${data.yearName}`
+                    break;
+                case 'year-prefix':
+                    timestamp += `${data.yearPrefix}`
+                    break;
+                case 'year-postfix':
+                    timestamp += `${data.yearPostfix}`
+                    break;
+                case 'space':
+                    timestamp += ` `
+                    break;
+                case 'custom-1':
+                    timestamp += `${obj.customs.custom1}`
+                    break;
+                case 'custom-2':
+                    timestamp += `${obj.customs.custom2}`
+                    break;
+                case 'custom-3':
+                    timestamp += `${obj.customs.custom3}`
+                    break;
+                default:
+                    Console.print(true, 'error', `ConsoleApp.#buildTimestamp encountered an invalid string '${str}'`)
+            }
+        })
+        return timestamp
+    }
+
     async close(...args) {
         if (!this.options.anchored) {
             delete this._document.apps[this.appId]
@@ -332,25 +391,6 @@ export default class ConsoleApp extends FormApplication {
         return args.join(" ")
     }
 
-    // process timestamp data extracted from the SimpleCalendar api
-    #stringifyTimestamp(time) {
-        const verbosity = game.settings.get(Console.ID, 'timestampVerbosity')
-        switch (verbosity) {
-            case 'time':
-                return time.time.slice(0, 5)
-            case 'time-date':
-                return `${time.time.slice(0, 5)} ${time.day}/${time.month}/${time.year}`
-            case 'date':
-                return `${time.day}/${time.month}/${time.year}`
-            case 'date-string':
-                return `${time.day}${time.daySuffix} ${time.monthName} ${time.year}`
-            case 'full':
-                return `${time.time.slice(0, 5)} ${time.day}${time.daySuffix} ${time.monthName} ${time.year}`
-            default:
-                Console.print(true, 'error', `encountered an incorrect verbosity string '${verbosity}' in consoleApp.#stringifyTimestamp`)
-        }
-    }
-
     #truncateMessage(msg, limits) {
         switch (limits.type) {
             case "characters":
@@ -521,7 +561,7 @@ export default class ConsoleApp extends FormApplication {
                     const simpleCalendar = game.modules.get('foundryvtt-simple-calendar').active ? true : false
                     if (simpleCalendar) {
                         const data = {
-                            consoleInputText: `${this.#stringifyTimestamp(SimpleCalendar.api.currentDateTimeDisplay())} | ${this.#stringifyArguments(cmd)}`
+                            consoleInputText: `${this.#buildTimestamp()} | ${this.#stringifyArguments(cmd)}`
                         }
                         this._updateObject(null, data)
                     } else {
@@ -581,7 +621,7 @@ export default class ConsoleApp extends FormApplication {
                 if (game.modules.get('foundryvtt-simple-calendar')) {
                     if (game.modules.get('foundryvtt-simple-calendar').active && console.timestamps) {
                         useTimestamps = true
-                        timestamp = this.#stringifyTimestamp(SimpleCalendar.api.currentDateTimeDisplay())
+                        timestamp = this.#buildTimestamp()
                     }
                 }
 

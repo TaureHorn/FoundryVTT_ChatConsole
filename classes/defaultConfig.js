@@ -83,6 +83,7 @@ export default class DefaultConfig extends FormApplication {
 
         return config
     }
+
     async _updateObject(event, formData) {
         const oldData = game.settings.get(Console.ID, 'defaultConfig')
         const newData = {
