@@ -17,7 +17,6 @@ export default class MakeTimeFormat extends FormApplication {
     }
 
     getData() {
-
         // if simple calendar install get dummy data from there
         if (game.modules.get('foundryvtt-simple-calendar')) {
             if (game.modules.get('foundryvtt-simple-calendar').active) {
@@ -28,7 +27,7 @@ export default class MakeTimeFormat extends FormApplication {
         }
 
         // if simple calendar not installed user this dummy data
-        return data = {
+        return {
             day: "8",
             daySuffix: "th",
             month: "10",
