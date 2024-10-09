@@ -391,6 +391,14 @@ export default class ConsoleApp extends FormApplication {
         return args.join(" ")
     }
 
+    toggle(){
+        if (document.getElementById(this.consoleId)){
+            Object.values(ui.windows).find((obj) => obj.consoleId === this.consoleId).close()
+        } else {
+            this.render(true)
+        }
+    }
+
     #truncateMessage(msg, limits) {
         switch (limits.type) {
             case "characters":
