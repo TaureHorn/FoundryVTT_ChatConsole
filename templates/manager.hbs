@@ -20,9 +20,9 @@
                         </div>
                     </div>
                     <div style="center;color:{{styling.fg}};display:flex;flex-direction:column;justify-content:space-between">
-                        <p><strong>{{localize "CONSOLE.manager.description"}}: </strong>{{description}}</p>
-                        <p><strong>{{localize "CONSOLE.manager.gm-info"}}: </strong>{{gmInfo}}</p>
-                        <p><strong>{{localize "CONSOLE.manager.scenes"}}: </strong>[ {{#each sceneNames}}<span>{{this}}{{#isNotLastIndex ../sceneNames @index}}, {{/isNotLastIndex}}</span>{{/each}} ]</p>
+                        <p style="margin:0"><b style="text-transform:uppercase">{{localize "CONSOLE.manager.description"}}: </b>{{description}}</p>
+                        <p style="margin:0"><b style="text-transform:uppercase">{{localize "CONSOLE.manager.gm-info"}}: </b>{{gmInfo}}</p>
+                        <p style="margin:0"><b style="text-transform:uppercase">{{localize "CONSOLE.manager.scenes"}}: </b>[ {{#each sceneNames}}<span>{{this}}{{#isNotLastIndex ../sceneNames @index}}, {{/isNotLastIndex}}</span>{{/each}} ]</p>
                     </div>
                 </button>
             </div>

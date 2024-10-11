@@ -12,7 +12,7 @@
         </br>
     </div>
     </br>
-    <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px" class="console-seperate">
+    <div style="background:{{styling.fg}};border:1px solid {{styling.bg}};color:{{styling.bg}};padding:3px" class="console-seperate">
         <span><strong>{{content.title}}</strong></span>
         <div>
             {{#equal limits.type "words"}}[{{localize "CONSOLE.console.limit"}}:{{limits.value}} {{localize "CONSOLE.console.words"}}]{{/equal}}
@@ -25,9 +25,9 @@
 
     <form id="input">
         <div style="display:flex">
-            <div style="align-items:center;border:1px solid {{styling.fg}};border-radius:0px;border-right:none;color:{{styling.fg}};display:flex;padding:3px 5px"><span>{{character}}: </span></div>
-            <input style="background:none;border:1px solid {{styling.fg}};border-left:none;border-radius:0;color:{{styling.fg}};flex:6;outline:none;padding:15px 5px" id="consoleInputText{{id}}" {{#equal limits.type 'characters'}} maxlength="{{limits.value}}" {{else}} maxlength="{{limits.hardLimit}}" {{/equal}}  minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..."/>
-            <button style="background:none;border:1px solid {{styling.fg}};border-radius:0;color:{{styling.fg}};display:none;flex:1;outline:none" id="submitButton" type="submit">{{localize "CONSOLE.console.send"}}</button>
+            <div style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;border-right:0;color:{{styling.bg}};padding:8px"><span><b>> {{character}} $:</b> </span></div>
+            <input style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-left:0;border-radius:0;color:{{styling.bg}};flex:6;outline:none;padding:15px 5px" id="consoleInputText{{id}}" {{#equal limits.type 'characters'}} maxlength="{{limits.value}}" {{else}} maxlength="{{limits.hardLimit}}" {{/equal}}  minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..."/>
+            <button style="display:none" id="submitButton" type="submit">{{localize "CONSOLE.console.send"}}</button>
         </div>
     </form>
 </div>

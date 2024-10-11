@@ -125,8 +125,8 @@
 .console-manager-entry {
     display: flex;
     justify-content: space-between;
-    margin: 10px 0;
-    padding: 5px;
+    margin: 5px 0;
+    padding: 3px;
 }
 
 #console-manager-launcher {
