@@ -451,25 +451,32 @@ export default class ConsoleApp extends FormApplication {
         setTimeout(() => {
 
             // apply console specific styling to elements of the app window not available until after the app has rendered to the DOM
-            if (document.getElementById(id)) {
-                const element = document.getElementById(id)
-                element.className = `app window-app form console-app`
-                element.style.color = this.data.styling.fg
-                element.style.background = this.data.styling.bg
-                element.style.border = `2px solid ${this.data.styling.fg}`
-                element.style.borderRadius = "0px";
-            }
+            if (this.rendered) {
 
-            // if user had text in input box when the app re-rendered focus the cursor at the end of the input box
-            const input = ui.activeWindow._element.find(`#consoleInputText${ui.activeWindow.options.id}`)
-            input.focus()
-            const len = input.val().length
-            input[0].setSelectionRange(len, len)
+                if (document.getElementById(id)) {
+                    const element = document.getElementById(id)
+                    element.className = `app window-app form console-app`
+                    element.style.color = this.data.styling.fg
+                    element.style.background = this.data.styling.bg
+                    element.style.border = `2px solid ${this.data.styling.fg}`
+                    element.style.borderRadius = "0px";
+                }
 
-            // style the anchor header buttons, invert when console anchored
-            if (this._element) {
-                const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
-                this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
+                // if user had text in input box when the app re-rendered focus the cursor at the end of the input box
+                if (ui.activeWindow._element) {
+                    const input = ui.activeWindow._element.find(`#consoleInputText${ui.activeWindow.options.id}`)
+                    input.focus()
+                    const len = input.val().length
+                    input[0].setSelectionRange(len, len)
+                }
+
+
+                // style the anchor header buttons, invert when console anchored
+                if (this._element) {
+                    const anchor = this._element[0].getElementsByClassName('fas fa-anchor anchorButton')[0]
+                    this.options.anchored ? anchor.classList.add('invert') : anchor.classList.remove('invert')
+                }
+
             }
 
         }, 200)
