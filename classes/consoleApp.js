@@ -91,7 +91,20 @@ export default class ConsoleApp extends FormApplication {
                     label: "",
                     onclick: () => { this.copyToClipboard(this.options.id) },
                     tooltip: `ID: ${this.options.id}`
+                },
+                {
+                    class: 'pin',
+                    icon: "fas fa-thumbtack",
+                    label: "",
+                    onclick: () => {
+                        const newData = ConsoleData.getConsole(this.consoleId)
+                        newData.styling.height = this.position.height
+                        newData.styling.width = this.position.width
+                        ConsoleData.updateConsole(newData.id, newData)
+                    },
+                    tooltip: game.i18n.localize("CONSOLE.console.pin")
                 }
+
             )
         }
         return buttons
@@ -118,7 +131,7 @@ export default class ConsoleApp extends FormApplication {
     }
 
     // build a timestamp based on game setting and SimpleCalendar data
-    #buildTimestamp(){
+    #buildTimestamp() {
         const data = SimpleCalendar.api.currentDateTimeDisplay()
         data.timeShort = data.time.slice(0, 5)
 
@@ -391,8 +404,8 @@ export default class ConsoleApp extends FormApplication {
         return args.join(" ")
     }
 
-    toggle(){
-        if (document.getElementById(this.consoleId)){
+    toggle() {
+        if (document.getElementById(this.consoleId)) {
             Object.values(ui.windows).find((obj) => obj.consoleId === this.consoleId).close()
         } else {
             this.render(true)
