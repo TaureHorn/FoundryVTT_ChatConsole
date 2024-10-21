@@ -234,6 +234,7 @@ export default class ConsoleApp extends FormApplication {
                         copyText.remove()
                     }
                 }
+                ui.notifications.info("Console | copied text to clipboard!")
             } catch (err) {
                 console.error(err)
                 ui.notifications.error("Console | Copying to clipboard was unsuccessful. Idk. Maybe this site doesn't have clipboard access?")
@@ -242,6 +243,43 @@ export default class ConsoleApp extends FormApplication {
             ui.notifications.error('Console | The element being attempted to copy is not a string!')
             console.error('TypeError: element to copy is not a string', text, this)
         }
+    }
+
+    #deleteConfirmation(context, data) {
+        let confirmed = null
+        const confirm = new Dialog({
+            buttons: {
+                yes: { label: 'YES', callback: () => confirmed = true },
+                no: { label: 'NO', callback: () => confirmed = false }
+            },
+            title: `Delete ${context}`,
+            close: () => {
+                (async () => {
+                    if (confirmed) {
+
+                        switch (context) {
+                            case 'message':
+                                const newData = ConsoleData.getConsole(data.consoleId)
+                                newData.content.body.splice(data.messageIndex, 1)
+                                await ConsoleData.updateConsole(newData.id, newData)
+                                break;
+                            case 'all messages':
+                                data.content.body = []
+                                await ConsoleData.updateConsole(data.id, data)
+                                break;
+                            default:
+                                Console.print(true, 'error', `encountered an invalid context - ${context} - in ConsoleApp.#deleteConfirmation`)
+                        }
+
+                    }
+                })();
+            }
+
+        })
+        confirm.render(true)
+        setTimeout(() => {
+            $('[data-button="yes"]')[0].focus()
+        }, 100)
     }
 
     // left clicking a message copies it to clipboard
@@ -254,15 +292,13 @@ export default class ConsoleApp extends FormApplication {
     }
 
     // right-clicking a message deletes it
-    _handleRightClick = (event) => {
+    _handleRightClick = async (event) => {
         if (!this.data.locked) {
             const data = $(event.currentTarget).data()
             const id = game.user.character ? game.user.character._id : game.userId
             const permission = id === data.userid || game.user.isGM ? true : false
             if (data.action === "message-interact" && permission) {
-                const newData = ConsoleData.getConsole(data.consoleId)
-                newData.content.body.splice(data.messageIndex, 1)
-                ConsoleData.updateConsole(newData.id, newData)
+                this.#deleteConfirmation('message', data)
             } else if (data.action === "message-interact" && !permission) {
                 ui.notifications.warn("Console | You lack the permissions to delete a message that is not yours")
             }
@@ -503,8 +539,7 @@ export default class ConsoleApp extends FormApplication {
                     }
                     break;
                 case "clear":
-                    console.content.body = []
-                    ConsoleData.updateConsole(console.id, console)
+                    this.#deleteConfirmation('all messages', console)
                     this.notifySend('clear', console)
                     break;
                 case "close":
