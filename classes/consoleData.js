@@ -291,7 +291,7 @@ export default class ConsoleData {
             !console.locked ? console.locked = df.locked : null
             !console.notifications ? console.notifications = df.notifications : null
             !console.playerOwnership ? console.playerOwnership = df.playerOwnership : null
-            !console.playerPermissions ? console.playerPermissions = df.playerPermissions : null
+            !console.playerPermissions ? console.playerPermissions = console.playerOwnership : null
             !console.public ? console.public = df.public : null
             !console.scenes ? console.scenes = df.scenes : null
             !console.styling ? console.styling = df.styling : null

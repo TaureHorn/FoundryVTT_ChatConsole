@@ -614,6 +614,30 @@ export default class ConsoleApp extends FormApplication {
                 case "mute":
                     ConsoleData.toggleBoolean(console.id, 'mute')
                     break;
+                case "permit":
+                    let nameToPermit = this.#stringifyArguments(cmd)
+                    const permitee = game.users.getName(nameToPermit) ? game.users.getName(nameToPermit) : null
+                    if (permitee) {
+                        if (!console.playerPermissions.includes(permitee._id)) {
+                            console.playerPermissions.push(permitee._id)
+                            await ConsoleData.updateConsole(console.id, console)
+                        }
+                    } else {
+                        ui.notifications.warn(`Console | A user with the name '${nameToPermit}' does not exist`)
+                    }
+                    break;
+                case "rmPermit":
+                    let nameToRemove = this.#stringifyArguments(cmd)
+                    const removee = game.users.getName(nameToRemove) ? game.users.getName(nameToRemove) : null
+                    if (removee) {
+                        if (console.playerPermissions.includes(removee._id)) {
+                            console.playerPermissions.splice(console.playerPermissions.indexOf(removee._id), 1)
+                            await ConsoleData.updateConsole(console.id, console)
+                        }
+                    } else {
+                        ui.notifications.warn(`Console | A user with the name '${nameToPermit}' does not exist`)
+                    }
+                    break;
                 case "share":
                     this.shareApp()
                     break;
