@@ -271,7 +271,9 @@ export default class ConsoleData {
         const updatedConsoles = {}
         const df = DefaultConfig._defaultData
 
-        consoles.forEach((console) => {
+        consoles.push(game.settings.get(Console.ID, 'defaultConfig')) // add the default config setting to list of consoles to modify
+        consoles.forEach((console, index) => {
+
             Console.print(true, 'update', `Data for ${console.id} (${console.name}) is being scanned for changes from the new module version)`)
             !console.id ? console.id = foundry.utils.randomID(Console.IDLENGTH) : null
             !console.content ? console.content = df.content : null
@@ -289,6 +291,7 @@ export default class ConsoleData {
             !console.locked ? console.locked = df.locked : null
             !console.notifications ? console.notifications = df.notifications : null
             !console.playerOwnership ? console.playerOwnership = df.playerOwnership : null
+            !console.playerPermissions ? console.playerPermissions = df.playerPermissions : null
             !console.public ? console.public = df.public : null
             !console.scenes ? console.scenes = df.scenes : null
             !console.styling ? console.styling = df.styling : null
@@ -302,9 +305,13 @@ export default class ConsoleData {
             !console.styling.width ? console.styling.width = df.styling.width : null
             !console.timestamps ? console.timestamps = df.timestamps : null
 
-            updatedConsoles[console.id] = console
+            if (index !== consoles.length - 1) {
+                updatedConsoles[console.id] = console
+            }
         })
 
+        const newDefault = consoles.pop()
+        await game.settings.set(Console.ID, 'defaultConfig', newDefault)
         await data.setFlag(Console.ID, Console.FLAGS.CONSOLE, updatedConsoles)
         Console.print(true, 'update', 'Version migration complete. Return -->', updatedConsoles)
 
