@@ -63,6 +63,7 @@ export default class ConsoleConfig extends FormApplication {
             locked: oldData.locked,
             notifications: formData.notifications === "true" ? true : false,
             playerOwnership: [],
+            playerPermissions: [],
             public: formData.public === "true" ? true : false,
             scenes: [],
             styling: {
@@ -89,6 +90,21 @@ export default class ConsoleConfig extends FormApplication {
                 newData.playerOwnership.push(formData.players)
             } else {
                 ui.notifications.error(`Console | Unable to save player data. Invalid formData type`)
+            }
+        }
+
+        if (formData.permissions) {
+            if (typeof formData.permissions === 'object') {
+                formData.permissions.forEach((player) => {
+                    if (player) {
+                        newData.playerPermissions.push(player)
+                    }
+                })
+            }
+            else if (typeof formData.permissions === 'string') {
+                newData.playerPermissions.push(formData.permissions)
+            } else {
+                ui.notifications.error(`Console | Unable to save player permissions data. Invalid formData type`)
             }
         }
 

@@ -102,29 +102,48 @@
             <input id="limit-value" name="limitVal" type="number" min="0" max="4096" value="{{console.limits.value}}" placeholder="25"/>
         </div>
     </fieldset>
-    <fieldset class="console-config-limited">
-    <legend class="field-header">{{localize "CONSOLE.config.players.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.players.hover-info"}}"></i></legend>
-        <div>
-            <input id="hide-console" name="public" type="radio" value="false" {{#unless console.public}}checked{{/unless}}>
-            <label for="hide-console">{{localize "CONSOLE.config.players.hide"}}:</label>
-            <input id="show-console" name="public" type="radio" value="true" {{#if console.public}}checked{{/if}}>
-            <label for="show-console">{{localize "CONSOLE.config.players.show"}}:</label>
-        </div>
-        <div>
-            {{#each players}}
-                <input id="{{_id}}" name="players"[{{@index}}] type="checkbox" value="{{_id}}" {{#inArray _id ../console.playerOwnership}}checked{{/inArray}}/>
-                <label for="{{_id}}">{{name}}</legend>
+
+    <details style="cursor:pointer">
+        <summary class="field-header">{{localize "CONSOLE.config.players.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.players.hover-info"}}"></i></summary>
+        <fieldset class="console-config-limited">
+            <div>
+                <input id="hide-console" name="public" type="radio" value="false" {{#unless console.public}}checked{{/unless}}>
+                <label for="hide-console">{{localize "CONSOLE.config.players.hide"}}:</label>
+                <input id="show-console" name="public" type="radio" value="true" {{#if console.public}}checked{{/if}}>
+                <label for="show-console">{{localize "CONSOLE.config.players.show"}}:</label>
+            </div>
+            <div>
+                {{#each players}}
+                    <input id="{{_id}}" name="players"[{{@index}}] type="checkbox" value="{{_id}}" {{#inArray _id ../console.playerOwnership}}checked{{/inArray}}/>
+                    <label for="{{_id}}">{{name}}</legend>
+                    </br>
+                {{/each}}
+            </div>
+        </fieldset>
+    </details>
+
+    <details style="cursor:pointer">
+        <summary class="field-header">{{localize "CONSOLE.config.permissions.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.permissions.hover-info"}}"></i></summary>
+        <fieldset class="console-config-limited">
+            <div>
+                {{#each players}}
+                    <input id="permissions-{{_id}}" name="permissions"[{{@index}}] type="checkbox" value="{{_id}}" {{#inArray _id ../console.playerPermissions}}checked{{/inArray}}/>
+                    <label for="permissions-{{_id}}">{{name}}</legend>
+                    </br>
+                {{/each}}
+            </div>
+        </fieldset>
+    </details>
+
+    <details style="cursor:pointer">
+        <summary class="field-header">{{localize "CONSOLE.config.scenes.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.scenes.hover-info"}}"></i></summary>
+        <fieldset class="console-config-limited">
+            {{#each scenes}}
+                <input type="checkbox" id="{{id}}" name="scenes"[{{@index}}] value="{{id}}" {{#inArray this.id ../console.scenes }}checked{{/inArray}}/>
+                <label for="{{id}}">{{name}}</label>
                 </br>
             {{/each}}
-        </div>
-    </fieldset>
-    <fieldset class="console-config-limited">
-    <legend class="field-header">{{localize "CONSOLE.config.scenes.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.scenes.hover-info"}}"></i></legend>
-        {{#each scenes}}
-            <input type="checkbox" id="{{id}}" name="scenes"[{{@index}}] value="{{id}}" {{#inArray this.id ../console.scenes }}checked{{/inArray}}/>
-            <label for="{{id}}">{{name}}</label>
-            </br>
-        {{/each}}
-    </fieldset>
+        </fieldset>
+    </details>
     <button type="submit">{{localize "CONSOLE.config.submit"}}</button>
 </form>

@@ -640,33 +640,39 @@ export default class ConsoleApp extends FormApplication {
             this.#clearInput()
         } else {
             if (!this.data.locked) {
-                // update with message as normal
-                const messageLog = [...console.content.body]
+                if (this.data.playerPermissions.includes(game.userId) || game.user.isGM) {
 
-                // timestamp integrations
-                let useTimestamps = false
-                let timestamp = ""
-                if (game.modules.get('foundryvtt-simple-calendar')) {
-                    if (game.modules.get('foundryvtt-simple-calendar').active && console.timestamps) {
-                        useTimestamps = true
-                        timestamp = this.#buildTimestamp()
+                    // update with message as normal
+                    const messageLog = [...console.content.body]
+
+                    // timestamp integrations
+                    let useTimestamps = false
+                    let timestamp = ""
+                    if (game.modules.get('foundryvtt-simple-calendar')) {
+                        if (game.modules.get('foundryvtt-simple-calendar').active && console.timestamps) {
+                            useTimestamps = true
+                            timestamp = this.#buildTimestamp()
+                        }
                     }
+
+                    const message = {
+                        "text": this.#truncateMessage(formData.consoleInputText, console.limits),
+                        ...(useTimestamps && { "timestamp": timestamp }),
+                        "user": this.getName("")
+                    }
+
+
+                    this.#clearInput()
+                    messageLog.push(message)
+                    console.content.body = messageLog
+                    ConsoleData.updateConsole(console.id, console)
+                    if (console.public && console.notifications) {
+                        this.notifySend('messageNotification', console)
+                    }
+                } else {
+                    ui.notifications.warn(`Console | You are not permitted to send messages in '${this.data.name}'`)
                 }
 
-                const message = {
-                    "text": this.#truncateMessage(formData.consoleInputText, console.limits),
-                    ...(useTimestamps && { "timestamp": timestamp }),
-                    "user": this.getName("")
-                }
-
-
-                this.#clearInput()
-                messageLog.push(message)
-                console.content.body = messageLog
-                ConsoleData.updateConsole(console.id, console)
-                if (console.public && console.notifications) {
-                    this.notifySend('messageNotification', console)
-                }
             } else {
                 ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
             }

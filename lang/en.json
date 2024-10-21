@@ -54,6 +54,10 @@
                 "show": "Show to owners",
                 "hover-info": "Select who can see this console in their console manager. This is seperate from whether or not a console is public/private"
             },
+            "permissions": {
+                "header": "Player permissions",
+                "hover-info": "Select which players can send messages in this console."
+            },
             "scenes": {
                 "header": "Scenes",
                 "hover-info": "Keep track of which scenes this console may be relevant to"
