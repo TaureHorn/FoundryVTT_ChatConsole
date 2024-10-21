@@ -23,7 +23,7 @@ To use a command type one of the following command names prepended by a forward 
 - `/description <string>` or `/desc <string>`: Change the description of the console. GM only.
 - `/duplicate`: Makes a copy of this console. GM only.
 - `/edit`: Open the config window for this console. GM only.
-- `/fg <color hex code`: Change the console foreground color. GM only
+- `/fg <color hex code>`: Change the console foreground color. GM only
 - `/gmInfo <string>` or `/gm <string>`: Change the gmInfo of the console. GM only.
 - `/incognito`: Unselects the character representing you. For GM's the app will show your messages without a name, for players, your message show your player name. Player & GM.
 - `/invite <player name>`: Add a player to this list of owners for this console. GM only.
@@ -32,6 +32,8 @@ To use a command type one of the following command names prepended by a forward 
 - `/mute`: Toggle the mute state of this console. GM only.
 - `/notifications`: or `/notif`:Toggle enable/disable a console to send notifications when a new message is sent. GM only.
 - `/name <string>`: Set the name of this console. GM only.
+- `/permit <player name>`: Add a player to the list of users allowed to send messages in this console. GM only.
+- `/rmPermit <player name>`: Remove a player from the list of users allowed to send messages in this console. GM only.
 - `/share`: Share the app with players, making the app window render on their screens. GM only.
 - `/show`: Toggle the consosle visibility to players with ownership. GM only.
 - `/title <string>`: Set the title of this console. GM only.
@@ -68,11 +70,11 @@ Integrates with [SimpleCalendar](https://github.com/vigoren/foundryvtt-simple-ca
 Messages within a console can be copied to the OS clipboard with a left-click or deleted with a right click. Players can only delete their own messages, GMs can delete all messages.
 
 ## Potential Planned Improvements
-- ~~Add ability to set default configuration for all consoles variables [name, title, bgImg, type, limits...]~~
 - Module instructions / readme in the auto generated '_consoleData' journal entry.
+- ~~Add ability to set default configuration for all consoles variables [name, title, bgImg, type, limits...]~~
 - ~~Add message timestamps >> integration with SimpleCalendar and SmallTime?~~
 - ~~New message notifications?~~
-- Refactor module so parts of it feel less like a hot mess and the code is easier for users to understand and build macros for.
+- ~~Refactor module so parts of it feel less like a hot mess and the code is easier for users to understand and build macros for.~~
 - Port the v12's 'Application_v2' thingy?
 
 ## Sources
