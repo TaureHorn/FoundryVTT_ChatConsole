@@ -25,7 +25,8 @@ export default class Console {
         CONFIG: `modules/${this.ID}/templates/config.hbs`,
         MAKESTRING: `modules/${this.ID}/templates/time-format-maker.hbs`,
         MANAGER: `modules/${this.ID}/templates/manager.hbs`,
-        MANAGER_PLAYER: `modules/${this.ID}/templates/manager_player.hbs`
+        MANAGER_PLAYER: `modules/${this.ID}/templates/manager_player.hbs`,
+        README: `modules/${this.ID}/templates/module-readme.html`
     }
 
     static print(force, action, ...args) {

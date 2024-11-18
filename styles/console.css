@@ -118,7 +118,7 @@
     height: calc(100% - 5.5em);
     overflow-y: scroll;
     overflow-x: hidden;
-    padding-right:1em;
+    padding-right: 1em;
     scrollbar-width: auto !important;
 }
 
@@ -191,6 +191,16 @@
 
 .invert {
     filter: invert();
+}
+
+code.readme-code {
+    background-color: #385724;
+    border: 1px solid #6be919;
+    padding: 1px 3px;
+}
+
+li.readme-code {
+    margin-bottom: 1em;
 }
 
 .strobe {
