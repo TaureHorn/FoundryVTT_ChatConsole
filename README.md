@@ -28,6 +28,7 @@ To use a command type one of the following command names prepended by a forward 
 - `/incognito`: Unselects the character representing you. For GM's the app will show your messages without a name, for players, your message show your player name. Player & GM.
 - `/invite <player name>`: Add a player to this list of owners for this console. GM only.
 - `/kick <player name>`: Remove a player from the list of owner for this console. GM only.
+- `/linkActor`: Link your currently representing actor to this console. GM only.
 - `/lock`: Toggle the lock state of this console. GM only.
 - `/mute`: Toggle the mute state of this console. GM only.
 - `/notifications`: or `/notif`:Toggle enable/disable a console to send notifications when a new message is sent. GM only.
@@ -39,6 +40,7 @@ To use a command type one of the following command names prepended by a forward 
 - `/title <string>`: Set the title of this console. GM only.
 - `/timelog <string>`: Adds a timestamp directly into chat with a message, even if the consoles timestamps are disabled. GM only **requires SimpleCalendar**
 - `/timestamps`: or `/time`: Toggle whether timestamps are recorded and shown for this console. GM only. **requires SimpleCalendar**
+- `/unlinkActor`: Remove the the link to an actor from this console.
 ### _console-data
 This journal entry is what stores all of the data for this module. The module fetches this journal entry by name. As such, this journal entry should not be renamed lest you lose access to all of your consoles data. Further, any archived consoles appear as pages within this journal entry. Feel free to move it into folders or duplicate it for a backup.
 ### Console visibility to players
@@ -46,7 +48,7 @@ Whether or not a console is shown to players is controlled by the GM using two d
 
 As a GM you can bypass these restrictions to show a console to players even if it is neither visible nor owned by players. In the consoles top header click the eye icon to show to players. From here you can choose to show it just to players who have ownership or to all players. Further, console windows rendered through macros can be shown to players regardless of its visibility or ownership.
 ### Macro support
-The `ConsoleApp` and `ConsoleData` classes are globally exposed and should be all you need if you want to integrate consoles into macros. Works wonderfully to show consoles to players in certain map spaces using [monks-active-tiles](https://github.com/ironmonk88/monks-active-tiles).
+The `ConsoleApp` and `ConsoleData` classes are globally exposed and should be all you need if you want to integrate consoles into macros. Works wonderfully to show consoles to players in certain map spaces using foundrys [regions tools](https://foundryvtt.com/article/scene-regions/) or [monks-active-tiles](https://github.com/ironmonk88/monks-active-tiles).
 ### Message word/character limits
 You can configure a console to cut off messages after a certain amount of words/characters. You choose whether to cut off based on words or based on characters and you choose just how many. Further, you can choose a 'marker', a string of characters that get added to the end of a message that is cut off by the limit to alert you to the fact the message has been cut off.
 
@@ -70,7 +72,7 @@ Integrates with [SimpleCalendar](https://github.com/vigoren/foundryvtt-simple-ca
 Messages within a console can be copied to the OS clipboard with a left-click or deleted with a right click. Players can only delete their own messages, GMs can delete all messages.
 
 ## Potential Planned Improvements
-- Module instructions / readme in the auto generated '_consoleData' journal entry.
+- ~~Module instructions / readme in the auto generated '_consoleData' journal entry.~~
 - ~~Add ability to set default configuration for all consoles variables [name, title, bgImg, type, limits...]~~
 - ~~Add message timestamps >> integration with SimpleCalendar and SmallTime?~~
 - ~~New message notifications?~~

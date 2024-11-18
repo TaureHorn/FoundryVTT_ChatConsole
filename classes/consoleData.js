@@ -9,7 +9,7 @@ export default class ConsoleData {
 
     static async createDataPool() {
         if (game.user.isGM) {
-            await JournalEntry.create({
+            const _consoleData = new JournalEntry({
                 "flags": {
                     "console": {
                         "consoles": {},
@@ -21,6 +21,23 @@ export default class ConsoleData {
                     "default": 3
                 }
             })
+            await JournalEntry.create(_consoleData)
+
+            const readme = await fetch(Console.TEMPLATES.README).then((response) => response.text())
+            this.getDataPool().createEmbeddedDocuments('JournalEntryPage', [{
+                ownership: {
+                    default: 2
+                },
+                name: 'README',
+                text: {
+                    content: readme,
+                    markdown: ""
+                },
+                title: {
+                    show: false
+                }
+            }])
+            
         } else {
             ui.notifications.error(`Console | No data storage Document of name '${this.name}' exists and you lack the permissions to create one. Consult your GM.`)
         }
