@@ -102,6 +102,7 @@ export default class DefaultConfig extends FormApplication {
                 type: formData.limitType,
                 value: formData.limitVal
             },
+            linkedActor: "",
             locked: oldData.locked,
             notifications: formData.notifications === "true" ? true : false,
             playerOwnership: [],

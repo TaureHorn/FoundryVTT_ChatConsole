@@ -288,6 +288,7 @@ export default class ConsoleData {
             !console.limits.marker ? console.limits.marker = df.limits.marker : null
             !console.limits.type ? console.limits.type = df.limits.type : null
             !console.limits.value ? console.limits.value = df.limits.value : null
+            !console.linkedActor ? console.linkedActor = df.linkedActor : null
             !console.locked ? console.locked = df.locked : null
             !console.notifications ? console.notifications = df.notifications : null
             !console.playerOwnership ? console.playerOwnership = df.playerOwnership : null

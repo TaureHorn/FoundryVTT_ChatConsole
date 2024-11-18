@@ -86,6 +86,27 @@ export default class ConsoleApp extends FormApplication {
                     tooltip: game.i18n.localize("CONSOLE.console.show-players")
                 },
                 {
+                    class: "become-actor",
+                    icon: "fas fa-user",
+                    label: "",
+                    onclick: async () => {
+                        if (this.data.linkedActor) {
+                            const character = game.actors.get(this.data.linkedActor)
+                            character ?
+                                await game.user.update({ "character": character })
+                                : ui.notifications.error(`Console | No actor with id '${this.data.linkedActor}' found.`)
+                        } else {
+                            if (game.user.character) {
+                                this.data.linkedActor = game.user.character._id
+                                await ConsoleData.updateConsole(this.consoleId, this.data)
+                            } else {
+                                ui.notifications.warn(`Console | Unable to link an actor to this console. You are not currently represented by an actor.`)
+                            }
+                        }
+                    },
+                    tooltip: this.data.linkedActor ? game.i18n.localize("CONSOLE.console.become-actor") : game.i18n.localize("CONSOLE.console.link-actor")
+                },
+                {
                     class: 'copy-id',
                     icon: "fas fa-id-badge",
                     label: "",
@@ -600,6 +621,14 @@ export default class ConsoleApp extends FormApplication {
                         ui.notifications.warn(`Console | A user with the name '${nameToKick}' does not exist`)
                     }
                     break;
+                case "linkActor":
+                    if (game.user.character) {
+                        console.linkedActor = game.user.character._id
+                        ConsoleData.updateConsole(console.id, console)
+                    } else {
+                        ui.notifications.warn(`Console | Unable to link an actor to this console. You are not currently represented by an actor.`)
+                    }
+                    break;
                 case "lock":
                     ConsoleData.toggleBoolean(console.id, 'lock')
                     break;
@@ -661,6 +690,10 @@ export default class ConsoleApp extends FormApplication {
                     break;
                 case "title":
                     console.content.title = this.#stringifyArguments(cmd)
+                    ConsoleData.updateConsole(console.id, console)
+                    break;
+                case "unlinkActor":
+                    console.linkedActor = ''
                     ConsoleData.updateConsole(console.id, console)
                     break;
                 default:

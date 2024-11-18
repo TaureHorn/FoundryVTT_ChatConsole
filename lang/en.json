@@ -67,9 +67,11 @@
         "console": {
             "app-info": "Left click to copy message to clipboard. Right-click to delete a message.",
             "anchor-app": "Toggle whether this window is anchored. An anchored window cannot be closed",
+            "become-actor": "Become linked actor",
             "characters": "characters",
             "close": "Close",
             "limit": "limit",
+            "link-actor": "Link currently represented actor to this console",
             "pin": "Remeber this size for this app",
             "send": "send",
             "show-players": "Show to players",
