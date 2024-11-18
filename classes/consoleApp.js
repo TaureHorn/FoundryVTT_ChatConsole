@@ -5,7 +5,7 @@ import ConsoleManager from "./consoleManager.js"
 
 export default class ConsoleApp extends FormApplication {
 
-    constructor(id, managerId) {
+    constructor(id) {
         super()
         this.consoleId = id
         this._document = ConsoleData.getDataPool()
