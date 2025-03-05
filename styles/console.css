@@ -92,6 +92,15 @@
     border: none !important;
 }
 
+.console-popout .window-content,
+.console-popout figure {
+    padding: 0px
+}
+
+.console-popout figure {
+    margin: 0;
+}
+
 .console-config-flex {
     align-items: center;
     gap: 10px;
@@ -148,7 +157,6 @@
 }
 
 .console-media {
-    /* TEMP  */
     border: none;
     cursor: zoom-in;
     max-width: 5vw;
