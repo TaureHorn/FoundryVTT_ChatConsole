@@ -357,15 +357,15 @@ export default class ConsoleApp extends FormApplication {
             consoleInputText.style.display = 'none'
             mediaString.style.display = 'block'
 
+            // restrict only to image or video file extensions supported by foundry
             const fp = new FilePicker({
-                // restrict only to image or video file extensions supported by foundry
-                extensions: ['avif', 'jpg', 'jpeg', 'png', 'svg', 'webp', 'webm', 'mp4', 'm4v'],
                 callback: (returnPath) => {
                     mediaString.value = returnPath
                 }
             })
+            fp.displayMode = 'thumbs'
+            fp.extensions = [".avif", ".jpg", ".jpeg", ".png", ".svg", ".webp", ".webm", ".mp4", ".m4v"]
             fp.browse()
-
         } else {
             ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
         }
@@ -381,7 +381,9 @@ export default class ConsoleApp extends FormApplication {
                 break;
             case 'image-zoom':
                 let dimensions
-                const popout = new ImagePopout(data.media)
+                const popout = new ImagePopout(data.media, {
+                    title: `${data.userName} >>> ${this.data.name}`,
+                })
                 popout.options.classes.push('console-popout')
                 if (data.mediaType === 'img') {
                     dimensions = await getPopoutSize(data.media, 'image')
