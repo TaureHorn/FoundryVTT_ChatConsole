@@ -7,6 +7,7 @@
                     <div style="background:{{../styling.fg}};color:{{../styling.bg}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}" class="console-message">
                         {{#if user.name}}<span id="header{{@index}}">{{#if ../timestamps}}{{timestamp}} {{/if}}<strong>{{user.name}}</strong></span></br>{{/if}}
                         <span id="text{{@index}}">{{text}}</span>
+                        {{#if media}}<img src="{{media}} class="console-media"/>{{/if}}
                     </div>
                 </button>
             </div>
@@ -27,6 +28,8 @@
         <div style="align-items:center;display:flex;margin:0 0 10px 0">
             <div style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};padding:8px"><span><b>@{{character}}</b></span></div>
             <input style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:6;outline:none;padding:15px" id="consoleInputText{{id}}" {{#equal limits.type 'characters'}} maxlength="{{limits.value}}" {{else}} maxlength="{{limits.hardLimit}}" {{/equal}} minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..." autocomplete="off"/>
+            <input style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:6;outline:none;padding:15px;display:none" id="mediaString{{id}}" name="media-string" type="text"/>
+            <button style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:1;margin:0;outline:none;text-transform:uppercase" id="mediaFilePicker" class="file-picker" type="button" data-type="image" data-target="media-string" title="Send image"><i class="fas fa-file-image"></i></button>
             <button style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:1;margin:0;outline:none;text-transform:uppercase" id="submitButton" type="submit">{{localize "CONSOLE.console.send"}}</button>
         </div>
     </form>

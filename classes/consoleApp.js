@@ -149,6 +149,16 @@ export default class ConsoleApp extends FormApplication {
         super.activateListeners(html)
         html.on('click', "[data-action]", this._handleLeftClick)
         html.on('contextmenu', "[data-action]", this._handleRightClick)
+
+        html.find('#mediaFilePicker').on('click', [html, this.id], function(event) {
+            const element = event.data[0]
+            const id = event.data[1]
+
+            element.find(`#consoleInputText${id}`)[0].style.display = 'none'
+            element.find(`#mediaString${id}`)[0].style.display = 'block'
+
+        })
+
     }
 
     // build a timestamp based on game setting and SimpleCalendar data

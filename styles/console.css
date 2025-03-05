@@ -142,6 +142,15 @@
     overflow-wrap: anywhere;
 }
 
+.console-media {
+    /* TEMP  */
+    border: none;
+    height: 300px;
+    object-fit: cover;
+    object-position: 50%;
+    width: 300px;
+}
+
 .console-message-interact {
     border: none;
     padding: 0;
@@ -196,7 +205,6 @@
 code.readme-code {
     background-color: #385724;
     border: 1px solid #6be919;
-    padding: 1px 3px;
 }
 
 li.readme-code {
