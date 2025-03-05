@@ -3,6 +3,49 @@ import ConsoleConfig from "./consoleConfig.js"
 import ConsoleData from "./consoleData.js"
 import ConsoleManager from "./consoleManager.js"
 
+// taken from base ImagePopout
+function getImageSize(path) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = function() {
+            resolve([this.width, this.height]);
+        };
+        img.onerror = reject;
+        img.src = path;
+    });
+}
+
+// taken from base ImagePopout
+function getVideoSize(src) {
+    return new Promise((resolve, reject) => {
+        const video = document.createElement("video");
+        video.onloadedmetadata = () => {
+            video.onloadedmetadata = null;
+            resolve([video.videoWidth, video.videoHeight]);
+        };
+        video.onerror = reject;
+        video.src = src;
+    });
+}
+
+// modified from base ImagePopout
+async function getPopoutSize(src, type) {
+    const [width, height] = type === 'image' ? await getImageSize(src) : await getVideoSize(src)
+
+    const viewportAspectRatio = window.innerWidth / window.innerWidth
+    const videoAspectRatio = width / height
+
+    const dimensions = {}
+    if (videoAspectRatio > viewportAspectRatio) {
+        dimensions.width = Math.min(width, window.innerWidth - 200)
+        dimensions.height = dimensions.width / videoAspectRatio
+    } else {
+        dimensions.height = Math.min(height, window.innerHeight - 200);
+        dimensions.width = dimensions.height * videoAspectRatio
+    }
+    return dimensions
+}
+
 export default class ConsoleApp extends FormApplication {
 
     constructor(id) {
@@ -44,6 +87,8 @@ export default class ConsoleApp extends FormApplication {
         this.options.title = this.data.name
         this.options.width = this.data.styling.width
 
+        data.canBrowseFiles = game.user.hasPermission('FILES_BROWSE')
+
         return data
     }
 
@@ -54,7 +99,7 @@ export default class ConsoleApp extends FormApplication {
                 icon: "fas fa-circle-info",
                 label: "",
                 onclick: () => ui.notifications.notify(`Console | ${game.i18n.localize("CONSOLE.console.app-info")}`),
-                tooltip: game.i18n.localize("CONSOLE.console.app-info")
+                tooltip: game.i18n.localize("CONSOLE.console.message-info")
             },
             {
                 class: "anchor",
@@ -149,6 +194,7 @@ export default class ConsoleApp extends FormApplication {
         super.activateListeners(html)
         html.on('click', "[data-action]", this._handleLeftClick)
         html.on('contextmenu', "[data-action]", this._handleRightClick)
+        html.find('#mediaFilePicker').on('click', [html], () => this._handleImageBrowser(html))
     }
 
     // build a timestamp based on game setting and SimpleCalendar data
@@ -303,13 +349,53 @@ export default class ConsoleApp extends FormApplication {
         }, 100)
     }
 
-    // left clicking a message copies it to clipboard
-    _handleLeftClick = (event) => {
-        if ($(event.currentTarget).data().action === "message-interact") {
-            const text = $(event.currentTarget).data().messageText
-            this.copyToClipboard(text)
-        }
+    _handleImageBrowser = async (html) => {
+        if (!this.data.locked) {
+            const consoleInputText = html.find(`#consoleInputText${this.id}`)[0]
+            const mediaString = html.find(`#mediaString${this.id}`)[0]
 
+            consoleInputText.style.display = 'none'
+            mediaString.style.display = 'block'
+
+            // restrict only to image or video file extensions supported by foundry
+            const fp = new FilePicker({
+                callback: (returnPath) => {
+                    mediaString.value = returnPath
+                }
+            })
+            fp.displayMode = 'thumbs'
+            fp.extensions = [".avif", ".jpg", ".jpeg", ".png", ".svg", ".webp", ".webm", ".mp4", ".m4v"]
+            fp.browse()
+        } else {
+            ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
+        }
+    }
+
+    // left clicking a message copies it to clipboard
+    _handleLeftClick = async (event) => {
+        const data = $(event.currentTarget).data()
+        switch (data.action) {
+            case 'message-interact':
+                const text = data.messageText
+                this.copyToClipboard(text)
+                break;
+            case 'image-zoom':
+                let dimensions
+                const popout = new ImagePopout(data.media, {
+                    title: `${data.userName} >>> ${this.data.name}`,
+                })
+                popout.options.classes.push('console-popout')
+                if (data.mediaType === 'img') {
+                    dimensions = await getPopoutSize(data.media, 'image')
+                }
+                if (data.mediaType === 'video') {
+                    popout.options.template = Console.TEMPLATES.VIDEO_POPOUT
+                    dimensions = await getPopoutSize(data.media, 'video')
+                }
+                popout.render(true, { 'height': dimensions.height + 36, 'width': dimensions.width })
+                break;
+            default:
+        }
     }
 
     // right-clicking a message deletes it
@@ -318,9 +404,10 @@ export default class ConsoleApp extends FormApplication {
             const data = $(event.currentTarget).data()
             const id = game.user.character ? game.user.character._id : game.userId
             const permission = id === data.userid || game.user.isGM ? true : false
-            if (data.action === "message-interact" && permission) {
+            const interact = data.action === "message-interact" || data.action === "image-zoom" ? true : false
+            if (interact && permission) {
                 this.#deleteConfirmation('message', data)
-            } else if (data.action === "message-interact" && !permission) {
+            } else if (interact && !permission) {
                 ui.notifications.warn("Console | You lack the permissions to delete a message that is not yours")
             }
         } else {
@@ -544,6 +631,7 @@ export default class ConsoleApp extends FormApplication {
         const console = this.getData()
 
         const cmd = formData.consoleInputText.substring(1).split(' ')
+
         if (cmdMode && game.user.isGM) {
             // process commands for GMs
             switch (cmd[0]) {
@@ -747,12 +835,21 @@ export default class ConsoleApp extends FormApplication {
                         }
                     }
 
-                    const message = {
-                        "text": this.#truncateMessage(formData.consoleInputText, console.limits),
+                    let message = {
                         ...(useTimestamps && { "timestamp": timestamp }),
                         "user": this.getName("")
+
                     }
 
+                    if (!formData.consoleInputText && formData.mediaString) {
+                        message.media = {
+                            'filePath': formData.mediaString
+                        }
+                        if (ImageHelper.hasImageExtension(formData.mediaString)) message.media.fileType = 'img'
+                        if (VideoHelper.hasVideoExtension(formData.mediaString)) message.media.fileType = 'video'
+                    } else {
+                        message.text = this.#truncateMessage(formData.consoleInputText, console.limits)
+                    }
 
                     this.#clearInput()
                     messageLog.push(message)

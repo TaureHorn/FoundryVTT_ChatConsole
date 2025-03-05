@@ -92,6 +92,15 @@
     border: none !important;
 }
 
+.console-popout .window-content,
+.console-popout figure {
+    padding: 0px
+}
+
+.console-popout figure {
+    margin: 0;
+}
+
 .console-config-flex {
     align-items: center;
     gap: 10px;
@@ -112,6 +121,11 @@
     padding: 10px;
     overflow: hidden;
     width: 100%;
+}
+
+.console-container .file-picker {
+    line-height: 28px;
+    order: unset;
 }
 
 .console-message-container {
@@ -140,6 +154,14 @@
     padding: 5px 5px;
     max-width: 100%;
     overflow-wrap: anywhere;
+}
+
+.console-media {
+    border: none;
+    cursor: zoom-in;
+    max-width: 5vw;
+    object-fit: cover;
+    object-position: 50%;
 }
 
 .console-message-interact {
@@ -196,7 +218,6 @@
 code.readme-code {
     background-color: #385724;
     border: 1px solid #6be919;
-    padding: 1px 3px;
 }
 
 li.readme-code {
