@@ -43,6 +43,8 @@ export default class ConsoleApp extends FormApplication {
         this.options.template = this.data.styling.messengerStyle ? Console.TEMPLATES.APP_IM : Console.TEMPLATES.APP_TERM
         this.options.title = this.data.name
         this.options.width = this.data.styling.width
+        
+        data.canBrowseFiles = game.user.hasPermission('FILES_BROWSE')
 
         return data
     }
@@ -54,7 +56,7 @@ export default class ConsoleApp extends FormApplication {
                 icon: "fas fa-circle-info",
                 label: "",
                 onclick: () => ui.notifications.notify(`Console | ${game.i18n.localize("CONSOLE.console.app-info")}`),
-                tooltip: game.i18n.localize("CONSOLE.console.app-info")
+                tooltip: game.i18n.localize("CONSOLE.console.message-info")
             },
             {
                 class: "anchor",
@@ -149,6 +151,11 @@ export default class ConsoleApp extends FormApplication {
         super.activateListeners(html)
         html.on('click', "[data-action]", this._handleLeftClick)
         html.on('contextmenu', "[data-action]", this._handleRightClick)
+
+        html.find('#consoleMedia').on('click', "[data-action]", function(event) {
+            const path = event.data.data-zoom
+            new ImagePopout(path).render(true)
+        })
 
         html.find('#mediaFilePicker').on('click', [html, this.id], function(event) {
             const element = event.data[0]
@@ -315,11 +322,18 @@ export default class ConsoleApp extends FormApplication {
 
     // left clicking a message copies it to clipboard
     _handleLeftClick = (event) => {
-        if ($(event.currentTarget).data().action === "message-interact") {
-            const text = $(event.currentTarget).data().messageText
-            this.copyToClipboard(text)
+        const data = $(event.currentTarget).data()
+        switch (data.action) {
+            case 'message-interact':
+                const text = data.messageText
+                this.copyToClipboard(text)
+                break;
+            case 'image-zoom':
+                const popout = new ImagePopout(data.media)
+                popout.render(true)
+                break;
+            default:
         }
-
     }
 
     // right-clicking a message deletes it
@@ -328,9 +342,10 @@ export default class ConsoleApp extends FormApplication {
             const data = $(event.currentTarget).data()
             const id = game.user.character ? game.user.character._id : game.userId
             const permission = id === data.userid || game.user.isGM ? true : false
-            if (data.action === "message-interact" && permission) {
+            const interact = data.action === "message-interact" || data.action === "image-zoom" ? true : false
+            if (interact && permission) {
                 this.#deleteConfirmation('message', data)
-            } else if (data.action === "message-interact" && !permission) {
+            } else if (interact && !permission) {
                 ui.notifications.warn("Console | You lack the permissions to delete a message that is not yours")
             }
         } else {
@@ -554,6 +569,7 @@ export default class ConsoleApp extends FormApplication {
         const console = this.getData()
 
         const cmd = formData.consoleInputText.substring(1).split(' ')
+
         if (cmdMode && game.user.isGM) {
             // process commands for GMs
             switch (cmd[0]) {
@@ -757,11 +773,18 @@ export default class ConsoleApp extends FormApplication {
                         }
                     }
 
-                    const message = {
-                        "text": this.#truncateMessage(formData.consoleInputText, console.limits),
+                    let message = {
                         ...(useTimestamps && { "timestamp": timestamp }),
                         "user": this.getName("")
+
                     }
+
+                    if (!formData.consoleInputText && formData.mediaString) {
+                        message.media = formData.mediaString
+                    } else {
+                        message.text = this.#truncateMessage(formData.consoleInputText, console.limits)
+                    }
+
 
 
                     this.#clearInput()

@@ -114,6 +114,11 @@
     width: 100%;
 }
 
+.console-container .file-picker {
+    line-height: 28px;
+    order: unset;
+}
+
 .console-message-container {
     height: calc(100% - 5.5em);
     overflow-y: scroll;
@@ -145,10 +150,10 @@
 .console-media {
     /* TEMP  */
     border: none;
-    height: 300px;
+    cursor: zoom-in;
+    max-width: 5vw;
     object-fit: cover;
     object-position: 50%;
-    width: 300px;
 }
 
 .console-message-interact {

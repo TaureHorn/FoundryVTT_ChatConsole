@@ -3,11 +3,11 @@
         <hr width="33%" style="border:1px solid {{styling.fg}}" />
         {{#each content.body}}
             <div style="{{#unameInPrevIndex user.name @index ../content.body}}margin-top:30px{{else}}margin-top:10px{{/unameInPrevIndex}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}">
-                <button class="console-message-interact" style="background:none" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-message-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.console.app-info"}}">
+                <button class="console-message-interact" style="background:none" data-action="{{#if text}}message-interact{{/if}}{{#if media}}image-zoom{{/if}}" data-console-id="{{../id}}" data-message-index={{@index}} data-message-text="{{text}}" data-media={{media}} data-userId="{{user.id}}" >
                     <div style="background:{{../styling.fg}};color:{{../styling.bg}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}" class="console-message">
                         {{#if user.name}}<span id="header{{@index}}">{{#if ../timestamps}}{{timestamp}} {{/if}}<strong>{{user.name}}</strong></span></br>{{/if}}
-                        <span id="text{{@index}}">{{text}}</span>
-                        {{#if media}}<img src="{{media}} class="console-media"/>{{/if}}
+                        {{#if text}}<span id="text{{@index}}" title="{{localize "CONSOLE.console.message-info"}}">{{text}}</span>{{/if}}
+                        {{#if media}}<img src="{{media}}" id="consoleMedia" class="console-media" title="{{localize "CONSOLE.console.image-info"}}"/>{{/if}}
                     </div>
                 </button>
             </div>
@@ -28,8 +28,10 @@
         <div style="align-items:center;display:flex;margin:0 0 10px 0">
             <div style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};padding:8px"><span><b>@{{character}}</b></span></div>
             <input style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:6;outline:none;padding:15px" id="consoleInputText{{id}}" {{#equal limits.type 'characters'}} maxlength="{{limits.value}}" {{else}} maxlength="{{limits.hardLimit}}" {{/equal}} minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..." autocomplete="off"/>
-            <input style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:6;outline:none;padding:15px;display:none" id="mediaString{{id}}" name="media-string" type="text"/>
-            <button style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:1;margin:0;outline:none;text-transform:uppercase" id="mediaFilePicker" class="file-picker" type="button" data-type="image" data-target="media-string" title="Send image"><i class="fas fa-file-image"></i></button>
+            {{#if canBrowseFiles}}
+            <input style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:6;outline:none;padding:15px;display:none" id="mediaString{{id}}" readonly name="mediaString" type="text" placeholder="{{localize "CONSOLE.console.image"}}" />
+            <button style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:1;margin:0;outline:none;text-transform:uppercase" id="mediaFilePicker" class="file-picker" type="button" data-type="image" data-target="mediaString" title="{{localize "CONSOLE.console.file-picker"}}"><i class="fas fa-file-image"></i></button>
+            {{/if}}
             <button style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:1;margin:0;outline:none;text-transform:uppercase" id="submitButton" type="submit">{{localize "CONSOLE.console.send"}}</button>
         </div>
     </form>
