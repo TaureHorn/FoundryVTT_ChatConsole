@@ -92,10 +92,6 @@
     border: none !important;
 }
 
-.console-app #context-menu {
-    z-index: 99;
-}
-
 .console-popout .window-content,
 .console-popout figure {
     padding: 0px
@@ -198,6 +194,7 @@
 .console-message-interact {
     border: none;
     padding: 0;
+    position: relative;
     width: unset;
 }
 

@@ -197,7 +197,7 @@ export default class ConsoleApp extends FormApplication {
         Array.from(html.find('.console-message-interact')).forEach(msg => this.#buildContextMenu(msg))
 
         // create on click event for opening file picker
-        html.find('#mediaFilePicker').on('click', [html], () => this._handleImageBrowser(html))
+        html.find('#mediaFilePicker').on('click', [html], () => this._handleImagePicker(html))
 
         // open ImagePopout when clicking on image/video in console app
         html.on('click', "#consoleMedia", this._handleImageZoom)
@@ -237,7 +237,15 @@ export default class ConsoleApp extends FormApplication {
                 }
             }
         ]
-        ContextMenu.create(this, msg, '.console-message-interact', contextMenuOptions)
+        ContextMenu.create(this, msg, '.console-message-interact', contextMenuOptions, {
+            expandUp: true,
+            onOpen: () => {
+                msg.style.zIndex = 900
+            },
+            onClose: () => {
+                msg.style.zIndex = 100
+            }
+        })
     }
 
 
@@ -393,15 +401,28 @@ export default class ConsoleApp extends FormApplication {
         }, 100)
     }
 
-    _handleImageBrowser = (html) => {
+    _handleImagePicker = (html) => {
         if (!this.data.locked) {
             const mediaPicker = new FilePicker({
-                callback: (mediaPath) => {
+                callback: async (mediaPath) => {
+                    // find type of file and create thumbnail
+                    let isImage, thumbnail = null
+                    if (VideoHelper.hasVideoExtension(mediaPath)) {
+                        isImage = false
+                        thumbnail = await game.video.createThumbnail(mediaPath, {
+                            'height': 32,
+                            'width': 32
+                        })
+                    }
+                    if (ImageHelper.hasImageExtension(mediaPath)) isImage = true
+                    if (!isImage && !thumbnail) return
+
+                    // create element to notify of file ready to send and insert element into DOM
                     const node = this.element.find(`#consoleInputText${this.id}`)
                     const fileNotifier = `
                         <div id="fileNotifier" style="background:${this.data.styling.bg};border:1px solid ${this.data.styling.fg};border-radius:0;color:${this.data.styling.fg}">
                             <input style="display:none" type="text" name="mediaFilePath" value=${mediaPath} />
-                            <img src="${mediaPath}" />
+                            <img src="${isImage ? mediaPath : thumbnail}" />
                             <span>${game.i18n.localize('CONSOLE.console.sending-file')} "${mediaPath}"</span>
                             <span id="cancelFileSend"><i class="fas fa-circle-xmark"></i></span>
                         </div>
@@ -632,10 +653,10 @@ export default class ConsoleApp extends FormApplication {
                 if (ui.activeWindow._element) {
                     const input = ui.activeWindow._element.find(`#consoleInputText${ui.activeWindow.options.id}`)
                     input.focus()
+                    if (!input.val()) return
                     const len = input.val().length
                     input[0].setSelectionRange(len, len)
                 }
-
 
                 // style the anchor header buttons, invert when console anchored
                 if (this._element) {
