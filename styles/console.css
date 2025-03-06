@@ -92,6 +92,19 @@
     border: none !important;
 }
 
+.console-app #context-menu {
+    z-index: 99;
+}
+
+.console-popout .window-content,
+.console-popout figure {
+    padding: 0px
+}
+
+.console-popout figure {
+    margin: 0;
+}
+
 .console-config-flex {
     align-items: center;
     gap: 10px;

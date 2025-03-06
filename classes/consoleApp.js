@@ -3,6 +3,49 @@ import ConsoleConfig from "./consoleConfig.js"
 import ConsoleData from "./consoleData.js"
 import ConsoleManager from "./consoleManager.js"
 
+// taken from base ImagePopout
+function getImageSize(path) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = function() {
+            resolve([this.width, this.height]);
+        };
+        img.onerror = reject;
+        img.src = path;
+    });
+}
+
+// taken from base ImagePopout
+function getVideoSize(src) {
+    return new Promise((resolve, reject) => {
+        const video = document.createElement("video");
+        video.onloadedmetadata = () => {
+            video.onloadedmetadata = null;
+            resolve([video.videoWidth, video.videoHeight]);
+        };
+        video.onerror = reject;
+        video.src = src;
+    });
+}
+
+// modified from base ImagePopout
+async function getPopoutSize(src, type) {
+    const [width, height] = type === 'image' ? await getImageSize(src) : await getVideoSize(src)
+
+    const viewportAspectRatio = window.innerWidth / window.innerWidth
+    const videoAspectRatio = width / height
+
+    const dimensions = {}
+    if (videoAspectRatio > viewportAspectRatio) {
+        dimensions.width = Math.min(width, window.innerWidth - 200)
+        dimensions.height = dimensions.width / videoAspectRatio
+    } else {
+        dimensions.height = Math.min(height, window.innerHeight - 200);
+        dimensions.width = dimensions.height * videoAspectRatio
+    }
+    return dimensions
+}
+
 export default class ConsoleApp extends FormApplication {
 
     constructor(id) {
@@ -149,9 +192,52 @@ export default class ConsoleApp extends FormApplication {
 
     activateListeners(html) {
         super.activateListeners(html)
-        html.on('click', "[data-action]", this._handleLeftClick)
-        html.on('contextmenu', "[data-action]", this._handleRightClick)
+
+        // create context menues for each message in a console ap
+        Array.from(html.find('.console-message-interact')).forEach(msg => this.#buildContextMenu(msg))
+
+        // create on click event for opening file picker
         html.find('#mediaFilePicker').on('click', [html], () => this._handleImageBrowser(html))
+
+        // open ImagePopout when clicking on image/video in console app
+        html.on('click', "#consoleMedia", this._handleImageZoom)
+    }
+
+    #buildContextMenu(msg) {
+        const id = game.user.character ? game.user.character._id : game.userId
+
+        // apply console styling to new css class for context menu entries
+        const style = $(`<style>.console-menu-styling${this.id} { 
+                background-color: ${this.data.styling.bg}; 
+                color: ${this.data.styling.fg}}
+            </style>`)
+        $('html > head').append(style)
+
+        const contextMenuOptions = [
+            {
+                classes: `console-menu-styling${this.id}`,
+                condition: msg.dataset.text ? true : false,
+                name: game.i18n.localize("CONSOLE.console.copy-message"),
+                icon: '<i class="fas fa-copy"></i>',
+                callback: () => {
+                    this.copyToClipboard(msg.dataset.text)
+                }
+
+            },
+            {
+                classes: `console-menu-styling${this.id}`,
+                condition: id === msg.dataset.userid || game.user.isGM ? true : false,
+                name: game.i18n.localize("CONSOLE.console.delete-message"),
+                icon: '<i class="fas fa-trash"></i>',
+                callback: async () => {
+                    this.#deleteConfirmation('message', {
+                        'consoleId': msg.dataset.consoleId,
+                        'messageIndex': msg.dataset.messageIndex
+                    })
+                }
+            }
+        ]
+        ContextMenu.create(this, msg, '.console-message-interact', contextMenuOptions)
     }
 
 
@@ -334,36 +420,21 @@ export default class ConsoleApp extends FormApplication {
         }
     }
 
-    // left clicking a message copies it to clipboard
-    _handleLeftClick = (event) => {
+    _handleImageZoom = async (event) => {
         const data = $(event.currentTarget).data()
-        switch (data.action) {
-            case 'message-interact':
-                const text = $(event.currentTarget).data().text
-                if (!text) return
-                this.copyToClipboard(text)
-                break;
-            case 'media-zoom':
-                new ImagePopout(data.media).render(true)
-                break;
-            default:
+        let dimensions
+        const popout = new ImagePopout(data.media, {
+            title: `${data.userName} >>> ${this.data.name}`,
+        })
+        popout.options.classes.push('console-popout')
+        if (data.mediaType === 'img') {
+            dimensions = await getPopoutSize(data.media, 'image')
         }
-    }
-
-    // right-clicking a message deletes it
-    _handleRightClick = async (event) => {
-        if (!this.data.locked) {
-            const data = $(event.currentTarget).data()
-            const id = game.user.character ? game.user.character._id : game.userId
-            const permission = id === data.userid || game.user.isGM ? true : false
-            if (data.action === 'message-interact' && permission) {
-                this.#deleteConfirmation('message', data)
-            } else if (data.action === "message-interact" && !permission) {
-                ui.notifications.warn("Console | You lack the permissions to delete a message that is not yours")
-            }
-        } else {
-            ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
+        if (data.mediaType === 'video') {
+            popout.options.template = Console.TEMPLATES.VIDEO_POPOUT
+            dimensions = await getPopoutSize(data.media, 'video')
         }
+        popout.render(true, { 'height': dimensions.height + 36, 'width': dimensions.width })
     }
 
     render(...args) {
