@@ -154,6 +154,7 @@ export default class ConsoleApp extends FormApplication {
         html.find('#mediaFilePicker').on('click', [html], () => this._handleImageBrowser(html))
     }
 
+
     // build a timestamp based on game setting and SimpleCalendar data
     #buildTimestamp() {
         const data = SimpleCalendar.api.currentDateTimeDisplay()
@@ -310,7 +311,7 @@ export default class ConsoleApp extends FormApplication {
         if (!this.data.locked) {
             const mediaPicker = new FilePicker({
                 callback: (mediaPath) => {
-                    const node = this.element.find('#input')
+                    const node = this.element.find(`#consoleInputText${this.id}`)
                     const fileNotifier = `
                         <div id="fileNotifier" style="background:${this.data.styling.bg};border:1px solid ${this.data.styling.fg};border-radius:0;color:${this.data.styling.fg}">
                             <input style="display:none" type="text" name="mediaFilePath" value=${mediaPath} />
@@ -320,7 +321,6 @@ export default class ConsoleApp extends FormApplication {
                         </div>
                         `
                     $('body').on('click', '#cancelFileSend', function() {
-                        Console.print(true, 'log', 'click cancel')
                         html.find('#fileNotifier').remove()
                     })
                     node.before(fileNotifier)
@@ -336,11 +336,18 @@ export default class ConsoleApp extends FormApplication {
 
     // left clicking a message copies it to clipboard
     _handleLeftClick = (event) => {
-        if ($(event.currentTarget).data().action === "message-interact") {
-            const text = $(event.currentTarget).data().messageText
-            this.copyToClipboard(text)
+        const data = $(event.currentTarget).data()
+        switch (data.action) {
+            case 'message-interact':
+                const text = $(event.currentTarget).data().text
+                if (!text) return
+                this.copyToClipboard(text)
+                break;
+            case 'media-zoom':
+                new ImagePopout(data.media).render(true)
+                break;
+            default:
         }
-
     }
 
     // right-clicking a message deletes it
@@ -349,7 +356,7 @@ export default class ConsoleApp extends FormApplication {
             const data = $(event.currentTarget).data()
             const id = game.user.character ? game.user.character._id : game.userId
             const permission = id === data.userid || game.user.isGM ? true : false
-            if (data.action === "message-interact" && permission) {
+            if (data.action === 'message-interact' && permission) {
                 this.#deleteConfirmation('message', data)
             } else if (data.action === "message-interact" && !permission) {
                 ui.notifications.warn("Console | You lack the permissions to delete a message that is not yours")
@@ -778,12 +785,22 @@ export default class ConsoleApp extends FormApplication {
                         }
                     }
 
-                    const message = {
-                        "text": this.#truncateMessage(formData.consoleInputText, console.limits),
+                    let message = {
                         ...(useTimestamps && { "timestamp": timestamp }),
                         "user": this.getName("")
                     }
 
+                    if (formData.consoleInputText) {
+                        message.text = this.#truncateMessage(formData.consoleInputText, console.limits)
+                    }
+
+                    if (formData.mediaFilePath) {
+                        message.media = {
+                            'filePath': formData.mediaFilePath
+                        }
+                        if (ImageHelper.hasImageExtension(formData.mediaFilePath)) message.media.fileType = 'img'
+                        if (VideoHelper.hasVideoExtension(formData.mediaFilePath)) message.media.fileType = 'video'
+                    }
 
                     this.#clearInput()
                     messageLog.push(message)

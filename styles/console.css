@@ -114,6 +114,7 @@
     width: 100%;
 }
 
+
 #fileNotifier {
     align-items: center;
     bottom: 6em;
@@ -171,6 +172,14 @@
     padding: 5px 5px;
     max-width: 100%;
     overflow-wrap: anywhere;
+}
+
+.console-media {
+    border: none;
+    cursor: zoom-in;
+    max-width: 5vw;
+    object-fit: cover;
+    object-position: 50%;
 }
 
 .console-message-interact {
