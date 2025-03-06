@@ -75,7 +75,7 @@
             "image-info":  "Left click to zoom image",
             "limit": "limit",
             "link-actor": "Link currently represented actor to this console",
-            "message-info": "Right click for context menu",
+            "message-info": "Right click a message for context menu",
             "pin": "Remeber this size for this app",
             "send": "send",
             "sending-file": "Loaded file",

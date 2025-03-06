@@ -4,8 +4,8 @@
         <hr width="33%" style="border:1px solid {{styling.fg}}" />
         {{#each content.body}}
             <div> 
-                <button class="console-message-interact" style="background:none;color:{{../styling.fg}};margin:2px 0;text-align:start" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-message-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.console.app-info"}}">
-                    <div style="overflow-wrap:anywhere">{{#equal user.name ""}}<span>{{text}}</span>{{else}}<span style="background:{{../styling.fg}};color:{{../styling.bg}};padding:2px">{{#if ../timestamps}}<span>{{timestamp}} </span>{{/if}}<strong>{{user.name}}:</strong></span><span> {{text}}</span>{{/equal}}</div>
+                <button class="console-message-interact" style="background:none;color:{{../styling.fg}};margin:2px 0;text-align:start" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.console.message-info"}}">
+                    <div style="overflow-wrap:anywhere">{{#equal user.name ""}}<span>{{text}}</span>{{else}}<span style="background:{{../styling.fg}};color:{{../styling.bg}};padding:2px">{{#if ../timestamps}}<span>{{timestamp}} </span>{{/if}}<strong>{{user.name}}:</strong></span><span> {{#if media}}{{media.fileType}}:{{media.filePath }}{{/if}}{{#if text}}{{text}}{{/if}}</span>{{/equal}}</div>
                 </button>
             </div>
         {{/each}}
