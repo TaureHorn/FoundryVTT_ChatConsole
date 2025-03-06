@@ -123,9 +123,34 @@
     width: 100%;
 }
 
-.console-container .file-picker {
-    line-height: 28px;
-    order: unset;
+#fileNotifier {
+    align-items: center;
+    bottom: 6em;
+    display: flex;
+    justify-content: space-between;
+    left: 50%;
+    position: absolute;
+    text-align: center;
+    transform: translate(-50%);
+    width: calc(80% - 20px);
+}
+
+#fileNotifier img {
+    border: none;
+    height: 2.5em;
+    object-fit: cover;
+    object-position: center;
+    width: 2.5em;
+}
+
+#fileNotifier #cancelFileSend {
+    font-size: 1.5em;
+    margin: 0 5px;
+}
+
+#fileNotifier #cancelFileSend:hover {
+    cursor: pointer;
+    filter: invert()
 }
 
 .console-message-container {
@@ -167,6 +192,7 @@
 .console-message-interact {
     border: none;
     padding: 0;
+    position: relative;
     width: unset;
 }
 

@@ -69,14 +69,25 @@
             "become-actor": "Become linked actor",
             "characters": "characters",
             "close": "Close",
+<<<<<<< HEAD
+            "copy-message": "copy",
+            "delete-message": "delete",
+            "file-picker": "Choose an image/video to send",
+            "image-info":  "Left click to zoom image",
+            "limit": "limit",
+            "link-actor": "Link currently represented actor to this console",
+            "message-info": "Right click for context menu",
+=======
             "file-picker": "Pick an image to send",
             "image": "... awaiting image",
             "image-info": "Left click to zoom image. Right-click to delete a message.",
             "limit": "limit",
             "link-actor": "Link currently represented actor to this console",
             "message-info": "Left click to copy message to clipboard. Right-click to delete a message.",
+>>>>>>> main
             "pin": "Remeber this size for this app",
             "send": "send",
+            "sending-file": "Loaded file",
             "show-players": "Show to players",
             "words": "words"
         },

@@ -192,10 +192,62 @@ export default class ConsoleApp extends FormApplication {
 
     activateListeners(html) {
         super.activateListeners(html)
-        html.on('click', "[data-action]", this._handleLeftClick)
-        html.on('contextmenu', "[data-action]", this._handleRightClick)
-        html.find('#mediaFilePicker').on('click', [html], () => this._handleImageBrowser(html))
+
+        // create context menues for each message in a console ap
+        Array.from(html.find('.console-message-interact')).forEach(msg => this.#buildContextMenu(msg))
+
+        // create on click event for opening file picker
+        html.find('#mediaFilePicker').on('click', [html], () => this._handleImagePicker(html))
+
+        // open ImagePopout when clicking on image/video in console app
+        html.on('click', "#consoleMedia", this._handleImageZoom)
     }
+
+    #buildContextMenu(msg) {
+        const id = game.user.character ? game.user.character._id : game.userId
+
+        // apply console styling to new css class for context menu entries
+        const style = $(`<style>.console-menu-styling${this.id} { 
+                background-color: ${this.data.styling.bg}; 
+                color: ${this.data.styling.fg}}
+            </style>`)
+        $('html > head').append(style)
+
+        const contextMenuOptions = [
+            {
+                classes: `console-menu-styling${this.id}`,
+                condition: msg.dataset.text ? true : false,
+                name: game.i18n.localize("CONSOLE.console.copy-message"),
+                icon: '<i class="fas fa-copy"></i>',
+                callback: () => {
+                    this.copyToClipboard(msg.dataset.text)
+                }
+
+            },
+            {
+                classes: `console-menu-styling${this.id}`,
+                condition: id === msg.dataset.userid || game.user.isGM ? true : false,
+                name: game.i18n.localize("CONSOLE.console.delete-message"),
+                icon: '<i class="fas fa-trash"></i>',
+                callback: async () => {
+                    this.#deleteConfirmation('message', {
+                        'consoleId': msg.dataset.consoleId,
+                        'messageIndex': msg.dataset.messageIndex
+                    })
+                }
+            }
+        ]
+        ContextMenu.create(this, msg, '.console-message-interact', contextMenuOptions, {
+            expandUp: true,
+            onOpen: () => {
+                msg.style.zIndex = 900
+            },
+            onClose: () => {
+                msg.style.zIndex = 100
+            }
+        })
+    }
+
 
     // build a timestamp based on game setting and SimpleCalendar data
     #buildTimestamp() {
@@ -349,95 +401,61 @@ export default class ConsoleApp extends FormApplication {
         }, 100)
     }
 
-    _handleImageBrowser = async (html) => {
+    _handleImagePicker = (html) => {
         if (!this.data.locked) {
-            const consoleInputText = html.find(`#consoleInputText${this.id}`)[0]
-            const mediaString = html.find(`#mediaString${this.id}`)[0]
+            const mediaPicker = new FilePicker({
+                callback: async (mediaPath) => {
+                    // find type of file and create thumbnail
+                    let isImage, thumbnail = null
+                    if (VideoHelper.hasVideoExtension(mediaPath)) {
+                        isImage = false
+                        thumbnail = await game.video.createThumbnail(mediaPath, {
+                            'height': 32,
+                            'width': 32
+                        })
+                    }
+                    if (ImageHelper.hasImageExtension(mediaPath)) isImage = true
+                    if (!isImage && !thumbnail) return
 
-            consoleInputText.style.display = 'none'
-            mediaString.style.display = 'block'
-
-            // restrict only to image or video file extensions supported by foundry
-            const fp = new FilePicker({
-                callback: (returnPath) => {
-                    mediaString.value = returnPath
-                },
+                    // create element to notify of file ready to send and insert element into DOM
+                    const node = this.element.find(`#consoleInputText${this.id}`)
+                    const fileNotifier = `
+                        <div id="fileNotifier" style="background:${this.data.styling.bg};border:1px solid ${this.data.styling.fg};border-radius:0;color:${this.data.styling.fg}">
+                            <input style="display:none" type="text" name="mediaFilePath" value=${mediaPath} />
+                            <img src="${isImage ? mediaPath : thumbnail}" />
+                            <span>${game.i18n.localize('CONSOLE.console.sending-file')} "${mediaPath}"</span>
+                            <span id="cancelFileSend"><i class="fas fa-circle-xmark"></i></span>
+                        </div>
+                        `
+                    $('body').on('click', '#cancelFileSend', function() {
+                        html.find('#fileNotifier').remove()
+                    })
+                    node.before(fileNotifier)
+                }
             })
-            fp.displayMode = 'thumbs'
-            fp.extensions = [".avif", ".jpg", ".jpeg", ".png", ".svg", ".webp", ".webm", ".mp4", ".m4v"]
-            fp.close = () => {
-
-                consoleInputText.style.display = 'block'
-                mediaString.style.display = 'none'
-
-                // normal close from FilePicker
-                let el = fp.element;
-                el.css({ minHeight: 0 });
-
-                fp._callHooks("close", el);
-
-                return new Promise(resolve => {
-                    el.slideUp(200, () => {
-                        el.remove();
-
-                        // Clean up data
-                        fp._element = null;
-                        delete ui.windows[fp.appId];
-                        fp._minimized = false;
-                        fp._scrollPositions = null;
-                        fp._state = states.CLOSED;
-                        resolve();
-                    });
-                });
-            }
-            fp.browse()
+            mediaPicker.extensions = [".avif", ".jpg", ".jpeg", ".png", ".svg", ".webp", ".webm", ".mp4", ".m4v"]
+            mediaPicker.displayMode = 'thumbs'
+            mediaPicker.browse()
         } else {
             ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
         }
     }
 
-    // left clicking a message copies it to clipboard
-    _handleLeftClick = async (event) => {
+    _handleImageZoom = async (event) => {
         const data = $(event.currentTarget).data()
-        switch (data.action) {
-            case 'message-interact':
-                const text = data.messageText
-                this.copyToClipboard(text)
-                break;
-            case 'image-zoom':
-                let dimensions
-                const popout = new ImagePopout(data.media, {
-                    title: `${data.userName} >>> ${this.data.name}`,
-                })
-                popout.options.classes.push('console-popout')
-                if (data.mediaType === 'img') {
-                    dimensions = await getPopoutSize(data.media, 'image')
-                }
-                if (data.mediaType === 'video') {
-                    popout.options.template = Console.TEMPLATES.VIDEO_POPOUT
-                    dimensions = await getPopoutSize(data.media, 'video')
-                }
-                popout.render(true, { 'height': dimensions.height + 36, 'width': dimensions.width })
-                break;
-            default:
+        let dimensions
+        const popout = new ImagePopout(data.media, {
+            title: `${data.userName} >>> ${this.data.name}`,
+        })
+        popout.options.classes.push('console-popout')
+        if (data.mediaType === 'img') {
+            dimensions = await getPopoutSize(data.media, 'image')
         }
-    }
-
-    // right-clicking a message deletes it
-    _handleRightClick = async (event) => {
-        if (!this.data.locked) {
-            const data = $(event.currentTarget).data()
-            const id = game.user.character ? game.user.character._id : game.userId
-            const permission = id === data.userid || game.user.isGM ? true : false
-            const interact = data.action === "message-interact" || data.action === "image-zoom" ? true : false
-            if (interact && permission) {
-                this.#deleteConfirmation('message', data)
-            } else if (interact && !permission) {
-                ui.notifications.warn("Console | You lack the permissions to delete a message that is not yours")
-            }
-        } else {
-            ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
+        if (data.mediaType === 'video') {
+            popout.options.template = Console.TEMPLATES.VIDEO_POPOUT
+            dimensions = await getPopoutSize(data.media, 'video')
         }
+        popout.render(true, { 'height': dimensions.height + 36, 'width': dimensions.width })
     }
 
     render(...args) {
@@ -635,10 +653,10 @@ export default class ConsoleApp extends FormApplication {
                 if (ui.activeWindow._element) {
                     const input = ui.activeWindow._element.find(`#consoleInputText${ui.activeWindow.options.id}`)
                     input.focus()
+                    if (!input.val()) return
                     const len = input.val().length
                     input[0].setSelectionRange(len, len)
                 }
-
 
                 // style the anchor header buttons, invert when console anchored
                 if (this._element) {
@@ -866,14 +884,16 @@ export default class ConsoleApp extends FormApplication {
 
                     }
 
-                    if (!formData.consoleInputText && formData.mediaString) {
-                        message.media = {
-                            'filePath': formData.mediaString
-                        }
-                        if (ImageHelper.hasImageExtension(formData.mediaString)) message.media.fileType = 'img'
-                        if (VideoHelper.hasVideoExtension(formData.mediaString)) message.media.fileType = 'video'
-                    } else {
+                    if (formData.consoleInputText) {
                         message.text = this.#truncateMessage(formData.consoleInputText, console.limits)
+                    }
+
+                    if (formData.mediaFilePath) {
+                        message.media = {
+                            'filePath': formData.mediaFilePath
+                        }
+                        if (ImageHelper.hasImageExtension(formData.mediaFilePath)) message.media.fileType = 'img'
+                        if (VideoHelper.hasVideoExtension(formData.mediaFilePath)) message.media.fileType = 'video'
                     }
 
                     this.#clearInput()
