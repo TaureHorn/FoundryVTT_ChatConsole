@@ -27,6 +27,7 @@
         <div style="align-items:center;display:flex;margin:0 0 10px 0">
             <div style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};padding:8px"><span><b>@{{character}}</b></span></div>
             <input style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:6;outline:none;padding:15px" id="consoleInputText{{id}}" {{#equal limits.type 'characters'}} maxlength="{{limits.value}}" {{else}} maxlength="{{limits.hardLimit}}" {{/equal}} minlength="0" name="consoleInputText" type="text" value="{{inputVal}}" placeholder="..." autocomplete="off"/>
+            {{#if canBrowseFiles}}<button style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:1;margin:0;outline:none" id="mediaFilePicker" type="button" title="{{localize "CONSOLE.console.file-picker"}}"><i class="fas fa-file-image"></i></button>{{/if}}
             <button style="background:{{styling.fg}};border:1px solid {{styling.bg}};border-radius:0;color:{{styling.bg}};flex:1;margin:0;outline:none;text-transform:uppercase" id="submitButton" type="submit">{{localize "CONSOLE.console.send"}}</button>
         </div>
     </form>

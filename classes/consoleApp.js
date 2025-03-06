@@ -44,6 +44,8 @@ export default class ConsoleApp extends FormApplication {
         this.options.title = this.data.name
         this.options.width = this.data.styling.width
 
+        data.canBrowseFiles = game.user.hasPermission('FILES_BROWSE')
+
         return data
     }
 
@@ -149,6 +151,7 @@ export default class ConsoleApp extends FormApplication {
         super.activateListeners(html)
         html.on('click', "[data-action]", this._handleLeftClick)
         html.on('contextmenu', "[data-action]", this._handleRightClick)
+        html.find('#mediaFilePicker').on('click', [html], () => this._handleImageBrowser(html))
     }
 
     // build a timestamp based on game setting and SimpleCalendar data
@@ -301,6 +304,34 @@ export default class ConsoleApp extends FormApplication {
         setTimeout(() => {
             $('[data-button="yes"]')[0].focus()
         }, 100)
+    }
+
+    _handleImageBrowser = (html) => {
+        if (!this.data.locked) {
+            const mediaPicker = new FilePicker({
+                callback: (mediaPath) => {
+                    const node = this.element.find('#input')
+                    const fileNotifier = `
+                        <div id="fileNotifier" style="background:${this.data.styling.bg};border:1px solid ${this.data.styling.fg};border-radius:0;color:${this.data.styling.fg}">
+                            <input style="display:none" type="text" name="mediaFilePath" value=${mediaPath} />
+                            <img src="${mediaPath}" />
+                            <span>${game.i18n.localize('CONSOLE.console.sending-file')} "${mediaPath}"</span>
+                            <span id="cancelFileSend"><i class="fas fa-circle-xmark"></i></span>
+                        </div>
+                        `
+                    $('body').on('click', '#cancelFileSend', function() {
+                        Console.print(true, 'log', 'click cancel')
+                        html.find('#fileNotifier').remove()
+                    })
+                    node.before(fileNotifier)
+                }
+            })
+            mediaPicker.extensions = [".avif", ".jpg", ".jpeg", ".png", ".svg", ".webp", ".webm", ".mp4", ".m4v"]
+            mediaPicker.displayMode = 'thumbs'
+            mediaPicker.browse()
+        } else {
+            ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
+        }
     }
 
     // left clicking a message copies it to clipboard

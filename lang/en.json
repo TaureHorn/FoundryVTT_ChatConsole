@@ -70,10 +70,12 @@
             "become-actor": "Become linked actor",
             "characters": "characters",
             "close": "Close",
+            "file-picker": "Choose an image/video to send",
             "limit": "limit",
             "link-actor": "Link currently represented actor to this console",
             "pin": "Remeber this size for this app",
             "send": "send",
+            "sending-file": "Loaded file",
             "show-players": "Show to players",
             "words": "words"
         },
