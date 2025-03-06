@@ -99,7 +99,7 @@ export default class ConsoleApp extends FormApplication {
                 icon: "fas fa-circle-info",
                 label: "",
                 onclick: () => ui.notifications.notify(`Console | ${game.i18n.localize("CONSOLE.console.app-info")}`),
-                tooltip: game.i18n.localize("CONSOLE.console.app-info")
+                tooltip: game.i18n.localize("CONSOLE.console.message-info")
             },
             {
                 class: "anchor",
@@ -674,6 +674,7 @@ export default class ConsoleApp extends FormApplication {
         const console = this.getData()
 
         const cmd = formData.consoleInputText.substring(1).split(' ')
+
         if (cmdMode && game.user.isGM) {
             // process commands for GMs
             switch (cmd[0]) {
@@ -880,6 +881,7 @@ export default class ConsoleApp extends FormApplication {
                     let message = {
                         ...(useTimestamps && { "timestamp": timestamp }),
                         "user": this.getName("")
+
                     }
 
                     if (formData.consoleInputText) {
