@@ -361,10 +361,35 @@ export default class ConsoleApp extends FormApplication {
             const fp = new FilePicker({
                 callback: (returnPath) => {
                     mediaString.value = returnPath
-                }
+                },
             })
             fp.displayMode = 'thumbs'
             fp.extensions = [".avif", ".jpg", ".jpeg", ".png", ".svg", ".webp", ".webm", ".mp4", ".m4v"]
+            fp.close = () => {
+
+                consoleInputText.style.display = 'block'
+                mediaString.style.display = 'none'
+
+                // normal close from FilePicker
+                let el = fp.element;
+                el.css({ minHeight: 0 });
+
+                fp._callHooks("close", el);
+
+                return new Promise(resolve => {
+                    el.slideUp(200, () => {
+                        el.remove();
+
+                        // Clean up data
+                        fp._element = null;
+                        delete ui.windows[fp.appId];
+                        fp._minimized = false;
+                        fp._scrollPositions = null;
+                        fp._state = states.CLOSED;
+                        resolve();
+                    });
+                });
+            }
             fp.browse()
         } else {
             ui.notifications.warn(`Console | The console '${this.data.name}' is currently locked and cannot be edited`)
