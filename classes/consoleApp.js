@@ -479,16 +479,29 @@ export default class ConsoleApp extends FormApplication {
     }
 
     render(...args) {
+        this.getData()
+
         // link app to documents so it re-renders normally
         this._document.apps[this.appId] = this
         this._represents.apps[this.appId] = this
 
-        super.render(...args)
+        // apply personalised stylings to '.console-app-${this.consoleId}'
+        const style = $(`<style>.console-app-${this.consoleId} {
+            background: ${this.data.styling.bg};
+            border: 2px solid ${this.data.styling.fg};
+            border-radius: 0px;
+            color: ${this.data.styling.fg};
+            }
+        </style>`)
+        $('html > head').append(style)
+        this.options.classes.push(`console-app-${this.consoleId}`)
 
+        super.render(...args)
+        
         // set sizes and styles
         this.position.height = this.options.height
         this.position.width = this.options.width
-        this.updateAppClasses(this.consoleId)
+        this.updateAppClasses()
     }
 
     shareApp() {
@@ -646,7 +659,7 @@ export default class ConsoleApp extends FormApplication {
         }
     }
 
-    updateAppClasses(id) {
+    updateAppClasses() {
 
         // scroll to the bottom of the messages div on re-render
         //      set appart from the other due to the needed speed
@@ -659,15 +672,6 @@ export default class ConsoleApp extends FormApplication {
 
             // apply console specific styling to elements of the app window not available until after the app has rendered to the DOM
             if (this.rendered) {
-
-                if (document.getElementById(id)) {
-                    const element = document.getElementById(id)
-                    element.className = `app window-app form console-app`
-                    element.style.color = this.data.styling.fg
-                    element.style.background = this.data.styling.bg
-                    element.style.border = `2px solid ${this.data.styling.fg}`
-                    element.style.borderRadius = "0px";
-                }
 
                 // if user had text in input box when the app re-rendered focus the cursor at the end of the input box
                 if (ui.activeWindow._element) {
