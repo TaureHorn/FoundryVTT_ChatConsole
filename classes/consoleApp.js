@@ -238,7 +238,6 @@ export default class ConsoleApp extends FormApplication {
             }
         ]
         ContextMenu.create(this, msg, '.console-message-interact', contextMenuOptions, {
-            expandUp: true,
             onOpen: () => {
                 msg.style.zIndex = 900
             },

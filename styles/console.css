@@ -189,6 +189,11 @@
     object-position: 50%;
 }
 
+.console-media-tag {
+    color: white;
+    transform: translate(-50%, 150%);
+}
+
 .console-message-interact {
     border: none;
     padding: 0;

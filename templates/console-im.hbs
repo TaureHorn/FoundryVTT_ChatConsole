@@ -7,8 +7,10 @@
                     <div style="background:{{../styling.fg}};color:{{../styling.bg}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}" class="console-message">
                         {{#if user.name}}<span id="header{{@index}}">{{#if ../timestamps}}{{timestamp}} {{/if}}<strong>{{user.name}}</strong></span></br>{{/if}}
                         {{#if text}}<span id="text{{@index}}" title="{{localize "CONSOLE.console.message-info"}}">{{text}}</span></br>{{/if}}
-                        {{#if media}}<span><em>media:</em>{{#equal media.fileType 'img'}}image{{/equal}}{{#equal media.fileType 'video'}}video{{/equal}}</br>{{/if}}
-                        {{#if media}}<{{media.fileType}} src="{{media.filePath}}" id="consoleMedia" class="console-media" data-media="{{media.filePath}}" data-media-type="{{media.fileType}}" data-user-name="{{user.name}}" title="{{localize "CONSOLE.console.image-info"}}"/>{{/if}}
+                        {{#if media}}
+                            <i class="console-media-tag fas {{#equal media.fileType 'img'}}fa-image{{/equal}}{{#equal media.fileType 'video'}}fa-play{{/equal}}"></i></br>
+                            <{{media.fileType}} src="{{media.filePath}}" id="consoleMedia" class="console-media" data-media="{{media.filePath}}" data-media-type="{{media.fileType}}" data-user-name="{{user.name}}" title="{{localize "CONSOLE.console.image-info"}}"/>
+                        {{/if}}
                     </div>
                 </button>
             </div>
