@@ -200,7 +200,10 @@ export default class ConsoleApp extends FormApplication {
         html.find('#mediaFilePicker').on('click', [html], () => this._handleImagePicker(html))
 
         // open ImagePopout when clicking on image/video in console app
-        html.on('click', "#consoleMedia", this._handleImageZoom)
+        html.on('click', "#consoleMedia", (ev) => {
+            const data = $(ev.currentTarget).data()
+            this._handleImageZoom(data)
+        })
     }
 
     #buildContextMenu(msg) {
@@ -209,7 +212,9 @@ export default class ConsoleApp extends FormApplication {
         // apply console styling to new css class for context menu entries
         const style = $(`<style>.console-menu-styling${this.id} { 
                 background-color: ${this.data.styling.bg}; 
-                color: ${this.data.styling.fg}}
+                color: ${this.data.styling.fg};
+                text-align:left
+                }
             </style>`)
         $('html > head').append(style)
 
@@ -222,7 +227,24 @@ export default class ConsoleApp extends FormApplication {
                 callback: () => {
                     this.copyToClipboard(msg.dataset.text)
                 }
-
+            },
+            {
+                classes: `console-menu-styling${this.id}`,
+                condition: msg.dataset.mediaPath && msg.dataset.mediaType === 'img' ? true : false,
+                name: game.i18n.localize("CONSOLE.console.zoom-image"),
+                icon: '<i class="fas fa-magnifying-glass"></i>',
+                callback: () => {
+                    this._handleImageZoom(msg.dataset)
+                }
+            },
+            {
+                classes: `console-menu-styling${this.id}`,
+                condition: msg.dataset.mediaPath && msg.dataset.mediaType === 'video' ? true : false,
+                name: game.i18n.localize("CONSOLE.console.zoom-video"),
+                icon: '<i class="fas fa-magnifying-glass-play"></i>',
+                callback: () => {
+                    this._handleImageZoom(msg.dataset)
+                }
             },
             {
                 classes: `console-menu-styling${this.id}`,
@@ -440,19 +462,18 @@ export default class ConsoleApp extends FormApplication {
         }
     }
 
-    _handleImageZoom = async (event) => {
-        const data = $(event.currentTarget).data()
+    _handleImageZoom = async (data) => {
         let dimensions
-        const popout = new ImagePopout(data.media, {
+        const popout = new ImagePopout(data.mediaPath, {
             title: `${data.userName} >>> ${this.data.name}`,
         })
         popout.options.classes.push('console-popout')
         if (data.mediaType === 'img') {
-            dimensions = await getPopoutSize(data.media, 'image')
+            dimensions = await getPopoutSize(data.mediaPath, 'image')
         }
         if (data.mediaType === 'video') {
             popout.options.template = Console.TEMPLATES.VIDEO_POPOUT
-            dimensions = await getPopoutSize(data.media, 'video')
+            dimensions = await getPopoutSize(data.mediaPath, 'video')
         }
         popout.render(true, { 'height': dimensions.height + 36, 'width': dimensions.width })
     }

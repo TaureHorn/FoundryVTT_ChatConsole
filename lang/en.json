@@ -69,7 +69,7 @@
             "become-actor": "Become linked actor",
             "characters": "characters",
             "close": "Close",
-            "copy-message": "copy",
+            "copy-message": "copy text",
             "delete-message": "delete",
             "file-picker": "Choose an image/video to send",
             "image-info":  "Left click to zoom image",
@@ -80,7 +80,9 @@
             "send": "send",
             "sending-file": "Loaded file",
             "show-players": "Show to players",
-            "words": "words"
+            "words": "words",
+            "zoom-image": "zoom image",
+            "zoom-video": "watch video"
         },
         "consoles": "Consoles",
         "manager": {
