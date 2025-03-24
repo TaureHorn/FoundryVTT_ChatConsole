@@ -1,5 +1,9 @@
 {
     "CONSOLE": {
+        "archive": {
+            "image-type": "media type: image",
+            "video-type": "media type: video (thumbnail)"
+        },
         "button-title": "Open Console Manager",
         "config": {
             "text": {

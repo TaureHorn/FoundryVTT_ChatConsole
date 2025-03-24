@@ -37,7 +37,7 @@ export default class ConsoleData {
                     show: false
                 }
             }])
-            
+
         } else {
             ui.notifications.error(`Console | No data storage Document of name '${this.name}' exists and you lack the permissions to create one. Consult your GM.`)
         }
@@ -238,19 +238,32 @@ export default class ConsoleData {
         // @param {object} console
         let html = `
             <div style="background-color:${console.styling.bg};
-            border:2px solid ${console.styling.fg};
-            color:${console.styling.fg};
-            padding: 5px">
+                border:2px solid ${console.styling.fg};
+                color:${console.styling.fg};
+                padding: 5px">
             <p style="background-color:${console.styling.fg};color:${console.styling.bg}"><strong>${console.content.title}</strong></p>`
 
+        // iterate through messages and add html elements for them
         if (console.content.body.length > 0) {
-            console.content.body.forEach((message) => {
-                if (message.user.name.length === 0) {
-                    html += `<p>${message.text}`
-                } else {
-                    html += `<p><strong>${message.user.name}</strong>: ${message.text}</p>`
+            for await (const message of console.content.body) {
+                message.user.name ? html += `<p><strong>${message.user.name}</strong>: ` : html += `<p>`
+                message.text ? html += `${message.text}</p>` : html += `</p>`
+                if (message.media) {
+                    switch (message.media.fileType) {
+                        case 'img':
+                            html += `<p>${game.i18n.localize("CONSOLE.archive.image-type")}</p>
+                                <img src="${message.media.filePath}" class="console-archive-image" />`
+                            break;
+                        case 'video':
+                            const thumbnail = await game.video.createThumbnail(message.media.filePath, { 'height': 512, 'width': 512 })
+                            html += `<p>${game.i18n.localize("CONSOLE.archive.video-type")}</p>
+                                <img src="${thumbnail}" class="console-archive-image" />`
+                            break;
+                        default:
+                            Console.print(true, 'error', 'wrong message.media.fileType in ConsoleData.updateJournalPage switch statement')
+                    }
                 }
-            })
+            }
         }
         html += `</div>`
 
@@ -270,7 +283,6 @@ export default class ConsoleData {
                 markdown: ""
             },
         }])
-
 
     }
 
