@@ -191,7 +191,14 @@
 
 .console-media-tag {
     color: white;
+}
+
+.console-media-tag-right {
     transform: translate(-50%, 150%);
+}
+
+.console-media-tag-left {
+    transform: translate(50%, 150%);
 }
 
 .console-message-interact {

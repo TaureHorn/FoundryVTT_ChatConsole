@@ -8,7 +8,7 @@
                         {{#if user.name}}<span id="header{{@index}}">{{#if ../timestamps}}{{timestamp}} {{/if}}<strong>{{user.name}}</strong></span></br>{{/if}}
                         {{#if text}}<span id="text{{@index}}" title="{{localize "CONSOLE.console.message-info"}}">{{text}}</span></br>{{/if}}
                         {{#if media}}
-                            <i class="console-media-tag fas {{#equal media.fileType 'img'}}fa-image{{/equal}}{{#equal media.fileType 'video'}}fa-play{{/equal}}"></i></br>
+                        <i class="console-media-tag {{#equal user.name ../character}}console-media-tag-right{{else}}console-media-tag-left{{/equal}} fas {{#equal media.fileType 'img'}}fa-image{{/equal}}{{#equal media.fileType 'video'}}fa-play{{/equal}}"></i></br>
                             <{{media.fileType}} src="{{media.filePath}}" id="consoleMedia" class="console-media" data-media-path="{{media.filePath}}" data-media-type="{{media.fileType}}" data-user-name="{{user.name}}" title="{{localize "CONSOLE.console.image-info"}}"/>
                         {{/if}}
                     </div>
