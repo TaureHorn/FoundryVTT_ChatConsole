@@ -135,12 +135,21 @@
     width: calc(80% - 20px);
 }
 
-#fileNotifier img {
+#fileNotifier img,
+.console-archive-image {
     border: none;
-    height: 2.5em;
     object-fit: cover;
     object-position: center;
+}
+
+#fileNotifier img {
+    height: 2.5em;
     width: 2.5em;
+}
+
+.console-archive-image {
+    height: 10em;
+    width: 10em;
 }
 
 #fileNotifier #cancelFileSend {
