@@ -88,7 +88,12 @@
     padding: 0px !important
 }
 
-.console-app>header {
+.console-delete-dialog .window-content {
+    background-image: none;
+}
+
+.console-app>header,
+.console-delete-dialog>header {
     border: none !important;
 }
 

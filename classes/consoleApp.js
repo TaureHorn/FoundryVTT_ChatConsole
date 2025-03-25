@@ -416,7 +416,35 @@ export default class ConsoleApp extends FormApplication {
             }
 
         })
-        confirm.render(true)
+
+        // apply classes to dialog
+        confirm.options.classes.push(
+            `console-app-${this.consoleId}`,
+            'console-delete-dialog',
+            `console-delete-dialog-${this.consoleId}`
+        )
+
+        // override button styles
+        const dialogButton = $(`<style>.console-delete-dialog .dialog-buttons button {
+            background: none;
+            border: 2px solid ${this.data.styling.fg};
+            border-radius: 0px;
+            color: ${this.data.styling.fg};
+            font-weight: bold;
+        }
+        </style>`)
+
+        const dialogButtonHover = $(`<style>.console-delete-dialog .dialog-buttons button:hover {
+            background-color: ${this.data.styling.fg};
+            color: ${this.data.styling.bg};
+        }
+        </style>`)
+
+        $('html > head').append(dialogButton, dialogButtonHover)
+
+        // check if not already rendered and render if not
+        const alreadyOpen = $('body').find(`.console-delete-dialog-${this.consoleId}`)[0]
+        alreadyOpen ? ui.windows[alreadyOpen.dataset.appid].bringToTop() : confirm.render(true)
         setTimeout(() => {
             $('[data-button="yes"]')[0].focus()
         }, 100)
@@ -497,7 +525,7 @@ export default class ConsoleApp extends FormApplication {
         this.options.classes.push(`console-app-${this.consoleId}`)
 
         super.render(...args)
-        
+
         // set sizes and styles
         this.position.height = this.options.height
         this.position.width = this.options.width
