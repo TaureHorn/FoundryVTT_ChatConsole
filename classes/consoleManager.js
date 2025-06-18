@@ -31,9 +31,11 @@ export default class ConsoleManager extends FormApplication {
         const consoles = ConsoleData.getAllConsoles().sort((a, b) => a.name.localeCompare(b.name))
         consoles.forEach((console) => {
             console.sceneNames = []
-            console.scenes.forEach((id) => {
-                console.sceneNames.push(this.getSceneName(id))
-            })
+            for (const id of console.scenes) {
+                let scene = game.scenes.get(id)
+                if (!scene) continue
+                if (scene.name) console.sceneNames.push(scene.name)
+            }
         })
         return {
             consoles: consoles,
@@ -41,10 +43,6 @@ export default class ConsoleManager extends FormApplication {
             manager: this,
             userId: game.user._id
         }
-    }
-
-    getSceneName(id) {
-        return game.scenes._source.find((obj) => obj._id === id).name
     }
 
     activateListeners(html) {
@@ -265,6 +263,17 @@ export default class ConsoleManager extends FormApplication {
     }
 
 }
+
+Hooks.on('deleteScene', async (document, options, userId) => {
+    for await (const console of ConsoleData.getAllConsoles()) {
+        if (!console.scenes.includes(document.id)) continue
+        let newSceneList = [...console.scenes]
+        newSceneList.splice(console.scenes.indexOf(document.id), 1)
+        console.scenes = newSceneList
+        await ConsoleData.updateConsole(console.id, console)
+        Console.print(true, 'update', `updated ${console.name}(${console.id}) to remove id for scene __${document.name}__ from the consoles scene list `)
+    }
+})
 
 globalThis.ConsoleManager = ConsoleManager
 
