@@ -259,14 +259,20 @@ export default class ConsoleApp extends FormApplication {
                 }
             }
         ]
-        ContextMenu.create(this, msg, '.console-message-interact', contextMenuOptions, {
-            onOpen: () => {
-                msg.style.zIndex = 900
-            },
-            onClose: () => {
-                msg.style.zIndex = 100
-            }
-        })
+
+        if (game.release.generation >= 13) {
+            new ContextMenu(msg, '.console-message-interact', contextMenuOptions, { fixed: true })
+        } else {
+            ContextMenu.create(this, msg, '.console-message-interact', contextMenuOptions, {
+                onOpen: () => {
+                    msg.style.zIndex = 900
+                },
+                onClose: () => {
+                    msg.style.zIndex = 100
+                }
+            })
+        }
+
     }
 
 

@@ -50,8 +50,11 @@ export default class ConsoleManager extends FormApplication {
 
         if (game.user.isGM) {
             const entries = Array.from(document.getElementsByClassName('console-manager-entry'))
+            const fixedPosition = game.release.generation >= 13 ? true : false
             entries.forEach((node => {
-                ContextMenu.create(this, node, '.console-manager-entry', this.#contextMenuOptions)
+                fixedPosition
+                    ? ContextMenu.create(this, node, '.console-manager-entry', this.#contextMenuOptions, { fixed: true })
+                    : ContextMenu.create(this, node, '.console-manager-entry', this.#contextMenuOptions)
             }))
         }
 
