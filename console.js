@@ -163,6 +163,9 @@ Hooks.on('init', function() {
 Hooks.on('renderSidebarTab', (chatLog, html) => {
     ConsoleManager.renderLauncherButton(false, html)
 })
+Hooks.on('renderChatLog', (chatLog, html) => {
+    ConsoleManager.renderLauncherButton(false, html)
+})
 
 // tracks the input of an app and records its value in the object as part of preventing an input being cleared in the document update cycle
 Hooks.on('renderConsoleApp', (...args) => {
