@@ -1,6 +1,6 @@
 <div class="console-container" style="background:{{styling.bg}} url({{styling.bgImg}});background-size:contain;border-top:2px solid {{styling.fg}}">
     <div id="console-messages{{id}}" class="console-message-container">
-        <hr width="33%" style="border:1px solid {{styling.fg}}" />
+        <hr width="33%" style="border:1px solid {{styling.fg}}; margin: auto" />
         {{#each content.body}}
             <div class="console-message-box" style="{{#unameInPrevIndex user.name @index ../content.body}}margin-top:30px{{else}}margin-top:10px{{/unameInPrevIndex}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}">
                 <button class="console-message-interact" style="background:none" data-console-id="{{../id}}" data-message-index={{@index}} data-userId="{{user.id}}" data-user-name="{{user.name}}" {{#if text}}data-text="{{text}}"{{/if}} {{#if media}}data-media-path="{{media.filePath}}" data-media-type="{{media.fileType}}"{{/if}} >

@@ -46,6 +46,31 @@ async function getPopoutSize(src, type) {
     return dimensions
 }
 
+function makeV13Popout(type, dimensions, src, title) {
+
+    class Pop extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.apps.ImagePopout) {
+
+        static DEFAULT_OPTIONS = {
+            classes: ['console-popout']
+        }
+
+        static PARTS = {
+            main: {
+                template: Console.TEMPLATES[type === 'img' ? 'IMAGE_POPOUT' : 'VIDEO_POPOUT']
+            }
+        }
+
+        async _preFirstRender(_context, options) {
+            // add header height to dimensions height
+            dimensions.height = dimensions.height + 36
+            Object.assign(options.position, dimensions)
+        }
+
+    }
+    return new Pop({ src: src, title: title })
+
+}
+
 export default class ConsoleApp extends FormApplication {
 
     constructor(id) {
@@ -497,19 +522,31 @@ export default class ConsoleApp extends FormApplication {
     }
 
     _handleImageZoom = async (data) => {
-        let dimensions
-        const popout = new ImagePopout(data.mediaPath, {
-            title: `${data.userName} >>> ${this.data.name}`,
-        })
-        popout.options.classes.push('console-popout')
-        if (data.mediaType === 'img') {
-            dimensions = await getPopoutSize(data.mediaPath, 'image')
-        }
-        if (data.mediaType === 'video') {
-            popout.options.template = Console.TEMPLATES.VIDEO_POPOUT
-            dimensions = await getPopoutSize(data.mediaPath, 'video')
-        }
-        popout.render(true, { 'height': dimensions.height + 36, 'width': dimensions.width })
+        const v13 = game.release.generation >= 13
+        const dimensions = await getPopoutSize(data.mediaPath, data.mediaType === 'img' ? 'image' : 'video')
+        const title = `${data.userName} >>> ${this.data.name}`
+
+        const popout = (() => {
+            let instance
+            if (v13) {
+                instance = makeV13Popout(
+                    data.mediaType,
+                    dimensions,
+                    data.mediaPath,
+                    title
+                )
+            } else {
+                instance = new ImagePopout(
+                    data.mediaPath,
+                    { title: title }
+                )
+                instance.options.classes.push('console-popout')
+                if (data.mediaType === 'video') instance.options.template = Console.TEMPLATES.VIDEO_POPOUT
+            }
+            return instance
+        })()
+
+        v13 ? await popout.render(true) : await popout.render(true, { height: dimensions.height + 36, width: dimensions.width })
     }
 
     render(...args) {

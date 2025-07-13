@@ -23,6 +23,7 @@ export default class Console {
         APP_TERM: `modules/${this.ID}/templates/console-term.hbs`,
         APP_TERM_PLAYER: `modules/${this.ID}/templates/console-term_player.hbs`,
         CONFIG: `modules/${this.ID}/templates/config.hbs`,
+        IMAGE_POPOUT: `modules/${this.ID}/templates/imagePopout.hbs`,
         MAKESTRING: `modules/${this.ID}/templates/time-format-maker.hbs`,
         MANAGER: `modules/${this.ID}/templates/manager.hbs`,
         MANAGER_PLAYER: `modules/${this.ID}/templates/manager_player.hbs`,
