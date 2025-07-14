@@ -184,7 +184,7 @@
 
 #console-manager-launcher {
     flex: auto;
-    margin: 5px;
+    margin: 5px 0px;
 }
 
 .console-message {
