@@ -168,7 +168,7 @@ export default class DefaultConfig extends FormApplication {
         try {
             game.settings.set(Console.ID, 'defaultConfig', newData)
         } catch (err) {
-            console.error(err)
+            Console.print(true, 'error', err)
             ui.notifications.error(`Console | Unable to update the default config. See browser console for error`)
         }
     }

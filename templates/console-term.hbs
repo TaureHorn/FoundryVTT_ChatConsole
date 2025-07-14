@@ -1,7 +1,7 @@
 <div class="console-container" style="background:{{styling.bg}} url({{styling.bgImg}});background-size:contain;border-top:2px solid {{styling.fg}}">
     
     <div id="console-messages{{id}}" class="console-message-container">
-        <hr width="33%" style="border:1px solid {{styling.fg}}" />
+        <hr width="33%" style="border:1px solid {{styling.fg}}; margin: auto" />
         {{#each content.body}}
             <div> 
                 <button class="console-message-interact" style="background:none;color:{{../styling.fg}};margin:2px 0;text-align:start" data-action="message-interact" data-console-id="{{../id}}" data-message-index={{@index}} data-text="{{text}}" data-userId="{{user.id}}" title="{{localize "CONSOLE.console.message-info"}}">

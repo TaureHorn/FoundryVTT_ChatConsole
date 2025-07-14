@@ -1,10 +1,10 @@
 <div class="console-container" style="background:{{styling.bg}} url({{styling.bgImg}});background-size:contain;border-top:2px solid {{styling.fg}}">
     <div id="console-messages{{id}}" class="console-message-container">
-        <hr width="33%" style="border:1px solid {{styling.fg}}" />
+        <hr width="33%" style="border:1px solid {{styling.fg}}; margin: auto" />
         {{#each content.body}}
             <div class="console-message-box" style="{{#unameInPrevIndex user.name @index ../content.body}}margin-top:30px{{else}}margin-top:10px{{/unameInPrevIndex}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}">
                 <button class="console-message-interact" style="background:none" data-console-id="{{../id}}" data-message-index={{@index}} data-userId="{{user.id}}" data-user-name="{{user.name}}" {{#if text}}data-text="{{text}}"{{/if}} {{#if media}}data-media-path="{{media.filePath}}" data-media-type="{{media.fileType}}"{{/if}} >
-                    <div style="background:{{../styling.fg}};color:{{../styling.bg}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}" class="console-message">
+                    <div style="pointer-events: all !important;background:{{../styling.fg}};color:{{../styling.bg}};{{#equal user.name ../character}}text-align:end{{else}}text-align:start{{/equal}}" class="console-message">
                         {{#if user.name}}<span id="header{{@index}}">{{#if ../timestamps}}{{timestamp}} {{/if}}<strong>{{user.name}}</strong></span></br>{{/if}}
                         {{#if text}}<span id="text{{@index}}" title="{{localize "CONSOLE.console.message-info"}}">{{text}}</span></br>{{/if}}
                         {{#if media}}

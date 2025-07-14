@@ -50,8 +50,11 @@ export default class ConsoleManager extends FormApplication {
 
         if (game.user.isGM) {
             const entries = Array.from(document.getElementsByClassName('console-manager-entry'))
+            const fixedPosition = game.release.generation >= 13
             entries.forEach((node => {
-                ContextMenu.create(this, node, '.console-manager-entry', this.#contextMenuOptions)
+                fixedPosition
+                    ? ContextMenu.create(this, node, '.console-manager-entry', this.#contextMenuOptions, { fixed: true })
+                    : ContextMenu.create(this, node, '.console-manager-entry', this.#contextMenuOptions)
             }))
         }
 
@@ -138,7 +141,7 @@ export default class ConsoleManager extends FormApplication {
                                     await ConsoleData.updateJournalPage(console)
                                     await ConsoleData.deleteConsole(id)
                                 } catch (err) {
-                                    console.error(err)
+                                    Console.print(true, 'error', err)
                                     ui.notifications.error("Console | Unable to archive console. Check browser console for error message")
                                 }
                             }
@@ -240,10 +243,20 @@ export default class ConsoleManager extends FormApplication {
             // if button doesn't exist, create it
             const tooltip = game.i18n.localize('CONSOLE.button-title')
 
-            html.find('#chat-controls').after(`<button id=${id} data-tooltip="${tooltip}">${inner}</button>`)
-            html.on('click', '#console-manager-launcher', (event) => {
-                new ConsoleManager(ConsoleData.getDataPool(), game.user).render(true)
-            })
+            if (game.release.generation >= 13) {
+                const button = (() => {
+                    let btn = document.createElement('button')
+                    btn.innerHTML = `<button id=${id} type="button" data-tooltip="${tooltip}">${inner}</button>`
+                    return btn.firstChild
+                })()
+                button.addEventListener('click', () => new ConsoleManager(ConsoleData.getDataPool(), game.user).render(true))
+                document.getElementsByClassName('chat-form')[0].prepend(button)
+            } else {
+                html.find('#chat-controls').after(`<button id=${id} data-tooltip="${tooltip}">${inner}</button>`)
+                html.on('click', '#console-manager-launcher', (event) => {
+                    new ConsoleManager(ConsoleData.getDataPool(), game.user).render(true)
+                })
+            }
         }
 
     }
