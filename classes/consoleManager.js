@@ -141,7 +141,7 @@ export default class ConsoleManager extends FormApplication {
                                     await ConsoleData.updateJournalPage(console)
                                     await ConsoleData.deleteConsole(id)
                                 } catch (err) {
-                                    console.error(err)
+                                    Console.print(true, 'error', err)
                                     ui.notifications.error("Console | Unable to archive console. Check browser console for error message")
                                 }
                             }

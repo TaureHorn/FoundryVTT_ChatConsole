@@ -48,7 +48,7 @@ async function getPopoutSize(src, type) {
 
 function makeV13Popout(type, dimensions, src, title) {
 
-    class Pop extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.apps.ImagePopout) {
+    class ConsoleMediaPopout extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.apps.ImagePopout) {
 
         static DEFAULT_OPTIONS = {
             classes: ['console-popout']
@@ -67,7 +67,7 @@ function makeV13Popout(type, dimensions, src, title) {
         }
 
     }
-    return new Pop({ src: src, title: title })
+    return new ConsoleMediaPopout({ src: src, title: title })
 
 }
 
@@ -400,19 +400,19 @@ export default class ConsoleApp extends FormApplication {
                     try {
                         document.execCommand('copy')
                     } catch (err) {
-                        console.error(err)
+                        Console.print(true, 'error', err)
                     } finally {
                         copyText.remove()
                     }
                 }
                 ui.notifications.info("Console | copied text to clipboard!")
             } catch (err) {
-                console.error(err)
+                Console.print(true, 'error', err)
                 ui.notifications.error("Console | Copying to clipboard was unsuccessful. Idk. Maybe this site doesn't have clipboard access?")
             }
         } else {
             ui.notifications.error('Console | The element being attempted to copy is not a string!')
-            console.error('TypeError: element to copy is not a string', text, this)
+            Console.print(true, 'error', 'TypeError: element to copy is not a string', text, this)
         }
     }
 

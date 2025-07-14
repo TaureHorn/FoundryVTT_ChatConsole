@@ -125,7 +125,7 @@ export default class ConsoleConfig extends FormApplication {
         try {
             await ConsoleData.updateConsole(oldData.id, newData)
         } catch (err) {
-            console.error(err)
+            Console.print(true, 'error', err)
             ui.notifications.error(`Console | Unable to update this console. See browser console for error`)
         }
 
