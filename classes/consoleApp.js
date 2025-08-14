@@ -626,7 +626,7 @@ export default class ConsoleApp extends FormApplication {
             const notifContext = game.settings.get(Console.ID, 'notificationContext') || 'interface'
             const audioFile =
                 console.styling.notificationSound ||
-                game.settings.get(Console.ID, 'defaultConfig').styling.notificationSound ||
+                game.settings.get(Console.ID, 'defaultConfig')?.styling?.notificationSound ||
                 "modules/console/resources/msgNotification.ogg"
 
             if (game.release.generation >= 12) {
