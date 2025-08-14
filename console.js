@@ -94,21 +94,36 @@ Hooks.on('init', function() {
         default: {},
     })
 
-    game.settings.register(Console.ID, 'notificationContext', {
-        name: "Notification volume control context",
-        hint: "Which volume control context would you like to use for console notifications? Interface, environent or music",
-        scope: 'client',
-        config: true,
-        requiresReload: false,
-        type: new foundry.data.fields.StringField({
+    game.release.generation >= 12
+        ? game.settings.register(Console.ID, 'notificationContext', {
+            name: "Notification volume control context",
+            hint: "Which volume control context would you like to use for console notifications? Interface, environent or music",
+            scope: 'client',
+            config: true,
+            requiresReload: false,
+            type: new foundry.data.fields.StringField({
+                choices: {
+                    'interface': 'interface',
+                    'environment': 'environment',
+                    'music': 'music'
+                }
+            }),
+            default: 'interface'
+        })
+        : game.settings.register(Console.ID, 'notificationContext', {
+            name: "Notification volume control context",
+            hint: "Which volume control context would you like to use for console notifications? Interface, environent or music",
+            scope: 'client',
+            config: true,
+            requiresReload: false,
+            type: String,
             choices: {
-                'interface': 'interface',
-                'environment': 'environent',
-                'music': 'music'
-            }
-        }),
-        default: 'interface'
-    })
+                'Interface': 'Interface',
+                'Ambient': 'Ambient',
+                'Playlist': 'Playlist'
+            },
+            default: 'interface'
+        })
 
     game.settings.register(Console.ID, 'globalNotificationSounds', {
         name: "Mute notification sounds",
