@@ -623,15 +623,24 @@ export default class ConsoleApp extends FormApplication {
     static async notifyRecieve(console) {
         // Play sound if not muted by console or globally muted in module settings.
         if (!console.styling.mute && !game.settings.get(Console.ID, 'globalNotificationSounds')) {
-            const customCtx = game.settings.get(Console.ID, 'notificationContext') || 'interface'
-            const notifContext = game.audio[customCtx]
+            const notifContext = game.settings.get(Console.ID, 'notificationContext') || 'interface'
             const audioFile =
                 console.styling.notificationSound ||
-                game.settings.get(Console.ID, 'defaultConfig').styling.notificationSound ||
+                game.settings.get(Console.ID, 'defaultConfig')?.styling?.notificationSound ||
                 "modules/console/resources/msgNotification.ogg"
-            const bloop = new foundry.audio.Sound(`./${audioFile}`, { "context": notifContext })
-            await bloop.load()
-            await bloop.play()
+
+            if (game.release.generation >= 12) {
+                const bloop = new foundry.audio.Sound(`./${audioFile}`, { context: game.audio[notifContext] })
+                await bloop.load()
+                await bloop.play()
+            } else {
+                await AudioHelper.play({
+                    src: audioFile,
+                    loop: false,
+                    volume: game.settings.get('core', `global${notifContext}Volume`)
+                })
+            }
+
         }
 
         // Update UI to show notification pip if console manager not already open.
