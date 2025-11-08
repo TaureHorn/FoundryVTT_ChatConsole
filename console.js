@@ -269,7 +269,7 @@ Handlebars.registerHelper('equal', function(input1, input2, options) {
 })
 
 // custom helper for ConsoleConfig config.hbs
-Handlebars.registerHelper('inArray', function(data, otherArray, options) {
+Handlebars.registerHelper('inOtherArray', function(data, otherArray, options) {
     // @param {any} data
     // @param {Array} otherArray
     // @return {bool} --> boolean informs which blocks are rendered in handlebars file

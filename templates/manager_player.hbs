@@ -1,13 +1,13 @@
 <div> 
 <p><strong>{{localize "CONSOLE.manager.current-character"}}:</strong> {{#if manager._represents.character.name}}{{manager._represents.character.name}}{{else}}{{manager._represents.name}}{{/if}}</p>
     {{#each consoles}}{{#if public}}
-    {{#inArray ../userId playerOwnership}}
+    {{#inOtherArray ../userId playerOwnership}}
         <div style="background:{{styling.bg}} url({{styling.bgImg}});border:1px solid {{styling.fg}}" class="console-manager-entry">
             <div style="display:flex;flex-direction:column;box-sizing:border-box;width:100%">
                 <button style="all:unset;cursor:pointer" title="{{localize "CONSOLE.manager.open-console"}}" data-console-id="{{this.id}}" data-action="open-console">
                     <div style="background:{{styling.fg}};color:{{styling.bg}};padding:3px" class="console-seperate">
                         <div>
-                            {{#inArray id ../flags}}<span class="notifPip" style="border: 1px solid {{styling.bg}};color:{{styling.fg}}">{{countInArray id ../flags}}{{/inArray}}</span>
+                            {{#inOtherArray id ../flags}}<span class="notifPip" style="border: 1px solid {{styling.bg}};color:{{styling.fg}}">{{countInArray id ../flags}}{{/inOtherArray}}</span>
                             <span><strong>{{name}}</strong></span>
                         </div>
                         <div>
@@ -22,7 +22,7 @@
                 </button>
             </div>
         </div>
-    {{/inArray}}
+    {{/inOtherArray}}
     {{/if}}{{/each}}
 </div>
 
