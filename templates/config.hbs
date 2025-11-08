@@ -114,7 +114,7 @@
             </div>
             <div>
                 {{#each players}}
-                    <input id="{{_id}}" name="players"[{{@index}}] type="checkbox" value="{{_id}}" {{#inArray _id ../console.playerOwnership}}checked{{/inArray}}/>
+                    <input id="{{_id}}" name="players"[{{@index}}] type="checkbox" value="{{_id}}" {{#inOtherArray _id ../console.playerOwnership}}checked{{/inOtherArray}}/>
                     <label for="{{_id}}">{{name}}</legend>
                     </br>
                 {{/each}}
@@ -127,7 +127,7 @@
         <fieldset class="console-config-limited">
             <div>
                 {{#each players}}
-                    <input id="permissions-{{_id}}" name="permissions"[{{@index}}] type="checkbox" value="{{_id}}" {{#inArray _id ../console.playerPermissions}}checked{{/inArray}}/>
+                    <input id="permissions-{{_id}}" name="permissions"[{{@index}}] type="checkbox" value="{{_id}}" {{#inOtherArray _id ../console.playerPermissions}}checked{{/inOtherArray}}/>
                     <label for="permissions-{{_id}}">{{name}}</legend>
                     </br>
                 {{/each}}
@@ -139,7 +139,7 @@
         <summary class="field-header">{{localize "CONSOLE.config.scenes.header"}} <i class="fas fa-circle-info" data-tooltip="{{localize "CONSOLE.config.scenes.hover-info"}}"></i></summary>
         <fieldset class="console-config-limited">
             {{#each scenes}}
-                <input type="checkbox" id="{{id}}" name="scenes"[{{@index}}] value="{{id}}" {{#inArray this.id ../console.scenes }}checked{{/inArray}}/>
+                <input type="checkbox" id="{{id}}" name="scenes"[{{@index}}] value="{{id}}" {{#inOtherArray this.id ../console.scenes }}checked{{/inOtherArray}}/>
                 <label for="{{id}}">{{name}}</label>
                 </br>
             {{/each}}
